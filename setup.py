@@ -99,7 +99,7 @@ setup(
 
     install_requires=[
         'mutagen>=1.27',
-        'enum34'
+        'enum34>=1.0.4',
     ],
 
     tests_require=[

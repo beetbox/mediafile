@@ -26,11 +26,6 @@ from tempfile import mkdtemp
 import mediafile
 
 
-print(_common)
-import test
-print(test)
-
-
 _sc = mediafile._safe_cast
 
 

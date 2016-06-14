@@ -1,0 +1,24 @@
+version: "{build}"
+build: off
+deploy: off
+
+environment:
+    # Undocumented feature of nose-show-skipped.
+    NOSE_SHOW_SKIPPED: 1
+
+    matrix:
+        - PYTHON: C:\Python27
+          TOXENV: py27-test
+        - PYTHON: C:\Python33
+          TOXENV: py33-test
+        - PYTHON: C:\Python34
+          TOXENV: py34-test
+        - PYTHON: C:\Python35
+          TOXENV: py35-test
+
+# Install Tox for running tests.
+install:
+    - python setup.py test -a "--notest"
+
+test_script:
+    - python setup.py test

@@ -15,6 +15,7 @@ Usage
 -----
 
 .. code:: python
+
   >>> f = MediaFile('Lucy.mp3')
   >>> f.title
   u'Lucy in the Sky with Diamonds'

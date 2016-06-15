@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# This file is part of beets.
+# This file is part of mediafile.
 # Copyright 2016, Adrian Sampson.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -55,14 +55,12 @@ import imghdr
 import os
 import traceback
 import enum
-
-from beets import logging
-from beets.util import displayable_path, syspath
+import logging
 
 
 __all__ = ['UnreadableFileError', 'FileTypeError', 'MediaFile']
 
-log = logging.getLogger('beets')
+log = logging.getLogger(__name__)
 
 # Human-readable type names.
 TYPES = {
@@ -86,7 +84,7 @@ class UnreadableFileError(Exception):
     """Mutagen is not able to extract information from the file.
     """
     def __init__(self, path):
-        Exception.__init__(self, displayable_path(path))
+        Exception.__init__(self, repr(path))
 
 
 class FileTypeError(UnreadableFileError):
@@ -96,7 +94,7 @@ class FileTypeError(UnreadableFileError):
     mutagen type is not supported by `Mediafile`.
     """
     def __init__(self, path, mutagen_type=None):
-        path = displayable_path(path)
+        path = repr(path)
         if mutagen_type is None:
             msg = path
         else:
@@ -108,7 +106,7 @@ class MutagenError(UnreadableFileError):
     """Raised when Mutagen fails unexpectedly---probably due to a bug.
     """
     def __init__(self, path, mutagen_exc):
-        msg = u'{0}: {1}'.format(displayable_path(path), mutagen_exc)
+        msg = u'{0}: {1}'.format(repr(path), mutagen_exc)
         Exception.__init__(self, msg)
 
 
@@ -353,7 +351,7 @@ class Image(object):
             try:
                 type = list(ImageType)[type]
             except IndexError:
-                log.debug(u"ignoring unknown image type index {0}", type)
+                log.debug(u"ignoring unknown image type index %s", type)
                 type = ImageType.other
         self.type = type
 
@@ -1338,7 +1336,6 @@ class MediaFile(object):
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
         """
-        path = syspath(path)
         self.path = path
 
         unreadable_exc = (
@@ -1357,7 +1354,7 @@ class MediaFile(object):
         try:
             self.mgfile = mutagen.File(path)
         except unreadable_exc as exc:
-            log.debug(u'header parsing failed: {0}', unicode(exc))
+            log.debug(u'header parsing failed: %s', unicode(exc))
             raise UnreadableFileError(path)
         except IOError as exc:
             if type(exc) == IOError:
@@ -1365,12 +1362,12 @@ class MediaFile(object):
                 # anywhere else.
                 raise
             else:
-                log.debug(u'{}', traceback.format_exc())
+                log.debug(u'%s', traceback.format_exc())
                 raise MutagenError(path, exc)
         except Exception as exc:
             # Isolate bugs in Mutagen.
-            log.debug(u'{}', traceback.format_exc())
-            log.error(u'uncaught Mutagen exception in open: {0}', exc)
+            log.debug(u'%s', traceback.format_exc())
+            log.error(u'uncaught Mutagen exception in open: %s', exc)
             raise MutagenError(path, exc)
 
         if self.mgfile is None:
@@ -1379,20 +1376,10 @@ class MediaFile(object):
         elif (type(self.mgfile).__name__ == 'M4A' or
               type(self.mgfile).__name__ == 'MP4'):
             info = self.mgfile.info
-            if hasattr(info, 'codec'):
-                if info.codec and info.codec.startswith('alac'):
-                    self.type = 'alac'
-                else:
-                    self.type = 'aac'
+            if info.codec and info.codec.startswith('alac'):
+                self.type = 'alac'
             else:
-                # This hack differentiates AAC and ALAC on versions of
-                # Mutagen < 1.26. Once Mutagen > 1.26 is out and
-                # required by beets, we can remove this.
-                if hasattr(self.mgfile.info, 'bitrate') and \
-                   self.mgfile.info.bitrate > 0:
-                    self.type = 'aac'
-                else:
-                    self.type = 'alac'
+                self.type = 'aac'
         elif (type(self.mgfile).__name__ == 'ID3' or
               type(self.mgfile).__name__ == 'MP3'):
             self.type = 'mp3'
@@ -1442,8 +1429,8 @@ class MediaFile(object):
             # Propagate these through: they don't represent Mutagen bugs.
             raise
         except Exception as exc:
-            log.debug(u'{}', traceback.format_exc())
-            log.error(u'uncaught Mutagen exception in save: {0}', exc)
+            log.debug(u'%s', traceback.format_exc())
+            log.error(u'uncaught Mutagen exception in save: %s', exc)
             raise MutagenError(self.path, exc)
 
     def delete(self):
@@ -1731,13 +1718,6 @@ class MediaFile(object):
         StorageStyle('MEDIA'),
         ASFStorageStyle('WM/Media'),
     )
-    albumdisambig = MediaField(
-        # This tag mapping was invented for beets (not used by Picard, etc).
-        MP3DescStorageStyle(u'MusicBrainz Album Comment'),
-        MP4StorageStyle(b"----:com.apple.iTunes:MusicBrainz Album Comment"),
-        StorageStyle('MUSICBRAINZ_ALBUMCOMMENT'),
-        ASFStorageStyle('MusicBrainz/Album Comment'),
-    )
 
     # Release date.
     date = DateField(
@@ -1761,20 +1741,6 @@ class MediaFile(object):
     original_year = original_date.year_field()
     original_month = original_date.month_field()
     original_day = original_date.day_field()
-
-    # Nonstandard metadata.
-    artist_credit = MediaField(
-        MP3DescStorageStyle(u'Artist Credit'),
-        MP4StorageStyle(b"----:com.apple.iTunes:Artist Credit"),
-        StorageStyle('ARTIST_CREDIT'),
-        ASFStorageStyle('beets/Artist Credit'),
-    )
-    albumartist_credit = MediaField(
-        MP3DescStorageStyle(u'Album Artist Credit'),
-        MP4StorageStyle(b"----:com.apple.iTunes:Album Artist Credit"),
-        StorageStyle('ALBUMARTIST_CREDIT'),
-        ASFStorageStyle('beets/Album Artist Credit'),
-    )
 
     # Legacy album art field
     art = CoverArtField()

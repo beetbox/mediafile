@@ -29,7 +29,7 @@ data from the tags. In turn ``MediaField`` uses a number of
 Author
 ------
 
-Confuse is being developed by `Adrian Sampson`_ and was originally made to
+MediaFile is being developed by `Adrian Sampson`_ and was originally made to
 power `beets`_.
 
 .. _Adrian Sampson: https://github.com/sampsyo

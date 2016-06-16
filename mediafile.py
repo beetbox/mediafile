@@ -1050,6 +1050,27 @@ class APEv2ImageStorageStyle(ListStorageStyle):
                 pass
 
 
+def _hierarchy_dict(cls, include_object=False):
+    """Returns the __dict__ property of a class and it's parent classes.
+
+    If include_object is True, the __dict__ properties of object are included.
+    """
+    def handle(child):
+        result = dict(child.__dict__)
+
+        # Iterate all parents of the class.
+        for parent in child.__mro__[1:]:
+            # Check if the parent is an object and we want to include objects,
+            # or if the parent is not an object and we don't care about
+            # including objects.
+            if (parent is object and include_object) or parent is not object:
+                # Update the result with the values from the parent's parents.
+                result.update({k: v for k, v in handle(parent).items()
+                               if k not in result})
+        return result
+    return handle(cls)
+
+
 # MediaField is a descriptor that represents a single logical field. It
 # aggregates several StorageStyles describing how to access the data for
 # each file type.
@@ -1453,7 +1474,7 @@ class MediaFile(object):
         metadata tags (i.e., those that are instances of
         :class:`MediaField`).
         """
-        for property, descriptor in cls.__dict__.items():
+        for property, descriptor in _hierarchy_dict(cls).items():
             if isinstance(descriptor, MediaField):
                 yield property.decode('utf8')
 
@@ -1467,7 +1488,7 @@ class MediaFile(object):
         are replaced by `date0`, `date1`, and `date2`, respectively, to
         make them appear in that order.
         """
-        if isinstance(cls.__dict__[name], DateItemField):
+        if isinstance(_hierarchy_dict(cls)[name], DateItemField):
             name = re.sub('year',  'date0', name)
             name = re.sub('month', 'date1', name)
             name = re.sub('day',   'date2', name)
@@ -1508,7 +1529,7 @@ class MediaFile(object):
         if not isinstance(descriptor, MediaField):
             raise ValueError(
                 u'{0} must be an instance of MediaField'.format(descriptor))
-        if name in cls.__dict__:
+        if name in _hierarchy_dict(cls):
             raise ValueError(
                 u'property "{0}" already exists on MediaField'.format(name))
         setattr(cls, name, descriptor)

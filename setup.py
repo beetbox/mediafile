@@ -99,8 +99,7 @@ setup(
 
     install_requires=[
         'mutagen>=1.27',
-        'enum34>=1.0.4',
-    ],
+    ] + (['enum34>=1.0.4'] if sys.version_info < (3, 4, 0) else []),
 
     tests_require=[
         'tox',

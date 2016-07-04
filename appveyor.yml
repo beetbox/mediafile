@@ -9,8 +9,6 @@ environment:
     matrix:
         - PYTHON: C:\Python27
           TOXENV: py27-test
-        - PYTHON: C:\Python33
-          TOXENV: py33-test
         - PYTHON: C:\Python34
           TOXENV: py34-test
         - PYTHON: C:\Python35

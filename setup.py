@@ -88,7 +88,7 @@ setup(
     description='low-level audio tag interface',
     author='Adrian Sampson',
     author_email='adrian@radbox.org',
-    url='http://github.com/beetbox/mediafile',
+    url='https://github.com/beetbox/mediafile',
     license='MIT',
     platforms='ALL',
     long_description=_read('README.rst'),

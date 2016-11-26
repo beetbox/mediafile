@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# This file is part of mediafile.
+# This file is part of MediaFile.
 # Copyright 2016, Adrian Sampson.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -98,6 +98,7 @@ setup(
     ],
 
     install_requires=[
+        'six>=1.9',
         'mutagen>=1.27',
         'enum34>=1.0.4',
     ],

@@ -1,5 +1,5 @@
-MediaFile: a simple low-level audio tag interface
-=================================================
+MediaFile: read and write audio files' tags in Python
+=====================================================
 
 .. image:: https://travis-ci.org/beetbox/mediafile.svg?branch=master
     :target: https://travis-ci.org/beetbox/mediafile
@@ -7,12 +7,15 @@ MediaFile: a simple low-level audio tag interface
 .. image:: http://img.shields.io/pypi/v/mediafile.svg
     :target: https://pypi.python.org/pypi/mediafile
 
-Handles low-level interfacing for files' tags. Wraps Mutagen to
-automatically detect file types and provide a unified interface for a
-useful subset of music files' tags.
+MediaFile is a simple interface to the metadata tags for many audio file
+formats. It wraps `Mutagen`_, a high-quality library for low-level tag
+manipulation, with a high-level, format-independent interface for a common set
+of tags.
 
-Usage
------
+.. _Mutagen: https://github.com/quodlibet/mutagen
+
+Synopsis
+--------
 
 .. code:: python
 
@@ -22,15 +25,13 @@ Usage
   >>> f.artist = 'The Beatles'
   >>> f.save()
 
-Internally ``MediaFile`` uses ``MediaField`` descriptors to access the
-data from the tags. In turn ``MediaField`` uses a number of
-``StorageStyle`` strategies to handle format specific logic.
+Authors
+-------
 
-Author
-------
-
-MediaFile is being developed by `Adrian Sampson`_ and was originally made to
-power `beets`_.
+MediaFile is part of the `beets`_ project. It was originally written by
+`Adrian Sampson`_ and is now developed by the beets community. The license is
+MIT.
 
 .. _Adrian Sampson: https://github.com/sampsyo
 .. _beets: https://github.com/beetbox/beets
+.. _MIT: http://www.opensource.org/licenses/mit-license.php

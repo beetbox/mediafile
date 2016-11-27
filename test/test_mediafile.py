@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# This file is part of mediafile.
+# This file is part of MediaFile.
 # Copyright 2016, Adrian Sampson.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,14 +20,14 @@ from __future__ import division, absolute_import, print_function
 
 import os
 import shutil
-import tempfile
 import datetime
 import time
+import unittest
+from six import assertCountEqual
 
 from test import _common
-import unittest
-from mediafile import MediaFile, MediaField, Image, MP3DescStorageStyle, \
-    StorageStyle, MP4StorageStyle, ASFStorageStyle, ImageType, CoverArtField
+from mediafile import MediaFile, Image, \
+    ImageType, CoverArtField, UnreadableFileError
 
 
 class ArtTestMixin(object):
@@ -37,7 +37,8 @@ class ArtTestMixin(object):
     @property
     def png_data(self):
         if not self._png_data:
-            with open(os.path.join(_common.RSRC, 'image-2x3.png'), 'rb') as f:
+            image_file = os.path.join(_common.RSRC, b'image-2x3.png')
+            with open(image_file, 'rb') as f:
                 self._png_data = f.read()
         return self._png_data
     _png_data = None
@@ -45,7 +46,8 @@ class ArtTestMixin(object):
     @property
     def jpg_data(self):
         if not self._jpg_data:
-            with open(os.path.join(_common.RSRC, 'image-2x3.jpg'), 'rb') as f:
+            image_file = os.path.join(_common.RSRC, b'image-2x3.jpg')
+            with open(image_file, 'rb') as f:
                 self._jpg_data = f.read()
         return self._jpg_data
     _jpg_data = None
@@ -53,7 +55,8 @@ class ArtTestMixin(object):
     @property
     def tiff_data(self):
         if not self._jpg_data:
-            with open(os.path.join(_common.RSRC, 'image-2x3.tiff'), 'rb') as f:
+            image_file = os.path.join(_common.RSRC, b'image-2x3.tiff')
+            with open(image_file, 'rb') as f:
                 self._jpg_data = f.read()
         return self._jpg_data
     _jpg_data = None
@@ -261,7 +264,7 @@ class GenreListTestMixin(object):
 
     def test_read_genre_list(self):
         mediafile = self._mediafile_fixture('full')
-        self.assertItemsEqual(mediafile.genres, ['the genre'])
+        assertCountEqual(self, mediafile.genres, ['the genre'])
 
     def test_write_genre_list(self):
         mediafile = self._mediafile_fixture('empty')
@@ -269,7 +272,7 @@ class GenreListTestMixin(object):
         mediafile.save()
 
         mediafile = MediaFile(mediafile.path)
-        self.assertItemsEqual(mediafile.genres, [u'one', u'two'])
+        assertCountEqual(self, mediafile.genres, [u'one', u'two'])
 
     def test_write_genre_list_get_first(self):
         mediafile = self._mediafile_fixture('empty')
@@ -286,34 +289,11 @@ class GenreListTestMixin(object):
         mediafile.save()
 
         mediafile = MediaFile(mediafile.path)
-        self.assertItemsEqual(mediafile.genres, [u'the genre', u'another'])
-
-
-field_extension = MediaField(
-    MP3DescStorageStyle(b'customtag'),
-    MP4StorageStyle(b'----:com.apple.iTunes:customtag'),
-    StorageStyle(b'customtag'),
-    ASFStorageStyle(b'customtag'),
-)
-
-
-class ExtendedFieldTestMixin(object):
-
-    def test_invalid_descriptor(self):
-        with self.assertRaises(ValueError) as cm:
-            MediaFile.add_field('somekey', True)
-        self.assertIn(u'must be an instance of MediaField',
-                      unicode(cm.exception))
-
-    def test_overwrite_property(self):
-        with self.assertRaises(ValueError) as cm:
-            MediaFile.add_field('artist', MediaField())
-        self.assertIn(u'property "artist" already exists',
-                      unicode(cm.exception))
+        assertCountEqual(self, mediafile.genres, [u'the genre', u'another'])
 
 
 class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
-                        ExtendedFieldTestMixin):
+                        _common.TempDirMixin):
     """Test writing and reading tags. Subclasses must set ``extension`` and
     ``audio_properties``.
     """
@@ -387,6 +367,9 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'country',
         'albumstatus',
         'media',
+        'albumdisambig',
+        'artist_credit',
+        'albumartist_credit',
         'original_year',
         'original_month',
         'original_day',
@@ -395,11 +378,31 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
     ]
 
     def setUp(self):
-        self.temp_dir = tempfile.mkdtemp()
+        self.create_temp_dir()
 
     def tearDown(self):
-        if os.path.isdir(self.temp_dir):
-            shutil.rmtree(self.temp_dir)
+        self.remove_temp_dir()
+
+    def test_read_nonexisting(self):
+        mediafile = self._mediafile_fixture('full')
+        os.remove(mediafile.path)
+        self.assertRaises(UnreadableFileError, MediaFile, mediafile.path)
+
+    def test_save_nonexisting(self):
+        mediafile = self._mediafile_fixture('full')
+        os.remove(mediafile.path)
+        try:
+            mediafile.save()
+        except UnreadableFileError:
+            pass
+
+    def test_delete_nonexisting(self):
+        mediafile = self._mediafile_fixture('full')
+        os.remove(mediafile.path)
+        try:
+            mediafile.delete()
+        except UnreadableFileError:
+            pass
 
     def test_read_audio_properties(self):
         mediafile = self._mediafile_fixture('full')
@@ -628,6 +631,8 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
 
     def _mediafile_fixture(self, name):
         name = name + '.' + self.extension
+        if not isinstance(name, bytes):
+            name = name.encode('utf8')
         src = os.path.join(_common.RSRC, name)
         target = os.path.join(self.temp_dir, name)
         shutil.copy(src, target)
@@ -643,7 +648,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
                 # ReplayGain is float
                 tags[key] = 1.0
             else:
-                tags[key] = b'value\u2010%s' % key
+                tags[key] = 'value\u2010%s' % key
 
         for key in ['disc', 'disctotal', 'track', 'tracktotal', 'bpm']:
             tags[key] = 1
@@ -883,13 +888,13 @@ class AIFFTest(ReadWriteTestBase, unittest.TestCase):
 class MediaFieldTest(unittest.TestCase):
 
     def test_properties_from_fields(self):
-        path = os.path.join(_common.RSRC, 'full.mp3')
+        path = os.path.join(_common.RSRC, b'full.mp3')
         mediafile = MediaFile(path)
         for field in MediaFile.fields():
             self.assertTrue(hasattr(mediafile, field))
 
     def test_properties_from_readable_fields(self):
-        path = os.path.join(_common.RSRC, 'full.mp3')
+        path = os.path.join(_common.RSRC, b'full.mp3')
         mediafile = MediaFile(path)
         for field in MediaFile.readable_fields():
             self.assertTrue(hasattr(mediafile, field))
@@ -897,7 +902,7 @@ class MediaFieldTest(unittest.TestCase):
     def test_known_fields(self):
         fields = list(ReadWriteTestBase.tag_fields)
         fields.extend(('encoder', 'images', 'genres', 'albumtype'))
-        self.assertItemsEqual(MediaFile.fields(), fields)
+        assertCountEqual(self, MediaFile.fields(), fields)
 
     def test_fields_in_readable_fields(self):
         readable = MediaFile.readable_fields()

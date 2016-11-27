@@ -11,8 +11,17 @@ of tags.
 .. toctree::
    :maxdepth: 2
 
-MediaFile
----------
-
 .. currentmodule:: mediafile
+
+MediaFile Class
+---------------
+
 .. autoclass:: MediaFile
+    :members: save, delete, fields, readable_fields, update
+
+Exceptions
+----------
+
+.. autoclass:: UnreadableFileError
+.. autoclass:: FileTypeError
+.. autoclass:: MutagenError

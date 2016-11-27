@@ -25,6 +25,13 @@ Synopsis
   >>> f.artist = 'The Beatles'
   >>> f.save()
 
+Documentation
+-------------
+
+See the `full documentation`_.
+
+.. _full documentation: http://mediafile.readthedocs.io/
+
 Authors
 -------
 

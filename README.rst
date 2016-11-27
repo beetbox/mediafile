@@ -17,13 +17,19 @@ of tags.
 Synopsis
 --------
 
+MediaFile is available `on PyPI`_. Install it by typing ``pip install
+mediafile``. It works on Python 2.7 and Python 3.4 or later. Then:
+
 .. code:: python
 
+  >>> from mediafile import MediaFile
   >>> f = MediaFile('Lucy.mp3')
   >>> f.title
   u'Lucy in the Sky with Diamonds'
   >>> f.artist = 'The Beatles'
   >>> f.save()
+
+.. _on PyPI: https://pypi.python.org/pypi/mediafile
 
 Documentation
 -------------

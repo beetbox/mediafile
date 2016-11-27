@@ -1,22 +1,14 @@
-.. MediaFile documentation master file, created by
-   sphinx-quickstart on Sat Nov 26 20:14:22 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to MediaFile's documentation!
+MediaFile: elegant audio file tagging
 =====================================
+
+MediaFile is a simple interface to the metadata tags for many audio file
+formats. It wraps `Mutagen`_, a high-quality library for low-level tag
+manipulation, with a high-level, format-independent interface for a common set
+of tags.
+
+.. _Mutagen: https://github.com/quodlibet/mutagen
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-

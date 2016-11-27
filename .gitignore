@@ -5,6 +5,9 @@
 # file patterns
 *~
 
+# Built documentation.
+docs/_build
+
 # The rest is from https://www.gitignore.io/api/python
 
 ### Python ###

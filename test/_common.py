@@ -23,7 +23,7 @@ import sys
 
 
 # Test resources path.
-RSRC = os.path.join(os.path.dirname(__file__), b'rsrc')
+RSRC = os.path.join(os.path.dirname(__file__), 'rsrc').encode('utf8')
 
 # OS feature test.
 HAVE_SYMLINK = sys.platform != 'win32'

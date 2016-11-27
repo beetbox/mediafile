@@ -17,7 +17,12 @@ MediaFile Class
 ---------------
 
 .. autoclass:: MediaFile
-    :members: save, delete, fields, readable_fields, update
+
+    .. automethod:: __init__
+    .. automethod:: fields
+    .. automethod:: readable_fields
+    .. automethod:: save
+    .. automethod:: update
 
 Exceptions
 ----------
@@ -25,3 +30,13 @@ Exceptions
 .. autoclass:: UnreadableFileError
 .. autoclass:: FileTypeError
 .. autoclass:: MutagenError
+
+Internals
+---------
+
+.. autoclass:: MediaField
+
+    .. automethod:: __init__
+
+.. autoclass:: StorageStyle
+    :members:

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+# Path to mediafile module for autodoc.
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
+
 extensions = [
     'sphinx.ext.autodoc',
 ]

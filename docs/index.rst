@@ -8,7 +8,11 @@ of tags.
 
 .. _Mutagen: https://github.com/quodlibet/mutagen
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
+
+MediaFile
+---------
+
+.. currentmodule:: mediafile
+.. autoclass:: MediaFile

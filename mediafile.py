@@ -1449,15 +1449,13 @@ class MediaFile(object):
         if self.mgfile is None:
             # Mutagen couldn't guess the type
             raise FileTypeError(path)
-        elif (type(self.mgfile).__name__ == 'M4A' or
-              type(self.mgfile).__name__ == 'MP4'):
+        elif type(self.mgfile).__name__ in ['M4A', 'MP4']:
             info = self.mgfile.info
             if info.codec and info.codec.startswith('alac'):
                 self.type = 'alac'
             else:
                 self.type = 'aac'
-        elif (type(self.mgfile).__name__ == 'ID3' or
-              type(self.mgfile).__name__ == 'MP3'):
+        elif type(self.mgfile).__name__ in ['ID3', 'MP3']:
             self.type = 'mp3'
         elif type(self.mgfile).__name__ == 'FLAC':
             self.type = 'flac'

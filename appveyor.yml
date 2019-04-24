@@ -1,6 +1,9 @@
 version: "{build}"
 build: off
 deploy: off
+skip_commits:
+    # add [appveyor skip] as an alias for [skip appveyor] (like [ci skip])
+    message: /\[appveyor skip\]/
 
 environment:
     # Undocumented feature of nose-show-skipped.
@@ -8,15 +11,16 @@ environment:
 
     matrix:
         - PYTHON: C:\Python27
-          TOXENV: py27-test
+          TOX_ENV: py27-test
         - PYTHON: C:\Python34
-          TOXENV: py34-test
+          TOX_ENV: py35-test
         - PYTHON: C:\Python35
-          TOXENV: py35-test
+          TOX_ENV: py36-test
 
 # Install Tox for running tests.
 install:
-    - python setup.py test -a "--notest"
+    - '%PYTHON%/Scripts/pip.exe install "tox<=3.8.1"'
+    - "%PYTHON%/Scripts/tox.exe -e %TOX_ENV% --notest"
 
 test_script:
-    - python setup.py test
+    - "%PYTHON%/Scripts/tox.exe -e %TOX_ENV%"

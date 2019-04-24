@@ -37,7 +37,6 @@ addons:
     apt:
         packages:
             - bash-completion
-            - mp3gain
 
 # To install dependencies, tell tox to do everything but actually running the
 # test.

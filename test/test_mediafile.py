@@ -175,7 +175,11 @@ class ImageStructureTestMixin(ArtTestMixin):
 
 
 class ExtendedImageStructureTestMixin(ImageStructureTestMixin):
-    """Checks for additional attributes in the image structure."""
+    """Checks for additional attributes in the image structure.
+
+    Like the base `ImageStructureTestMixin`, per-format test classes
+    should include this mixin to add image-related tests.
+    """
 
     def assertExtendedImageAttributes(self, image, desc=None, type=None):  # noqa
         self.assertEqual(image.desc, desc)
@@ -294,34 +298,50 @@ class GenreListTestMixin(object):
 
 class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
                         _common.TempDirMixin):
-    """Test writing and reading tags. Subclasses must set ``extension`` and
-    ``audio_properties``.
+    """Test writing and reading tags. Subclasses must set ``extension``
+    and ``audio_properties``.
+
+    The basic tests for all audio formats encompass three files provided
+    in our `rsrc` folder: `full.*`, `empty.*`, and `unparseable.*`.
+    Respectively, they should contain a full slate of common fields
+    listed in `full_initial_tags` below; no fields contents at all; and
+    an unparseable release date field.
+
+    To add support for a new file format to MediaFile, add these three
+    files and then create a `ReadWriteTestBase` subclass by copying n'
+    pasting one of the existing subclasses below. You will want to
+    update the `format` field in that subclass, and you will probably
+    need to fiddle with the `bitrate` and other format-specific fields.
+
+    You can also add image tests (using an additional `image.*` fixture
+    file) by including one of the image-related mixins.
     """
 
     full_initial_tags = {
-        'title':       u'full',
-        'artist':      u'the artist',
-        'album':       u'the album',
-        'genre':       u'the genre',
-        'composer':    u'the composer',
-        'grouping':    u'the grouping',
-        'year':        2001,
-        'month':       None,
-        'day':         None,
-        'date':        datetime.date(2001, 1, 1),
-        'track':       2,
-        'tracktotal':  3,
-        'disc':        4,
-        'disctotal':   5,
-        'lyrics':      u'the lyrics',
-        'comments':    u'the comments',
-        'bpm':         6,
-        'comp':        True,
-        'mb_trackid':  '8b882575-08a5-4452-a7a7-cbb8a1531f9e',
-        'mb_albumid':  '9e873859-8aa4-4790-b985-5a953e8ef628',
-        'mb_artistid': '7cf0ea9d-86b9-4dad-ba9e-2355a64899ea',
-        'art':         None,
-        'label':       u'the label',
+        'title':             u'full',
+        'artist':            u'the artist',
+        'album':             u'the album',
+        'genre':             u'the genre',
+        'composer':          u'the composer',
+        'grouping':          u'the grouping',
+        'year':              2001,
+        'month':             None,
+        'day':               None,
+        'date':              datetime.date(2001, 1, 1),
+        'track':             2,
+        'tracktotal':        3,
+        'disc':              4,
+        'disctotal':         5,
+        'lyrics':            u'the lyrics',
+        'comments':          u'the comments',
+        'bpm':               6,
+        'comp':              True,
+        'mb_trackid':        '8b882575-08a5-4452-a7a7-cbb8a1531f9e',
+        'mb_releasetrackid': 'c29f3a57-b439-46fd-a2e2-93776b1371e0',
+        'mb_albumid':        '9e873859-8aa4-4790-b985-5a953e8ef628',
+        'mb_artistid':       '7cf0ea9d-86b9-4dad-ba9e-2355a64899ea',
+        'art':               None,
+        'label':             u'the label',
     }
 
     tag_fields = [
@@ -329,7 +349,10 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'artist',
         'album',
         'genre',
+        'lyricist',
         'composer',
+        'composer_sort',
+        'arranger',
         'grouping',
         'year',
         'month',
@@ -344,6 +367,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'bpm',
         'comp',
         'mb_trackid',
+        'mb_releasetrackid',
         'mb_albumid',
         'mb_artistid',
         'art',
@@ -352,6 +376,8 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'rg_track_gain',
         'rg_album_peak',
         'rg_album_gain',
+        'r128_track_gain',
+        'r128_album_gain',
         'albumartist',
         'mb_albumartistid',
         'artist_sort',
@@ -552,6 +578,9 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         self.assertEqual(mediafile.disctotal, None)
 
     def test_unparseable_date(self):
+        """The `unparseable.*` fixture should not crash but should return None
+        for all parts of the release date.
+        """
         mediafile = self._mediafile_fixture('unparseable')
 
         self.assertIsNone(mediafile.date)
@@ -647,6 +676,9 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
             if key.startswith('rg_'):
                 # ReplayGain is float
                 tags[key] = 1.0
+            elif key.startswith('r128_'):
+                # R128 is int
+                tags[key] = -1
             else:
                 tags[key] = 'value\u2010%s' % key
 
@@ -743,7 +775,7 @@ class MusepackTest(ReadWriteTestBase, unittest.TestCase):
     extension = 'mpc'
     audio_properties = {
         'length': 1.0,
-        'bitrate': 23458,
+        'bitrate': 24023,
         'format': u'Musepack',
         'samplerate': 44100,
         'bitdepth': 0,
@@ -828,7 +860,7 @@ class FlacTest(ReadWriteTestBase, PartialTestMixin,
     extension = 'flac'
     audio_properties = {
         'length': 1.0,
-        'bitrate': 175120,
+        'bitrate': 108688,
         'format': u'FLAC',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -841,7 +873,7 @@ class ApeTest(ReadWriteTestBase, ExtendedImageStructureTestMixin,
     extension = 'ape'
     audio_properties = {
         'length': 1.0,
-        'bitrate': 112040,
+        'bitrate': 112608,
         'format': u'APE',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -853,7 +885,7 @@ class WavpackTest(ReadWriteTestBase, unittest.TestCase):
     extension = 'wv'
     audio_properties = {
         'length': 1.0,
-        'bitrate': 108744,
+        'bitrate': 109312,
         'format': u'WavPack',
         'samplerate': 44100,
         'bitdepth': 0,
@@ -865,7 +897,7 @@ class OpusTest(ReadWriteTestBase, unittest.TestCase):
     extension = 'opus'
     audio_properties = {
         'length': 1.0,
-        'bitrate': 57984,
+        'bitrate': 66792,
         'format': u'Opus',
         'samplerate': 48000,
         'bitdepth': 0,
@@ -882,6 +914,29 @@ class AIFFTest(ReadWriteTestBase, unittest.TestCase):
         'samplerate': 44100,
         'bitdepth': 0,
         'channels': 1,
+    }
+
+
+# Check whether we have a Mutagen version with DSF support. We can
+# remove this once we require a version that includes the feature.
+try:
+    import mutagen.dsf  # noqa
+except ImportError:
+    HAVE_DSF = False
+else:
+    HAVE_DSF = True
+
+
+@unittest.skipIf(not HAVE_DSF, "Mutagen does not have DSF support")
+class DSFTest(ReadWriteTestBase, unittest.TestCase):
+    extension = 'dsf'
+    audio_properties = {
+        'length': 0.01,
+        'bitrate': 11289600,
+        'format': u'DSD Stream File',
+        'samplerate': 5644800,
+        'bitdepth': 1,
+        'channels': 2,
     }
 
 

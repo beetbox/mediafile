@@ -92,6 +92,7 @@ setup(
     license='MIT',
     platforms='ALL',
     long_description=_read('README.rst'),
+    long_description_content_type='text/x-rst',
 
     py_modules=[
         'mediafile',

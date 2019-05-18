@@ -1,4 +1,7 @@
-include README.rst
+include LICENSE README.rst
+
+recursive-include docs *.rst *.py Makefile *.png
+prune docs/_build
 
 # Exclude junk.
 global-exclude .DS_Store

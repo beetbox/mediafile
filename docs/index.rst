@@ -95,3 +95,10 @@ Internals
 
 .. autoclass:: StorageStyle
     :members:
+
+
+Changelog
+---------
+
+* **v0.1.0**: MediaFile is now synchronised with the embedded version released
+  with Beets v1.4.8.

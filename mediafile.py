@@ -450,7 +450,7 @@ class StorageStyle(object):
     """
 
     def __init__(self, key, as_type=six.text_type, suffix=None,
-                 float_places=2):
+                 float_places=2, read_only=False):
         """Create a basic storage strategy. Parameters:
 
         - `key`: The key on the Mutagen file object used to access the
@@ -462,16 +462,21 @@ class StorageStyle(object):
         - `float_places`: When the value is a floating-point number and
           encoded as a string, the number of digits to store after the
           decimal point.
+        - `read_only`: When true, sets the store method to a callable
+          which does nothing and returns None.
         """
         self.key = key
         self.as_type = as_type
         self.suffix = suffix
         self.float_places = float_places
-
+        self.read_only = read_only
         # Convert suffix to correct string type.
         if self.suffix and self.as_type is six.text_type \
            and not isinstance(self.suffix, six.text_type):
             self.suffix = self.suffix.decode('utf-8')
+
+        if self.read_only:
+            self.store = lambda *args, **kwargs: None
 
     # Getter.
 

@@ -1413,7 +1413,11 @@ class CoverArtField(MediaField):
 
 
 class QNumberField(MediaField):
-    """
+    """Access integer-represented Q number fields.
+
+    Access a fixed-point fraction as a float. The stored value is shifted by
+    `fraction_bits` binary digits to the left and then rounded, yielding a
+    simple integer.
     """
     def __init__(self, fraction_bits, *args, **kwargs):
         super(QNumberField, self).__init__(out_type=int, *args, **kwargs)
@@ -1426,7 +1430,8 @@ class QNumberField(MediaField):
         return q_num / pow(2, self.__fraction_bits)
 
     def __set__(self, mediafile, value):
-        q_num = int(round(value * pow(2, self.__fraction_bits)))
+        q_num = round(value * pow(2, self.__fraction_bits))
+        q_num = int(q_num)  # needed for py2.7
         super(QNumberField, self).__set__(mediafile, q_num)
 
 

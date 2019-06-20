@@ -56,7 +56,7 @@ For fields that have multiple possible storage keys, MediaFile optimizes for
 interoperability: it accepts _any_ of the possible storage keys and writes _all_
 of them. This may result in duplicated information in the tags, but it ensures
 that other players with slightly divergent opinions on tag names will all be
-able to interact with beets.
+able to interact with `beets`_.
 
 
 Images (album art) are stored in the standard ways for ID3 and MPEG-4. For all
@@ -100,5 +100,10 @@ Internals
 Changelog
 ---------
 
-* **v0.1.0**: MediaFile is now synchronised with the embedded version released
-  with Beets v1.4.8.
+v0.1.0
+''''''
+
+This is the first independent release of MediaFile.
+It is now synchronised with the embedded version released with `beets`_ v1.4.8.
+
+.. _beets: https://beets.io

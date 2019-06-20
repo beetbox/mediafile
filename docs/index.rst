@@ -100,6 +100,13 @@ Internals
 Changelog
 ---------
 
+Unreleased
+''''''''''
+
+- Added an ``mb_workid`` flag.
+- The Python source distribution now includes an ``__init__.py`` file that
+  makes it easier to run the tests.
+
 v0.1.0
 ''''''
 

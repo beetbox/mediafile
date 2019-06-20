@@ -103,9 +103,13 @@ Changelog
 Unreleased
 ''''''''''
 
+- R128 gain tags are now stored in Q7.8 integer format, as per
+  `the relevant standard`_.
 - Added an ``mb_workid`` flag.
 - The Python source distribution now includes an ``__init__.py`` file that
   makes it easier to run the tests.
+
+.. _the relevant standard: https://tools.ietf.org/html/rfc7845.html#page-25
 
 v0.1.0
 ''''''

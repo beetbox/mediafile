@@ -100,8 +100,8 @@ Internals
 Changelog
 ---------
 
-Unreleased
-''''''''''
+v0.2.0
+''''''
 
 - R128 gain tags are now stored in Q7.8 integer format, as per
   `the relevant standard`_.

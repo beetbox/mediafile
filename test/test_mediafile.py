@@ -548,6 +548,23 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         self.assertEqual(mediafile.original_day, 30)
         self.assertEqual(mediafile.original_date, datetime.date(1999, 12, 30))
 
+    def test_r128_gain_stored_as_q8_number(self):
+        def round_trip(x):
+            q_num = round(x * pow(2, 8))
+            return q_num / pow(2, 8)
+
+        mediafile = self._mediafile_fixture('full')
+
+        track = -1.1
+        self.assertNotEqual(track, round_trip(track))
+        mediafile.r128_track_gain = track
+        self.assertEqual(mediafile.r128_track_gain, round_trip(track))
+
+        album = 4.2
+        self.assertNotEqual(album, round_trip(album))
+        mediafile.r128_album_gain = album
+        self.assertEqual(mediafile.r128_album_gain, round_trip(album))
+
     def test_write_packed(self):
         mediafile = self._mediafile_fixture('empty')
 

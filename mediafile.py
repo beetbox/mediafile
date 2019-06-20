@@ -1407,6 +1407,29 @@ class CoverArtField(MediaField):
         delattr(mediafile, 'images')
 
 
+class QNumberField(MediaField):
+    """Access integer-represented Q number fields.
+
+    Access a fixed-point fraction as a float. The stored value is shifted by
+    `fraction_bits` binary digits to the left and then rounded, yielding a
+    simple integer.
+    """
+    def __init__(self, fraction_bits, *args, **kwargs):
+        super(QNumberField, self).__init__(out_type=int, *args, **kwargs)
+        self.__fraction_bits = fraction_bits
+
+    def __get__(self, mediafile, owner=None):
+        q_num = super(QNumberField, self).__get__(mediafile, owner)
+        if q_num is None:
+            return None
+        return q_num / pow(2, self.__fraction_bits)
+
+    def __set__(self, mediafile, value):
+        q_num = round(value * pow(2, self.__fraction_bits))
+        q_num = int(q_num)  # needed for py2.7
+        super(QNumberField, self).__set__(mediafile, q_num)
+
+
 class ImageListField(ListMediaField):
     """Descriptor to access the list of images embedded in tags.
 
@@ -2015,7 +2038,8 @@ class MediaFile(object):
     )
 
     # EBU R128 fields.
-    r128_track_gain = MediaField(
+    r128_track_gain = QNumberField(
+        8,
         MP3DescStorageStyle(
             u'R128_TRACK_GAIN'
         ),
@@ -2028,9 +2052,9 @@ class MediaFile(object):
         ASFStorageStyle(
             u'R128_TRACK_GAIN'
         ),
-        out_type=int,
     )
-    r128_album_gain = MediaField(
+    r128_album_gain = QNumberField(
+        8,
         MP3DescStorageStyle(
             u'R128_ALBUM_GAIN'
         ),
@@ -2043,7 +2067,6 @@ class MediaFile(object):
         ASFStorageStyle(
             u'R128_ALBUM_GAIN'
         ),
-        out_type=int,
     )
 
     initial_key = MediaField(

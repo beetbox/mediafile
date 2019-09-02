@@ -409,7 +409,8 @@ class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
         self.key = "READ_ONLY_TEST"
         self.field = mediafile.MediaField(
             mediafile.MP3StorageStyle(self.key, read_only=True),
-            mediafile.MP4StorageStyle("----:com.apple.iTunes:" + self.key, read_only=True),
+            mediafile.MP4StorageStyle("----:com.apple.iTunes:" +
+                                      self.key, read_only=True),
             mediafile.StorageStyle(self.key, read_only=True),
             mediafile.ASFStorageStyle(self.key, read_only=True),
         )

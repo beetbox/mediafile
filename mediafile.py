@@ -450,7 +450,7 @@ class StorageStyle(object):
     """
 
     def __init__(self, key, as_type=six.text_type, suffix=None,
-                 float_places=2):
+                 float_places=2, read_only=False):
         """Create a basic storage strategy. Parameters:
 
         - `key`: The key on the Mutagen file object used to access the
@@ -462,11 +462,16 @@ class StorageStyle(object):
         - `float_places`: When the value is a floating-point number and
           encoded as a string, the number of digits to store after the
           decimal point.
+        - `read_only`: When true, writing to this field is disabled.
+           Primary use case is so wrongly named fields can be addressed
+           in a graceful manner. This does not block the delete method.
+
         """
         self.key = key
         self.as_type = as_type
         self.suffix = suffix
         self.float_places = float_places
+        self.read_only = read_only
 
         # Convert suffix to correct string type.
         if self.suffix and self.as_type is six.text_type \
@@ -1198,7 +1203,8 @@ class MediaField(object):
         if value is None:
             value = self._none_value()
         for style in self.styles(mediafile.mgfile):
-            style.set(mediafile.mgfile, value)
+            if not style.read_only:
+                style.set(mediafile.mgfile, value)
 
     def __delete__(self, mediafile):
         for style in self.styles(mediafile.mgfile):
@@ -1233,7 +1239,8 @@ class ListMediaField(MediaField):
 
     def __set__(self, mediafile, values):
         for style in self.styles(mediafile.mgfile):
-            style.set_list(mediafile.mgfile, values)
+            if not style.read_only:
+                style.set_list(mediafile.mgfile, values)
 
     def single_field(self):
         """Returns a ``MediaField`` descriptor that gets and sets the

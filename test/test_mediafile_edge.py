@@ -405,22 +405,43 @@ class ID3v23Test(unittest.TestCase, _common.TempDirMixin):
     class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
         def setUp(self):
             self.create_temp_dir()
-            self.read_only_key = "----:com.apple.iTunes:Label"
+            self.key = "READ_ONLY_TEST"
+
+            self.field = mediafile.MediaField(
+                mediafile.MP4StorageStyle("WRITEABLE"),
+                mediafile.MP3StorageStyle(self.key, read_only=True),
+                mediafile.MP4StorageStyle(self.key, read_only=True),
+                mediafile.StorageStyle(self.key, read_only=True),
+                mediafile.ASFStorageStyle(self.key, read_only=True),
+
+            )
+        def _read(self, extension):
+            path = os.path.join(_common.RSRC, b'empty.' + extension)
+            mf = mediafile.MediaFile(path)
+            mf.mgfile['read_only_test'] = "don't"
+            mf.add_field("read_only_test", self.field)
+            self.assertEqual(mf.read_only_test, "don't")
+
+        def test_flac_read(self):
+            self._read(b'flac')
 
         def test_read(self):
-            path = os.path.join(_common.RSRC, b'read_only_tag.m4a')
+            path = os.path.join(_common.RSRC, b'empty.m4a')
             mf = mediafile.MediaFile(path)
-            self.assertEqual(mf.label, "the label")
+            mf.mgfile['read_only_test'] = "don't"
+            mf.add_field("read_only_test", self.field)
+            self.assertEqual(mf.read_only_test, "don't")
 
         def test_write(self):
             src = os.path.join(_common.RSRC, b'empty.m4a')
             path = os.path.join(self.temp_dir, b'test.m4a')
             shutil.copy(src, path)
             mf = mediafile.MediaFile(path)
-            mf.label = "the label"
-            mf.path = os.path.join(self.temp_dir, b'empty.m4a')
+            mf.add_field("read_only_test", self.field)
+            mf.read_only_field = "something terrible"
+            mf.path = os.path.join(self.temp_dir, b'test.m4a')
             mf.save()
-            self.assertNotIn(self.read_only_key, mf.mgfile.tags)
+            self.assertNotIn(self.key, mf.mgfile.tags)
 
         def tearDown(self):
             self.remove_temp_dir()

@@ -402,28 +402,39 @@ class ID3v23Test(unittest.TestCase, _common.TempDirMixin):
             finally:
                 self._delete_test()
 
-    class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
-        def setUp(self):
-            self.create_temp_dir()
-            self.read_only_key = "----:com.apple.iTunes:Label"
 
-        def test_read(self):
-            path = os.path.join(_common.RSRC, b'read_only_tag.m4a')
-            mf = mediafile.MediaFile(path)
-            self.assertEqual(mf.label, "the label")
+class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
+    def setUp(self):
+        self.create_temp_dir()
+        self.key = "READ_ONLY_TEST"
+        self.field = mediafile.MediaField(
+            mediafile.MP3StorageStyle(self.key, read_only=True),
+            mediafile.MP4StorageStyle("----:com.apple.iTunes:" + self.key, read_only=True),
+            mediafile.StorageStyle(self.key, read_only=True),
+            mediafile.ASFStorageStyle(self.key, read_only=True),
+        )
 
-        def test_write(self):
-            src = os.path.join(_common.RSRC, b'empty.m4a')
-            path = os.path.join(self.temp_dir, b'test.m4a')
-            shutil.copy(src, path)
-            mf = mediafile.MediaFile(path)
-            mf.label = "the label"
-            mf.path = os.path.join(self.temp_dir, b'empty.m4a')
-            mf.save()
-            self.assertNotIn(self.read_only_key, mf.mgfile.tags)
+        if "read_only_test" not in mediafile.MediaFile.fields():
+            mediafile.MediaFile.add_field("read_only_test", self.field)
 
-        def tearDown(self):
-            self.remove_temp_dir()
+    def test_read(self):
+        path = os.path.join(_common.RSRC, b'empty.flac')
+        mf = mediafile.MediaFile(path)
+        mf.mgfile.tags[self.key] = "don't"
+        self.assertEqual("don't", mf.read_only_test)
+
+    def test_write(self):
+        src = os.path.join(_common.RSRC, b'empty.flac')
+        path = os.path.join(self.temp_dir, b'test.flac')
+        shutil.copy(src, path)
+        mf = mediafile.MediaFile(path)
+        mf.read_only_field = "something terrible"
+        mf.path = os.path.join(self.temp_dir, b'test.flac')
+        mf.save()
+        self.assertNotIn(self.key, mf.mgfile.tags)
+
+    def tearDown(self):
+        self.remove_temp_dir()
 
 
 def suite():

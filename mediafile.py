@@ -1761,8 +1761,9 @@ class MediaFile(object):
     )
     label = MediaField(
         MP3StorageStyle('TPUB'),
-        MP4StorageStyle('----:com.apple.iTunes:Label'),
+        MP4StorageStyle('----:com.apple.iTunes:LABEL'),
         MP4StorageStyle('----:com.apple.iTunes:publisher'),
+        MP4StorageStyle('----:com.apple.iTunes:Label', read_only=True),
         StorageStyle('LABEL'),
         StorageStyle('PUBLISHER'),  # Traktor
         ASFStorageStyle('WM/Publisher'),

@@ -702,6 +702,8 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
                 tags[key] = -1
             else:
                 tags[key] = 'value\u2010%s' % key
+        # rg_reference = 1.0 would evaluate to -106.0
+        tags['rg_reference'] = -18.0
 
         for key in ['disc', 'disctotal', 'track', 'tracktotal', 'bpm']:
             tags[key] = 1

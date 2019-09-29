@@ -1846,7 +1846,8 @@ class MediaFile(object):
     releasegroupdisambig = MediaField(
         # This tag mapping was invented for beets (not used by Picard, etc).
         MP3DescStorageStyle(u'MusicBrainz Release Group Comment'),
-        MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Release Group Comment'),
+        MP4StorageStyle('----:com.apple.iTunes:MusicBrainz '
+                        'Release Group Comment'),
         StorageStyle('MUSICBRAINZ_RELEASEGROUPCOMMENT'),
         ASFStorageStyle('MusicBrainz/Release Group Comment'),
     )

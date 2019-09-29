@@ -1437,6 +1437,30 @@ class QNumberField(MediaField):
         super(QNumberField, self).__set__(mediafile, q_num)
 
 
+class ReferenceLoudnessField(MediaField):
+    """Access loudness reference field
+
+    Access a floating point replaygain loudness reference field, which could be
+    negative (LUFS) or positive (dB). dB values will be converted to LUFS
+    so we get a uniform representation within beets. (LUFS = dB - 107.0)
+    """
+    def __init__(self, *args, **kwargs):
+        super(ReferenceLoudnessField, self).__init__(*args, **kwargs)
+
+    def __get__(self, mediafile, owner=None):
+        value = super(ReferenceLoudnessField, self).__get__(mediafile, owner)
+        if value is None:
+            return None
+        if value <= 0.0:
+            return value
+        return value - 107.0
+
+    def __set__(self, mediafile, value):
+        if value > 0.0:
+            value = value - 107.0
+        super(ReferenceLoudnessField, self).__set__(mediafile, value)
+
+
 class ImageListField(ListMediaField):
     """Descriptor to access the list of images embedded in tags.
 
@@ -1961,6 +1985,10 @@ class MediaFile(object):
             id3_lang='eng'
         ),
         MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN',
+            float_places=2, suffix=' dB'
+        ),
+        MP4StorageStyle(
             '----:com.apple.iTunes:replaygain_track_gain',
             float_places=2, suffix=' dB'
         ),
@@ -1969,6 +1997,10 @@ class MediaFile(object):
             index=0
         ),
         StorageStyle(
+            u'REPLAYGAIN_TRACK_GAIN',
+            float_places=2, suffix=u' dB'
+        ),
+        ASFStorageStyle(
             u'REPLAYGAIN_TRACK_GAIN',
             float_places=2, suffix=u' dB'
         ),
@@ -1988,10 +2020,18 @@ class MediaFile(object):
             float_places=2, suffix=u' dB'
         ),
         MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN',
+            float_places=2, suffix=' dB'
+        ),
+        MP4StorageStyle(
             '----:com.apple.iTunes:replaygain_album_gain',
             float_places=2, suffix=' dB'
         ),
         StorageStyle(
+            u'REPLAYGAIN_ALBUM_GAIN',
+            float_places=2, suffix=u' dB'
+        ),
+        ASFStorageStyle(
             u'REPLAYGAIN_ALBUM_GAIN',
             float_places=2, suffix=u' dB'
         ),
@@ -2016,6 +2056,10 @@ class MediaFile(object):
             id3_lang='eng'
         ),
         MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_TRACK_PEAK',
+            float_places=6
+        ),
+        MP4StorageStyle(
             '----:com.apple.iTunes:replaygain_track_peak',
             float_places=6
         ),
@@ -2024,6 +2068,7 @@ class MediaFile(object):
             index=1
         ),
         StorageStyle(u'REPLAYGAIN_TRACK_PEAK', float_places=6),
+        ASFStorageStyle(u'REPLAYGAIN_TRACK_PEAK', float_places=6),
         ASFStorageStyle(u'replaygain_track_peak', float_places=6),
         out_type=float,
     )
@@ -2037,12 +2082,110 @@ class MediaFile(object):
             float_places=6
         ),
         MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_ALBUM_PEAK',
+            float_places=6
+        ),
+        MP4StorageStyle(
             '----:com.apple.iTunes:replaygain_album_peak',
             float_places=6
         ),
         StorageStyle(u'REPLAYGAIN_ALBUM_PEAK', float_places=6),
+        ASFStorageStyle(u'REPLAYGAIN_ALBUM_PEAK', float_places=6),
         ASFStorageStyle(u'replaygain_album_peak', float_places=6),
         out_type=float,
+    )
+    rg_track_range = MediaField(
+        MP3DescStorageStyle(
+            u'REPLAYGAIN_TRACK_RANGE',
+            float_places=2, suffix=u' dB'
+        ),
+        MP3DescStorageStyle(
+            u'replaygain_track_range',
+            float_places=2, suffix=u' dB'
+        ),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_TRACK_RANGE',
+            float_places=2, suffix=' dB'
+        ),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:replaygain_track_range',
+            float_places=2, suffix=' dB'
+        ),
+        StorageStyle(
+            u'REPLAYGAIN_TRACK_RANGE',
+            float_places=2, suffix=u' dB'
+        ),
+        ASFStorageStyle(
+            u'REPLAYGAIN_TRACK_RANGE',
+            float_places=2, suffix=u' dB'
+        ),
+        ASFStorageStyle(
+            u'replaygain_track_range',
+            float_places=2, suffix=u' dB'
+        ),
+        out_type=float
+    )
+    rg_album_range = MediaField(
+        MP3DescStorageStyle(
+            u'REPLAYGAIN_ALBUM_RANGE',
+            float_places=2, suffix=u' dB'
+        ),
+        MP3DescStorageStyle(
+            u'replaygain_album_range',
+            float_places=2, suffix=u' dB'
+        ),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_ALBUM_RANGE',
+            float_places=2, suffix=' dB'
+        ),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:replaygain_album_range',
+            float_places=2, suffix=' dB'
+        ),
+        StorageStyle(
+            u'REPLAYGAIN_ALBUM_RANGE',
+            float_places=2, suffix=u' dB'
+        ),
+        ASFStorageStyle(
+            u'REPLAYGAIN_ALBUM_RANGE',
+            float_places=2, suffix=u' dB'
+        ),
+        ASFStorageStyle(
+            u'replaygain_album_range',
+            float_places=2, suffix=u' dB'
+        ),
+        out_type=float
+    )
+    rg_reference = ReferenceLoudnessField(
+        MP3DescStorageStyle(
+            u'REPLAYGAIN_REFERENCE_LOUDNESS',
+            float_places=2, suffix=u' LUFS'
+        ),
+        MP3DescStorageStyle(
+            u'replaygain_reference_loudness',
+            float_places=2, suffix=u' LUFS'
+        ),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:REPLAYGAIN_REFERENCE_LOUDNESS',
+            float_places=2, suffix=' LUFS'
+        ),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:replaygain_reference_loudness',
+            float_places=2, suffix=' LUFS'
+        ),
+        StorageStyle(
+            u'REPLAYGAIN_REFERENCE_LOUDNESS',
+            float_places=2, suffix=u' LUFS'
+        ),
+        ASFStorageStyle(
+            u'REPLAYGAIN_REFERENCE_LOUDNESS',
+            float_places=2, suffix=u' LUFS'
+        ),
+        ASFStorageStyle(
+            u'replaygain_reference_loudness',
+            float_places=2, suffix=u' LUFS'
+        ),
+        out_type=float
     )
 
     # EBU R128 fields.

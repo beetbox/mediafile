@@ -1931,6 +1931,26 @@ class MediaFile(object):
         ASFStorageStyle('MusicBrainz/Release Group Id'),
     )
 
+    # Discogs fields.
+    discogs_labelid = MediaField(
+        MP3DescStorageStyle(u'Discogs Label Id'),
+        MP4StorageStyle('----:com.apple.iTunes:Discogs Label Id'),
+        StorageStyle('DISCOGS_LABELID'),
+        ASFStorageStyle('Discogs/Label Id'),
+    )
+    discogs_albumid = MediaField(
+        MP3DescStorageStyle(u'Discogs Album Id'),
+        MP4StorageStyle('----:com.apple.iTunes:Discogs Album Id'),
+        StorageStyle('DISCOGS_ALBUMID'),
+        ASFStorageStyle('Discogs/Album Id'),
+    )
+    discogs_artistid = MediaField(
+        MP3DescStorageStyle(u'Discogs Artist Id'),
+        MP4StorageStyle('----:com.apple.iTunes:Discogs Artist Id'),
+        StorageStyle('DISCOGS_ARTISTID'),
+        ASFStorageStyle('Discogs/Artist Id'),
+    )
+
     # Acoustid fields.
     acoustid_fingerprint = MediaField(
         MP3DescStorageStyle(u'Acoustid Fingerprint'),

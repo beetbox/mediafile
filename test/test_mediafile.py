@@ -930,7 +930,7 @@ class AIFFTest(ReadWriteTestBase, unittest.TestCase):
         'bitrate': 705600,
         'format': u'AIFF',
         'samplerate': 44100,
-        'bitdepth': 0,
+        'bitdepth': 16,
         'channels': 1,
     }
 

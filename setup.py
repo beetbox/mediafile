@@ -100,7 +100,7 @@ setup(
 
     install_requires=[
         'six>=1.9',
-        'mutagen>=1.33',
+        'mutagen>=1.43',
     ] + (['enum34>=1.0.4'] if sys.version_info < (3, 4, 0) else []),
 
     tests_require=[

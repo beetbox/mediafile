@@ -100,12 +100,19 @@ Internals
 Changelog
 ---------
 
+v0.3.0
+''''''
+
+- Fixed tests for compatibility with Mutagen 1.43.
+- Fix the MPEG-4 tag mapping for the ``label`` field to use the right
+  capitalization.
+
 v0.2.0
 ''''''
 
 - R128 gain tags are now stored in Q7.8 integer format, as per
   `the relevant standard`_.
-- Added an ``mb_workid`` flag.
+- Added an ``mb_workid`` field.
 - The Python source distribution now includes an ``__init__.py`` file that
   makes it easier to run the tests.
 

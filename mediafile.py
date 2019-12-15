@@ -1792,6 +1792,12 @@ class MediaFile(object):
         StorageStyle('CATALOGNUMBER'),
         ASFStorageStyle('WM/CatalogNo'),
     )
+    barcode = MediaField(
+        MP3DescStorageStyle(u'BARCODE'),
+        MP4StorageStyle('----:com.apple.iTunes:BARCODE'),
+        StorageStyle('BARCODE'),
+        ASFStorageStyle('WM/Barcode'),
+    )
     disctitle = MediaField(
         MP3StorageStyle('TSST'),
         MP4StorageStyle('----:com.apple.iTunes:DISCSUBTITLE'),

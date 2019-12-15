@@ -100,6 +100,11 @@ Internals
 Changelog
 ---------
 
+v0.4.0
+''''''
+
+- Added a ``barcode`` field.
+
 v0.3.0
 ''''''
 

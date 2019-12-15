@@ -84,7 +84,7 @@ def _read(filename):
 
 setup(
     name='mediafile',
-    version='0.3.0',
+    version='0.4.0',
     description='low-level audio tag interface',
     author='Adrian Sampson',
     author_email='adrian@radbox.org',

@@ -1756,6 +1756,7 @@ class MediaFile(object):
     albumtype = MediaField(
         MP3DescStorageStyle(u'MusicBrainz Album Type'),
         MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Album Type'),
+        StorageStyle('RELEASETYPE'),
         StorageStyle('MUSICBRAINZ_ALBUMTYPE'),
         ASFStorageStyle('MusicBrainz/Album Type'),
     )
@@ -1833,6 +1834,7 @@ class MediaFile(object):
     albumstatus = MediaField(
         MP3DescStorageStyle(u'MusicBrainz Album Status'),
         MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Album Status'),
+        StorageStyle('RELEASESTATUS'),
         StorageStyle('MUSICBRAINZ_ALBUMSTATUS'),
         ASFStorageStyle('MusicBrainz/Album Status'),
     )

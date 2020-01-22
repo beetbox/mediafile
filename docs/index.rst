@@ -104,6 +104,7 @@ v0.4.0
 ''''''
 
 - Added a ``barcode`` field.
+- Added new tag mappings for ``albumtype`` and ``albumstatus``.
 
 v0.3.0
 ''''''

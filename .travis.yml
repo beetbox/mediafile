@@ -42,10 +42,10 @@ addons:
 # test.
 install:
     - travis_retry pip install tox
-    - travis_retry tox -e $TOX_ENV --notest
+    - travis_retry tox -v -e $TOX_ENV --notest
 
 script:
-    - tox -e $TOX_ENV
+    - tox -v -e $TOX_ENV
 
 # Report coverage to codecov.io.
 before_install:

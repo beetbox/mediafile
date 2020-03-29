@@ -1,13 +1,13 @@
+os: linux
 dist: trusty
 language: python
-sudo: false
 
 env:
     global:
         # Undocumented feature of nose-show-skipped.
         NOSE_SHOW_SKIPPED: 1
 
-matrix:
+jobs:
     include:
         - python: 2.7.13
           env: {TOX_ENV: py27-cov, COVERAGE: 1}

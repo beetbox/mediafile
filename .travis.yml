@@ -22,9 +22,9 @@ matrix:
         - python: 3.7
           env: {TOX_ENV: py37-test}
           dist: xenial
-        - python: 3.8-dev
+        - python: 3.8
           env: {TOX_ENV: py38-test}
-          dist: xenial
+          dist: xeial
         - python: pypy
           env: {TOX_ENV: pypy-test}
         - python: 2.7

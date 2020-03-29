@@ -388,6 +388,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'mb_releasegroupid',
         'asin',
         'catalognum',
+        'barcode',
         'disctitle',
         'script',
         'language',
@@ -930,7 +931,7 @@ class AIFFTest(ReadWriteTestBase, unittest.TestCase):
         'bitrate': 705600,
         'format': u'AIFF',
         'samplerate': 44100,
-        'bitdepth': 0,
+        'bitdepth': 16,
         'channels': 1,
     }
 

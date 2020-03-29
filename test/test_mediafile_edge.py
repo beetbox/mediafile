@@ -403,6 +403,41 @@ class ID3v23Test(unittest.TestCase, _common.TempDirMixin):
                 self._delete_test()
 
 
+class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
+    def setUp(self):
+        self.create_temp_dir()
+        self.key = "READ_ONLY_TEST"
+        self.field = mediafile.MediaField(
+            mediafile.MP3StorageStyle(self.key, read_only=True),
+            mediafile.MP4StorageStyle(
+                "----:com.apple.iTunes:" + self.key, read_only=True),
+            mediafile.StorageStyle(self.key, read_only=True),
+            mediafile.ASFStorageStyle(self.key, read_only=True),
+        )
+
+        if "read_only_test" not in mediafile.MediaFile.fields():
+            mediafile.MediaFile.add_field("read_only_test", self.field)
+
+    def test_read(self):
+        path = os.path.join(_common.RSRC, b'empty.flac')
+        mf = mediafile.MediaFile(path)
+        mf.mgfile.tags[self.key] = "don't"
+        self.assertEqual("don't", mf.read_only_test)
+
+    def test_write(self):
+        src = os.path.join(_common.RSRC, b'empty.flac')
+        path = os.path.join(self.temp_dir, b'test.flac')
+        shutil.copy(src, path)
+        mf = mediafile.MediaFile(path)
+        mf.read_only_field = "something terrible"
+        mf.path = os.path.join(self.temp_dir, b'test.flac')
+        mf.save()
+        self.assertNotIn(self.key, mf.mgfile.tags)
+
+    def tearDown(self):
+        self.remove_temp_dir()
+
+
 def suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
 

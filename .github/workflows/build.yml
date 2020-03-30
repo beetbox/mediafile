@@ -8,7 +8,8 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                tox-env: [py27-test, py35-test, py36-test, py37-test, py38-test]
+                tox-env: [py27-test, py35-test, py36-test, py37-test,
+                          py38-test, pypy-test]
                 os: [ubuntu-latest, windows-latest]
 
                 # Only test on a couple of versions on Windows.
@@ -19,6 +20,8 @@ jobs:
                       tox-env: py36-test
                     - os: windows-latest
                       tox-env: py37-test
+                    - os: windows-latest
+                      tox-env: pypy-test
 
                 # Python interpreter versions. :/
                 include:
@@ -32,6 +35,8 @@ jobs:
                       python: 3.7
                     - tox-env: py38-test
                       python: 3.8
+                    - tox-env: pypy-test
+                      python: pypy3
 
         steps:
             - uses: actions/checkout@v2
@@ -43,3 +48,10 @@ jobs:
               run: pip install tox
             - name: Tox
               run: tox -e ${{ matrix.tox-env }}
+
+    style:
+        name: Style
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: TrueBrain/actions-flake8@master

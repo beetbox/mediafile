@@ -1,8 +1,8 @@
 MediaFile: read and write audio files' tags in Python
 =====================================================
 
-.. image:: https://travis-ci.org/beetbox/mediafile.svg?branch=master
-    :target: https://travis-ci.org/beetbox/mediafile
+.. image:: https://github.com/beetbox/mediafile/workflows/Build/badge.svg?branch=master
+    :target: https://github.com/beetbox/mediafile/actions
 
 .. image:: http://img.shields.io/pypi/v/mediafile.svg
     :target: https://pypi.python.org/pypi/mediafile

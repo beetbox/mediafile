@@ -1,0 +1,31 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+    test:
+        name: '${{ matrix.os }}: ${{ matrix.tox-env }}'
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                tox-env: [py27-test, py35-test, py36-test, py37-test, py38-test]
+                os: [ubuntu-latest, windows-latest]
+
+                # Only test on a couple of versions on Windows.
+                exclude:
+                    - os: windows-latest
+                      tox-env: py35-test
+                    - os: windows-latest
+                      tox-env: py36-test
+                    - os: windows-latest
+                      tox-env: py37-test
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up Python
+              uses: actions/setup-python@v1
+              with:
+                  python-version: 3.8
+            - name: Install Tox
+              run: pip install tox
+            - name: Tox
+              run: tox -e ${{ matrix.tox-env }}

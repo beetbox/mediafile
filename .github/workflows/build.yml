@@ -19,12 +19,26 @@ jobs:
                       tox-env: py36-test
                     - os: windows-latest
                       tox-env: py37-test
+
+                # Python interpreter versions. :/
+                include:
+                    - tox-env: py27-test
+                      python: 2.7
+                    - tox-env: py35-test
+                      python: 3.5
+                    - tox-env: py36-test
+                      python: 3.6
+                    - tox-env: py37-test
+                      python: 3.7
+                    - tox-env: py38-test
+                      python: 3.8
+
         steps:
             - uses: actions/checkout@v2
             - name: Set up Python
               uses: actions/setup-python@v1
               with:
-                  python-version: 3.8
+                  python-version: ${{ matrix.python }}
             - name: Install Tox
               run: pip install tox
             - name: Tox

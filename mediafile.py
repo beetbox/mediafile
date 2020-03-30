@@ -56,7 +56,7 @@ import logging
 import six
 
 
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 __all__ = ['UnreadableFileError', 'FileTypeError', 'MediaFile']
 
 log = logging.getLogger(__name__)

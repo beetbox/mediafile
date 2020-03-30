@@ -100,6 +100,13 @@ Internals
 Changelog
 ---------
 
+v0.5.0
+''''''
+
+- Refactored the distribution to use `Flit`_.
+
+.. _Flit: https://flit.readthedocs.io/
+
 v0.4.0
 ''''''
 

@@ -50,14 +50,10 @@ jobs:
               uses: actions/setup-python@v1
               with:
                   python-version: ${{ matrix.python }}
-            - name: Set up main Python
-              uses: actions/setup-python@v1
-              with:
-                  python-version: 3.8
             - name: Install Tox
-              run: pip install tox
+              run: python3 -m pip install tox
             - name: Tox
-              run: tox -e ${{ matrix.tox-env }}
+              run: python3 -m tox -e ${{ matrix.tox-env }}
 
     style:
         name: Style

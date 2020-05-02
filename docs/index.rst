@@ -103,6 +103,7 @@ Changelog
 v0.6.0
 ''''''
 
+- Enforce a minimum value for SoundCheck gain values.
 
 v0.5.0
 ''''''

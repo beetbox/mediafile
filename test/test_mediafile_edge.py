@@ -333,6 +333,12 @@ class SoundCheckTest(unittest.TestCase):
         self.assertEqual(gain, 0.0)
         self.assertEqual(peak, 0.0)
 
+    def test_encode_excessive_gain(self):
+        # The mimimum value of SoundCheck gain is 30.0dB.
+        data = mediafile._sc_encode(60.0, 1.0)
+        gain, _ = mediafile._sc_decode(data)
+        self.assertEqual(gain, 30.0)
+
 
 class ID3v23Test(unittest.TestCase, _common.TempDirMixin):
     def _make_test(self, ext=b'mp3', id3v23=False):

@@ -290,11 +290,11 @@ def _sc_encode(gain, peak):
     # SoundCheck stores absolute RMS values in some unknown units rather
     # than the dB values RG uses. We can calculate these absolute values
     # from the gain ratio using a reference value of 1000 units. We also
-    # enforce the maximum value here, which is equivalent to about
-    # -18.2dB.
-    g1 = int(min(round((10 ** (gain / -10)) * 1000), 65534))
+    # enforce the maximum and minimum value here, which is equivalent to
+    # about -18.2dB and 30.0dB.
+    g1 = int(min(round((10 ** (gain / -10)) * 1000), 65534)) or 1
     # Same as above, except our reference level is 2500 units.
-    g2 = int(min(round((10 ** (gain / -10)) * 2500), 65534))
+    g2 = int(min(round((10 ** (gain / -10)) * 2500), 65534)) or 1
 
     # The purpose of these values are unknown, but they also seem to be
     # unused so we just use zero.

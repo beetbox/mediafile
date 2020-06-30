@@ -442,6 +442,10 @@ class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
 
     def tearDown(self):
         self.remove_temp_dir()
+        try:
+            del mediafile.MediaFile.read_only_test
+        except AttributeError:
+            pass
 
 
 def suite():

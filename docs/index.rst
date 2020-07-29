@@ -100,6 +100,11 @@ Internals
 Changelog
 ---------
 
+v0.7.0
+''''''
+
+- Mutagen 1.45.0 or later is now required.
+
 v0.6.0
 ''''''
 

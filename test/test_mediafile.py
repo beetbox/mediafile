@@ -907,7 +907,7 @@ class WavpackTest(ReadWriteTestBase, unittest.TestCase):
         'bitrate': 109312,
         'format': u'WavPack',
         'samplerate': 44100,
-        'bitdepth': 0,
+        'bitdepth': 16,
         'channels': 1,
     }
 

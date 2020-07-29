@@ -28,6 +28,7 @@ from six import assertCountEqual
 from test import _common
 from mediafile import MediaFile, Image, \
     ImageType, CoverArtField, UnreadableFileError
+import mutagen
 
 
 class ArtTestMixin(object):
@@ -907,7 +908,7 @@ class WavpackTest(ReadWriteTestBase, unittest.TestCase):
         'bitrate': 109312,
         'format': u'WavPack',
         'samplerate': 44100,
-        'bitdepth': 16,
+        'bitdepth': 16 if mutagen.version >= (1, 45, 0) else 0,
         'channels': 1,
     }
 

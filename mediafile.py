@@ -1516,12 +1516,13 @@ class MediaFile(object):
         # Set the ID3v2.3 flag only for MP3s.
         self.id3v23 = id3v23 and self.type == 'mp3'
 
-    def save(self):
-        """Write the object's tags back to the file. May
-        throw `UnreadableFileError`.
+    def save(self, **kwargs):
+        """Write the object's tags back to the file.
+
+        May throw `UnreadableFileError`. Accepts keyword arguments to be
+        passed to Mutagen's `save` function.
         """
         # Possibly save the tags to ID3v2.3.
-        kwargs = {}
         if self.id3v23:
             id3 = self.mgfile
             if hasattr(id3, 'tags'):

@@ -1517,9 +1517,10 @@ class MediaFile(object):
         self.id3v23 = id3v23 and self.type == 'mp3'
 
     def save(self, **kwargs):
-        """Write the object's tags back to the file. May
-        throw `UnreadableFileError`.
-        Accepts keyword arguments to be passed to mutagen save function.
+        """Write the object's tags back to the file.
+
+        May throw `UnreadableFileError`. Accepts keyword arguments to be
+        passed to Mutagen's `save` function.
         """
         # Possibly save the tags to ID3v2.3.
         if self.id3v23:

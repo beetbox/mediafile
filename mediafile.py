@@ -141,10 +141,12 @@ def mutagen_call(action, path, func, *args, **kwargs):
 # Utility.
 
 def _safe_cast(out_type, val):
-    """Try to covert val to out_type but never raise an exception. If
-    the value can't be converted, then a sensible default value is
-    returned. out_type should be bool, int, or unicode; otherwise, the
-    value is just passed through.
+    """Try to covert val to out_type but never raise an exception.
+
+    If the value does not exist, return None. Or, if the value
+    can't be converted, then a sensible default value is returned.
+    out_type should be bool, int, or unicode; otherwise, the value
+    is just passed through.
     """
     if val is None:
         return None

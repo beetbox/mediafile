@@ -9,10 +9,8 @@ of tags.
 It currently supports MP3 files (ID3 tags), AAC files (as tagged by iTunes) as
 well as FLAC, Ogg, Monkey's Audio, WavPack, and Musepack.
 
-MediaFile attempts to always return a usable value (i.e., it never returns
-``None`` or throws an exception when a tag is accessed). If a tag is not
-present, an empty and false value of the appropriate type -- such as zero or
-the empty string -- is returned.
+If a tag does not exist, MediaFile will return ``None`` instead of throwing
+an exception.
 
 .. _Mutagen: https://github.com/quodlibet/mutagen
 

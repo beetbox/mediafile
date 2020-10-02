@@ -94,6 +94,42 @@ Internals
 .. autoclass:: StorageStyle
     :members:
 
+    
+Examples
+--------
+
+To add cover art to a MediaFile:
+
+.. code:: python
+
+    from mediafile import MediaFile, Image, ImageType
+
+    image_file = "cover.jpg"
+    with open(image_file, 'rb') as f:
+        cover = f.read()
+        cover = Image(data=cover, desc=u'album cover', type=ImageType.front)
+    f = MediaFile("file.mp3)
+    f.images = [cover]
+    f.save()
+    
+
+To copy tags from one MediaFile to another:
+
+.. code:: python
+
+    from mediafile import MediaFile
+
+    f = MediaFile("file1.mp3")
+    g = MediaFile("file2.mp3")
+
+    for field in f.fields():
+        try:
+            setattr(g, field, getattr(f, field))
+        except:
+            pass
+
+    g.save()
+    
 
 Changelog
 ---------

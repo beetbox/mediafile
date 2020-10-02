@@ -98,7 +98,7 @@ Internals
 Examples
 --------
 
-Add cover art to a MediaFile
+To add cover art to a MediaFile:
 
 .. code:: python
 
@@ -113,7 +113,7 @@ Add cover art to a MediaFile
     f.save()
     
 
-Copy tags from one MediaFile to another
+To copy tags from one MediaFile to another:
 
 .. code:: python
 

@@ -376,8 +376,11 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'label',
         'rg_track_peak',
         'rg_track_gain',
+        'rg_track_range',
         'rg_album_peak',
         'rg_album_gain',
+        'rg_album_range',
+        'rg_reference',
         'r128_track_gain',
         'r128_album_gain',
         'albumartist',
@@ -701,6 +704,8 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
                 tags[key] = -1
             else:
                 tags[key] = 'value\u2010%s' % key
+        # rg_reference = 1.0 would evaluate to -106.0
+        tags['rg_reference'] = -18.0
 
         for key in ['disc', 'disctotal', 'track', 'tracktotal', 'bpm']:
             tags[key] = 1

@@ -1643,6 +1643,12 @@ class MediaFile(object):
         StorageStyle('ARTIST'),
         ASFStorageStyle('Author'),
     )
+    artists = ListMediaField(
+        # MP3ListDescStorageStyle(desc='ARTISTS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTS'),
+        ListStorageStyle('ARTISTS'),
+        ASFStorageStyle('WM/ARTISTS'),
+    )
     album = MediaField(
         MP3StorageStyle('TALB'),
         MP4StorageStyle('\xa9alb'),
@@ -1736,6 +1742,12 @@ class MediaFile(object):
         ASFStorageStyle('WM/Comments'),
         ASFStorageStyle('Description')
     )
+    copyright = MediaField(
+        MP3StorageStyle('TCOP'),
+        MP4StorageStyle('cprt'),
+        StorageStyle('COPYRIGHT'),
+        ASFStorageStyle('Copyright'),
+    )
     bpm = MediaField(
         MP3StorageStyle('TBPM'),
         MP4StorageStyle('tmpo', as_type=int),
@@ -1801,7 +1813,16 @@ class MediaFile(object):
         MP3DescStorageStyle(u'BARCODE'),
         MP4StorageStyle('----:com.apple.iTunes:BARCODE'),
         StorageStyle('BARCODE'),
+        StorageStyle('UPC', read_only=True),
+        StorageStyle('EAN', read_only=True),
+        StorageStyle('UPN', read_only=True),
         ASFStorageStyle('WM/Barcode'),
+    )
+    isrc = MediaField(
+        MP3StorageStyle(u'TSRC'),
+        MP4StorageStyle('----:com.apple.iTunes:ISRC'),
+        StorageStyle('ISRC'),
+        ASFStorageStyle('WM/ISRC'),
     )
     disctitle = MediaField(
         MP3StorageStyle('TSST'),

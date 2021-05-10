@@ -889,6 +889,29 @@ class MP3DescStorageStyle(MP3StorageStyle):
             del mutagen_file[frame.HashKey]
 
 
+class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):
+    def __init__(self, desc=u'', key='TXXX', **kwargs):
+        super(MP3ListDescStorageStyle, self).__init__(desc=desc, key=key,
+                                                      **kwargs)
+
+    def fetch(self, mutagen_file):
+        for frame in mutagen_file.tags.getall(self.key):
+            if frame.desc.lower() == self.description.lower():
+                return frame.text
+        return []
+
+    def store(self, mutagen_file, values):
+        self.delete(mutagen_file)
+        frame = mutagen.id3.Frames[self.key](
+            desc=self.description,
+            text=values,
+            encoding=mutagen.id3.Encoding.UTF8,
+        )
+        if self.id3_lang:
+            frame.lang = self.id3_lang
+        mutagen_file.tags.add(frame)
+
+
 class MP3SlashPackStorageStyle(MP3StorageStyle):
     """Store value as part of pair that is serialized as a slash-
     separated string.

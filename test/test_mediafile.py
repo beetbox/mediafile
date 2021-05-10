@@ -365,6 +365,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'disctotal',
         'lyrics',
         'comments',
+        'copyright',
         'bpm',
         'comp',
         'mb_trackid',
@@ -390,6 +391,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'asin',
         'catalognum',
         'barcode',
+        'isrc',
         'disctitle',
         'script',
         'language',
@@ -449,7 +451,11 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
     def test_read_empty(self):
         mediafile = self._mediafile_fixture('empty')
         for field in self.tag_fields:
-            self.assertIsNone(getattr(mediafile, field))
+            value = getattr(mediafile, field)
+            if isinstance(value, list):
+                assert not value
+            else:
+                self.assertIsNone(value)
 
     def test_write_empty(self):
         mediafile = self._mediafile_fixture('empty')
@@ -620,7 +626,11 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         mediafile = MediaFile(mediafile.path)
 
         for key in keys:
-            self.assertIsNone(getattr(mediafile, key))
+            value = getattr(mediafile, key)
+            if isinstance(value, list):
+                assert not value
+            else:
+                self.assertIsNone(value)
 
     def test_delete_packed_total(self):
         mediafile = self._mediafile_fixture('full')
@@ -704,6 +714,9 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
 
         for key in ['disc', 'disctotal', 'track', 'tracktotal', 'bpm']:
             tags[key] = 1
+
+        for key in ['artists', 'albumartists']:
+            tags[key] = ['multival', 'test']
 
         tags['art'] = self.jpg_data
         tags['comp'] = True
@@ -976,7 +989,8 @@ class MediaFieldTest(unittest.TestCase):
 
     def test_known_fields(self):
         fields = list(ReadWriteTestBase.tag_fields)
-        fields.extend(('encoder', 'images', 'genres', 'albumtype'))
+        fields.extend(('encoder', 'images', 'genres', 'albumtype', 'artists',
+                       'albumartists'))
         assertCountEqual(self, MediaFile.fields(), fields)
 
     def test_fields_in_readable_fields(self):

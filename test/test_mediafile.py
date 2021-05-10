@@ -991,8 +991,10 @@ class MediaFieldTest(unittest.TestCase):
 
     def test_known_fields(self):
         fields = list(ReadWriteTestBase.tag_fields)
-        fields.extend(('encoder', 'images', 'genres', 'albumtype', 'artists',
-                       'albumartists', 'url'))
+        fields.extend(
+            ('encoder', 'images', 'genres', 'albumtype', 'artists',
+             'albumartists', 'url', 'mb_artistids', 'mb_albumartistids')
+        )
         assertCountEqual(self, MediaFile.fields(), fields)
 
     def test_fields_in_readable_fields(self):

@@ -897,14 +897,19 @@ class MP3DescStorageStyle(MP3StorageStyle):
 
 
 class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):
-    def __init__(self, desc=u'', key='TXXX', **kwargs):
-        super(MP3ListDescStorageStyle, self).__init__(desc=desc, key=key,
-                                                      **kwargs)
+    def __init__(self, desc=u'', key='TXXX', split_v23=False, **kwargs):
+        self.split_v23 = split_v23
+        super(MP3ListDescStorageStyle, self).__init__(
+            desc=desc, key=key, **kwargs
+        )
 
     def fetch(self, mutagen_file):
         for frame in mutagen_file.tags.getall(self.key):
             if frame.desc.lower() == self.description.lower():
-                return frame.text
+                if mutagen_file.tags.version == (2, 3, 0) and self.split_v23:
+                    return sum([el.split('/') for el in frame.text], start=[])
+                else:
+                    return frame.text
         return []
 
     def store(self, mutagen_file, values):

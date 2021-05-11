@@ -721,6 +721,8 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         tags['art'] = self.jpg_data
         tags['comp'] = True
 
+        tags['url'] = "https://example.com/"
+
         date = datetime.date(2001, 4, 3)
         tags['date'] = date
         tags['year'] = date.year
@@ -990,7 +992,7 @@ class MediaFieldTest(unittest.TestCase):
     def test_known_fields(self):
         fields = list(ReadWriteTestBase.tag_fields)
         fields.extend(('encoder', 'images', 'genres', 'albumtype', 'artists',
-                       'albumartists'))
+                       'albumartists', 'url'))
         assertCountEqual(self, MediaFile.fields(), fields)
 
     def test_fields_in_readable_fields(self):

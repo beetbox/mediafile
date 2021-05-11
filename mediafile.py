@@ -839,22 +839,29 @@ class MP3UFIDStorageStyle(MP3StorageStyle):
 class MP3DescStorageStyle(MP3StorageStyle):
     """Store data in a TXXX (or similar) ID3 frame. The frame is
     selected based its ``desc`` field.
+    ``attr`` allows to specify name of data accessor property in the frame.
+    Most of frames use `text`.
+    ``multispec`` specifies if frame data is ``mutagen.id3.MultiSpec``
+    which means that the data is being packed in the list.
     """
-    def __init__(self, desc=u'', key='TXXX', **kwargs):
+    def __init__(self, desc=u'', key='TXXX', attr='text', multispec=True,
+                 **kwargs):
         assert isinstance(desc, six.text_type)
         self.description = desc
+        self.attr = attr
+        self.multispec = multispec
         super(MP3DescStorageStyle, self).__init__(key=key, **kwargs)
 
     def store(self, mutagen_file, value):
         frames = mutagen_file.tags.getall(self.key)
-        if self.key != 'USLT':
+        if self.multispec:
             value = [value]
 
         # Try modifying in place.
         found = False
         for frame in frames:
             if frame.desc.lower() == self.description.lower():
-                frame.text = value
+                setattr(frame, self.attr, value)
                 frame.encoding = mutagen.id3.Encoding.UTF8
                 found = True
 
@@ -862,8 +869,8 @@ class MP3DescStorageStyle(MP3StorageStyle):
         if not found:
             frame = mutagen.id3.Frames[self.key](
                 desc=self.description,
-                text=value,
                 encoding=mutagen.id3.Encoding.UTF8,
+                **{self.attr: value}
             )
             if self.id3_lang:
                 frame.lang = self.id3_lang
@@ -872,10 +879,10 @@ class MP3DescStorageStyle(MP3StorageStyle):
     def fetch(self, mutagen_file):
         for frame in mutagen_file.tags.getall(self.key):
             if frame.desc.lower() == self.description.lower():
-                if self.key == 'USLT':
-                    return frame.text
+                if not self.multispec:
+                    return getattr(frame, self.attr)
                 try:
-                    return frame.text[0]
+                    return getattr(frame, self.attr)[0]
                 except IndexError:
                     return None
 
@@ -1751,8 +1758,15 @@ class MediaFile(object):
         ASFStorageStyle('TotalDiscs'),
         out_type=int,
     )
+
+    url = MediaField(
+        MP3DescStorageStyle(key='WXXX', attr='url', multispec=False),
+        MP4StorageStyle('\xa9url'),
+        StorageStyle('URL'),
+        ASFStorageStyle('WM/URL'),
+    )
     lyrics = MediaField(
-        MP3DescStorageStyle(key='USLT'),
+        MP3DescStorageStyle(key='USLT', multispec=False),
         MP4StorageStyle('\xa9lyr'),
         StorageStyle('LYRICS'),
         ASFStorageStyle('WM/Lyrics'),

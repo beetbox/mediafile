@@ -1611,7 +1611,7 @@ class MediaFile(object):
                 u'{0} must be an instance of MediaField'.format(descriptor))
         if name in cls.__dict__:
             raise ValueError(
-                u'property "{0}" already exists on MediaField'.format(name))
+                u'property "{0}" already exists on MediaFile'.format(name))
         setattr(cls, name, descriptor)
 
     def update(self, dict):

@@ -142,6 +142,9 @@ v0.10.0
   ``languages``.
 - The ``catalognum`` property now refers to additional file tags named
   ``CATALOGID`` and ``DISCOGS_CATALOG`` (but only for reading, not writing).
+- The multi-valued ``albumartists`` property now refers to additional file
+  tags named ``ALBUM_ARTIST`` and ``ALBUM ARTISTS`` (the ``ALBUM ARTISTS``
+  is being used only for reading).
 
 v0.9.0
 ''''''

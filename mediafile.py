@@ -1909,13 +1909,22 @@ class MediaFile(object):
         MP3StorageStyle('TPE2'),
         MP4StorageStyle('aART'),
         StorageStyle('ALBUM ARTIST'),
+        StorageStyle('ALBUM_ARTIST'),
         StorageStyle('ALBUMARTIST'),
         ASFStorageStyle('WM/AlbumArtist'),
     )
     albumartists = ListMediaField(
         MP3ListDescStorageStyle(desc=u'ALBUMARTISTS'),
+        MP3ListDescStorageStyle(desc=u'ALBUM_ARTISTS'),
+        MP3ListDescStorageStyle(desc=u'ALBUM ARTISTS', read_only=True),
         MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUM_ARTISTS'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:ALBUM ARTISTS', read_only=True
+        ),
         ListStorageStyle('ALBUMARTISTS'),
+        ListStorageStyle('ALBUM_ARTISTS'),
+        ListStorageStyle('ALBUM ARTISTS', read_only=True),
         ASFStorageStyle('WM/AlbumArtists'),
     )
     albumtypes = ListMediaField(

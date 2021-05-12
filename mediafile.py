@@ -1664,6 +1664,13 @@ class MediaFile(object):
                 else:
                     setattr(self, field, dict[field])
 
+    def as_dict(self):
+        """Get dictionary with all writable properties that reflect
+        metadata tags (i.e., those that are instances of
+        :class:`MediaField`).
+        """
+        return dict((x, getattr(self, x)) for x in self.fields())
+
     # Field definitions.
 
     title = MediaField(

@@ -35,7 +35,6 @@ data from the tags. In turn ``MediaField`` uses a number of
 """
 from __future__ import division, absolute_import, print_function
 
-
 import mutagen
 import mutagen.id3
 import mutagen.mp4
@@ -88,8 +87,8 @@ PREFERRED_IMAGE_EXTENSIONS = {'jpeg': 'jpg'}
 class UnreadableFileError(Exception):
     """Mutagen is not able to extract information from the file.
     """
-    def __init__(self, path, msg):
-        Exception.__init__(self, msg if msg else repr(path))
+    def __init__(self, filename, msg):
+        Exception.__init__(self, msg if msg else repr(filename))
 
 
 class FileTypeError(UnreadableFileError):
@@ -98,12 +97,12 @@ class FileTypeError(UnreadableFileError):
     If passed the `mutagen_type` argument this indicates that the
     mutagen type is not supported by `Mediafile`.
     """
-    def __init__(self, path, mutagen_type=None):
+    def __init__(self, filename, mutagen_type=None):
         if mutagen_type is None:
-            msg = u'{0!r}: not in a recognized format'.format(path)
+            msg = u'{0!r}: not in a recognized format'.format(filename)
         else:
             msg = u'{0}: of mutagen type {1}'.format(
-                repr(path), mutagen_type
+                repr(filename), mutagen_type
             )
         Exception.__init__(self, msg)
 
@@ -111,19 +110,19 @@ class FileTypeError(UnreadableFileError):
 class MutagenError(UnreadableFileError):
     """Raised when Mutagen fails unexpectedly---probably due to a bug.
     """
-    def __init__(self, path, mutagen_exc):
-        msg = u'{0}: {1}'.format(repr(path), mutagen_exc)
+    def __init__(self, filename, mutagen_exc):
+        msg = u'{0}: {1}'.format(repr(filename), mutagen_exc)
         Exception.__init__(self, msg)
 
 
 # Interacting with Mutagen.
 
 
-def mutagen_call(action, path, func, *args, **kwargs):
+def mutagen_call(action, filename, func, *args, **kwargs):
     """Call a Mutagen function with appropriate error handling.
 
     `action` is a string describing what the function is trying to do,
-    and `path` is the relevant filename. The rest of the arguments
+    and `filename` is the relevant filename. The rest of the arguments
     describe the callable to invoke.
 
     We require at least Mutagen 1.33, where `IOError` is *never* used,
@@ -136,7 +135,7 @@ def mutagen_call(action, path, func, *args, **kwargs):
         return func(*args, **kwargs)
     except mutagen.MutagenError as exc:
         log.debug(u'%s failed: %s', action, six.text_type(exc))
-        raise UnreadableFileError(path, six.text_type(exc))
+        raise UnreadableFileError(filename, six.text_type(exc))
     except UnreadableFileError:
         # Reraise our errors without changes.
         # Used in case of decorating functions (e.g. by `loadfile`).
@@ -145,7 +144,7 @@ def mutagen_call(action, path, func, *args, **kwargs):
         # Isolate bugs in Mutagen.
         log.debug(u'%s', traceback.format_exc())
         log.error(u'uncaught Mutagen exception in %s: %s', action, exc)
-        raise MutagenError(path, exc)
+        raise MutagenError(filename, exc)
 
 
 def loadfile(method=True, writable=False, create=False):
@@ -1550,16 +1549,16 @@ class MediaFile(object):
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
         """
-        self.path = filething.name
+        self.filename = filething.name
         self.filething = filething
 
         self.mgfile = mutagen_call(
-            'open', self.path, mutagen.File, filething
+            'open', self.filename, mutagen.File, filething
         )
 
         if self.mgfile is None:
             # Mutagen couldn't guess the type
-            raise FileTypeError(self.path)
+            raise FileTypeError(self.filename)
         elif type(self.mgfile).__name__ in ['M4A', 'MP4']:
             info = self.mgfile.info
             if info.codec and info.codec.startswith('alac'):
@@ -1587,7 +1586,7 @@ class MediaFile(object):
         elif type(self.mgfile).__name__ == 'DSF':
             self.type = 'dsf'
         else:
-            raise FileTypeError(self.path, type(self.mgfile).__name__)
+            raise FileTypeError(self.filename, type(self.mgfile).__name__)
 
         # Add a set of tags if it's missing.
         if self.mgfile.tags is None:
@@ -1626,14 +1625,14 @@ class MediaFile(object):
             id3.update_to_v23()
             kwargs['v2_version'] = 3
 
-        mutagen_call('save', self.path, self.mgfile.save,
+        mutagen_call('save', self.filename, self.mgfile.save,
                      _update_filething(self.filething), **kwargs)
 
     def delete(self):
         """Remove the current metadata tag from the file. May
         throw `UnreadableFileError`.
         """
-        mutagen_call('delete', self.path, self.mgfile.delete,
+        mutagen_call('delete', self.filename, self.mgfile.delete,
                      _update_filething(self.filething))
 
     # Convenient access to the set of available fields.

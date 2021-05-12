@@ -35,25 +35,28 @@ data from the tags. In turn ``MediaField`` uses a number of
 """
 from __future__ import division, absolute_import, print_function
 
+
 import mutagen
 import mutagen.id3
 import mutagen.mp4
 import mutagen.flac
 import mutagen.asf
+import mutagen._util
 
-import codecs
-import datetime
-import re
 import base64
 import binascii
-import math
-import struct
-import imghdr
-import os
-import traceback
+import codecs
+import datetime
 import enum
+import functools
+import imghdr
 import logging
+import math
+import os
+import re
 import six
+import struct
+import traceback
 
 
 __version__ = '0.7.0'
@@ -99,7 +102,9 @@ class FileTypeError(UnreadableFileError):
         if mutagen_type is None:
             msg = u'{0!r}: not in a recognized format'.format(path)
         else:
-            msg = u'{0}: of mutagen type {1}'.format(repr(path), mutagen_type)
+            msg = u'{0}: of mutagen type {1}'.format(
+                repr(path), mutagen_type
+            )
         Exception.__init__(self, msg)
 
 
@@ -112,6 +117,7 @@ class MutagenError(UnreadableFileError):
 
 
 # Interacting with Mutagen.
+
 
 def mutagen_call(action, path, func, *args, **kwargs):
     """Call a Mutagen function with appropriate error handling.
@@ -131,6 +137,10 @@ def mutagen_call(action, path, func, *args, **kwargs):
     except mutagen.MutagenError as exc:
         log.debug(u'%s failed: %s', action, six.text_type(exc))
         raise UnreadableFileError(path, six.text_type(exc))
+    except UnreadableFileError:
+        # Reraise our errors without changes.
+        # Used in case of decorating functions (e.g. by `loadfile`).
+        raise
     except Exception as exc:
         # Isolate bugs in Mutagen.
         log.debug(u'%s', traceback.format_exc())
@@ -138,7 +148,35 @@ def mutagen_call(action, path, func, *args, **kwargs):
         raise MutagenError(path, exc)
 
 
+def loadfile(method=True, writable=False, create=False):
+    """Adds error handling to `mutagen._util.loadfile` decorator.
+    Handles file opening and passes `mutagen._utils.FileThing` to function.
+    Should be used as decorator for functions using `filething` parameter.
+    """
+    def decorator(func):
+        f = mutagen._util.loadfile(method, writable, create)(func)
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            return mutagen_call('loadfile', '', f, *args, **kwargs)
+        return wrapper
+    return decorator
+
 # Utility.
+
+
+def _update_filething(filething):
+    """Forces reopen of `filething` if it's local file.
+
+    Workaround for `mutagen._util._openfile` closing local files after use.
+    """
+    if filething.filename:
+        return mutagen._util.FileThing(
+            None, filething.filename, filething.name
+        )
+    else:
+        return filething
+
 
 def _safe_cast(out_type, val):
     """Try to covert val to out_type but never raise an exception.
@@ -1503,20 +1541,25 @@ class MediaFile(object):
     """Represents a multimedia file on disk and provides access to its
     metadata.
     """
-    def __init__(self, path, id3v23=False):
-        """Constructs a new `MediaFile` reflecting the file at path. May
-        throw `UnreadableFileError`.
+    @loadfile()
+    def __init__(self, filething, id3v23=False):
+        """Constructs a new `MediaFile` reflecting the provided file.
+        May throw `UnreadableFileError`.
+        First argument can be a string (file path) or filelike object.
 
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
         """
-        self.path = path
+        self.path = filething.name
+        self.filething = filething
 
-        self.mgfile = mutagen_call('open', path, mutagen.File, path)
+        self.mgfile = mutagen_call(
+            'open', self.path, mutagen.File, filething
+        )
 
         if self.mgfile is None:
             # Mutagen couldn't guess the type
-            raise FileTypeError(path)
+            raise FileTypeError(self.path)
         elif type(self.mgfile).__name__ in ['M4A', 'MP4']:
             info = self.mgfile.info
             if info.codec and info.codec.startswith('alac'):
@@ -1544,7 +1587,7 @@ class MediaFile(object):
         elif type(self.mgfile).__name__ == 'DSF':
             self.type = 'dsf'
         else:
-            raise FileTypeError(path, type(self.mgfile).__name__)
+            raise FileTypeError(self.path, type(self.mgfile).__name__)
 
         # Add a set of tags if it's missing.
         if self.mgfile.tags is None:
@@ -1552,6 +1595,21 @@ class MediaFile(object):
 
         # Set the ID3v2.3 flag only for MP3s.
         self.id3v23 = id3v23 and self.type == 'mp3'
+
+    @property
+    def filesize(self):
+        """Returns size (in bytes) of underlying file.
+        """
+        if self.filething.filename:
+            return os.path.getsize(self.filething.filename)
+        if hasattr(self.filething.fileobj, '__len__'):
+            return len(self.filething.fileobj)
+        else:
+            tell = self.filething.fileobj.tell()
+            filesize = self.filething.fileobj.seek(0, 2)
+            self.filething.fileobj.seek(tell)
+
+            return filesize
 
     def save(self, **kwargs):
         """Write the object's tags back to the file.
@@ -1568,13 +1626,15 @@ class MediaFile(object):
             id3.update_to_v23()
             kwargs['v2_version'] = 3
 
-        mutagen_call('save', self.path, self.mgfile.save, **kwargs)
+        mutagen_call('save', self.path, self.mgfile.save,
+                     _update_filething(self.filething), **kwargs)
 
     def delete(self):
         """Remove the current metadata tag from the file. May
         throw `UnreadableFileError`.
         """
-        mutagen_call('delete', self.path, self.mgfile.delete)
+        mutagen_call('delete', self.path, self.mgfile.delete,
+                     _update_filething(self.filething))
 
     # Convenient access to the set of available fields.
 
@@ -2223,8 +2283,7 @@ class MediaFile(object):
             if not self.length:
                 # Avoid division by zero if length is not available.
                 return 0
-            size = os.path.getsize(self.path)
-            return int(size * 8 / self.length)
+            return int(self.filesize * 8 / self.length)
 
     @property
     def format(self):

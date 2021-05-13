@@ -23,10 +23,11 @@ The metadata schema is generally based on MusicBrainz' schema with similar namin
 
 * basic fields like ``title``, ``album``, ``artist`` and ``albumartist``,
 * sorting variants like ``albumartist_sort`` and ``composer_sort``,
-* identifiers like ``asin`` or ``mb_releasegroupid``,
+* plural/list variants like ``artists`` and ``albumartists``,
+* identifiers like ``asin``, ``isrc`` or ``mb_releasegroupid``,
 * dates like the release ``year``, ``month`` and ``day`` with convenience wrapper ``date``,
 * detailed metadata like ``language`` or ``media``,
-* ``lyrics``,
+* ``lyrics``, ``copyright``, ``url``
 * calculated metadata like ``bpm`` (beats per minute) and ``r128_track_gain`` (ReplayGain),
 * embedded images (e.g. album art),
 * file metadata like ``bitrate`` and ``length``.

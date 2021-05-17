@@ -839,22 +839,29 @@ class MP3UFIDStorageStyle(MP3StorageStyle):
 class MP3DescStorageStyle(MP3StorageStyle):
     """Store data in a TXXX (or similar) ID3 frame. The frame is
     selected based its ``desc`` field.
+    ``attr`` allows to specify name of data accessor property in the frame.
+    Most of frames use `text`.
+    ``multispec`` specifies if frame data is ``mutagen.id3.MultiSpec``
+    which means that the data is being packed in the list.
     """
-    def __init__(self, desc=u'', key='TXXX', **kwargs):
+    def __init__(self, desc=u'', key='TXXX', attr='text', multispec=True,
+                 **kwargs):
         assert isinstance(desc, six.text_type)
         self.description = desc
+        self.attr = attr
+        self.multispec = multispec
         super(MP3DescStorageStyle, self).__init__(key=key, **kwargs)
 
     def store(self, mutagen_file, value):
         frames = mutagen_file.tags.getall(self.key)
-        if self.key != 'USLT':
+        if self.multispec:
             value = [value]
 
         # Try modifying in place.
         found = False
         for frame in frames:
             if frame.desc.lower() == self.description.lower():
-                frame.text = value
+                setattr(frame, self.attr, value)
                 frame.encoding = mutagen.id3.Encoding.UTF8
                 found = True
 
@@ -862,8 +869,8 @@ class MP3DescStorageStyle(MP3StorageStyle):
         if not found:
             frame = mutagen.id3.Frames[self.key](
                 desc=self.description,
-                text=value,
                 encoding=mutagen.id3.Encoding.UTF8,
+                **{self.attr: value}
             )
             if self.id3_lang:
                 frame.lang = self.id3_lang
@@ -872,10 +879,10 @@ class MP3DescStorageStyle(MP3StorageStyle):
     def fetch(self, mutagen_file):
         for frame in mutagen_file.tags.getall(self.key):
             if frame.desc.lower() == self.description.lower():
-                if self.key == 'USLT':
-                    return frame.text
+                if not self.multispec:
+                    return getattr(frame, self.attr)
                 try:
-                    return frame.text[0]
+                    return getattr(frame, self.attr)[0]
                 except IndexError:
                     return None
 
@@ -887,6 +894,34 @@ class MP3DescStorageStyle(MP3StorageStyle):
                 break
         if found_frame is not None:
             del mutagen_file[frame.HashKey]
+
+
+class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):
+    def __init__(self, desc=u'', key='TXXX', split_v23=False, **kwargs):
+        self.split_v23 = split_v23
+        super(MP3ListDescStorageStyle, self).__init__(
+            desc=desc, key=key, **kwargs
+        )
+
+    def fetch(self, mutagen_file):
+        for frame in mutagen_file.tags.getall(self.key):
+            if frame.desc.lower() == self.description.lower():
+                if mutagen_file.tags.version == (2, 3, 0) and self.split_v23:
+                    return sum([el.split('/') for el in frame.text], start=[])
+                else:
+                    return frame.text
+        return []
+
+    def store(self, mutagen_file, values):
+        self.delete(mutagen_file)
+        frame = mutagen.id3.Frames[self.key](
+            desc=self.description,
+            text=values,
+            encoding=mutagen.id3.Encoding.UTF8,
+        )
+        if self.id3_lang:
+            frame.lang = self.id3_lang
+        mutagen_file.tags.add(frame)
 
 
 class MP3SlashPackStorageStyle(MP3StorageStyle):
@@ -1643,6 +1678,12 @@ class MediaFile(object):
         StorageStyle('ARTIST'),
         ASFStorageStyle('Author'),
     )
+    artists = ListMediaField(
+        MP3ListDescStorageStyle(desc=u'ARTISTS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTS'),
+        ListStorageStyle('ARTISTS'),
+        ASFStorageStyle('WM/ARTISTS'),
+    )
     album = MediaField(
         MP3StorageStyle('TALB'),
         MP4StorageStyle('\xa9alb'),
@@ -1722,8 +1763,15 @@ class MediaFile(object):
         ASFStorageStyle('TotalDiscs'),
         out_type=int,
     )
+
+    url = MediaField(
+        MP3DescStorageStyle(key='WXXX', attr='url', multispec=False),
+        MP4StorageStyle('\xa9url'),
+        StorageStyle('URL'),
+        ASFStorageStyle('WM/URL'),
+    )
     lyrics = MediaField(
-        MP3DescStorageStyle(key='USLT'),
+        MP3DescStorageStyle(key='USLT', multispec=False),
         MP4StorageStyle('\xa9lyr'),
         StorageStyle('LYRICS'),
         ASFStorageStyle('WM/Lyrics'),
@@ -1735,6 +1783,12 @@ class MediaFile(object):
         StorageStyle('COMMENT'),
         ASFStorageStyle('WM/Comments'),
         ASFStorageStyle('Description')
+    )
+    copyright = MediaField(
+        MP3StorageStyle('TCOP'),
+        MP4StorageStyle('cprt'),
+        StorageStyle('COPYRIGHT'),
+        ASFStorageStyle('Copyright'),
     )
     bpm = MediaField(
         MP3StorageStyle('TBPM'),
@@ -1756,6 +1810,12 @@ class MediaFile(object):
         StorageStyle('ALBUM ARTIST'),
         StorageStyle('ALBUMARTIST'),
         ASFStorageStyle('WM/AlbumArtist'),
+    )
+    albumartists = ListMediaField(
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS'),
+        ListStorageStyle('ALBUMARTISTS'),
+        ASFStorageStyle('WM/AlbumArtists'),
     )
     albumtype = MediaField(
         MP3DescStorageStyle(u'MusicBrainz Album Type'),
@@ -1801,7 +1861,17 @@ class MediaFile(object):
         MP3DescStorageStyle(u'BARCODE'),
         MP4StorageStyle('----:com.apple.iTunes:BARCODE'),
         StorageStyle('BARCODE'),
+        StorageStyle('UPC', read_only=True),
+        StorageStyle('EAN/UPN', read_only=True),
+        StorageStyle('EAN', read_only=True),
+        StorageStyle('UPN', read_only=True),
         ASFStorageStyle('WM/Barcode'),
+    )
+    isrc = MediaField(
+        MP3StorageStyle(u'TSRC'),
+        MP4StorageStyle('----:com.apple.iTunes:ISRC'),
+        StorageStyle('ISRC'),
+        ASFStorageStyle('WM/ISRC'),
     )
     disctitle = MediaField(
         MP3StorageStyle('TSST'),

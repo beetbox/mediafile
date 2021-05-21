@@ -145,6 +145,9 @@ v0.10.0
 - The multi-valued ``albumartists`` property now refers to additional file
   tags named ``ALBUM_ARTIST`` and ``ALBUM ARTISTS`` (the ``ALBUM ARTISTS``
   is being used only for reading).
+- The ``ListMediaField`` class now doesn't concatenate multiple lists if
+  found, properties using this class now overwrite each other when
+  multiple are defined like other properties.
 
 v0.9.0
 ''''''

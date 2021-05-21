@@ -1312,11 +1312,12 @@ class ListMediaField(MediaField):
     Uses ``get_list`` and set_list`` methods of its ``StorageStyle``
     strategies to do the actual work.
     """
-    def __get__(self, mediafile, _):
-        values = []
+    def __get__(self, mediafile, _=None):
         for style in self.styles(mediafile.mgfile):
-            values.extend(style.get_list(mediafile.mgfile))
-        return [_safe_cast(self.out_type, value) for value in values]
+            values = style.get_list(mediafile.mgfile)
+            if values:
+                return [_safe_cast(self.out_type, value) for value in values]
+        return []
 
     def __set__(self, mediafile, values):
         for style in self.styles(mediafile.mgfile):

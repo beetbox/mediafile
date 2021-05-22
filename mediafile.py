@@ -1549,7 +1549,6 @@ class MediaFile(object):
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
         """
-        self.filename = filething.name
         self.filething = filething
 
         self.mgfile = mutagen_call(
@@ -1594,6 +1593,27 @@ class MediaFile(object):
 
         # Set the ID3v2.3 flag only for MP3s.
         self.id3v23 = id3v23 and self.type == 'mp3'
+
+    @property
+    def filename(self):
+        """Returns name of the file.
+        It can be file path or name of filelike object.
+        """
+        return self.filething.name
+
+    @filename.setter
+    def filename(self, val):
+        """Silently skips setting filename.
+        Workaround for `mutagen._util._openfile` setting instance's filename.
+        """
+        pass
+
+    @property
+    def path(self):
+        """Returns path to the file.
+        In case of filelike objects it can be `None`.
+        """
+        return self.filething.filename
 
     @property
     def filesize(self):

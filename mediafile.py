@@ -1994,18 +1994,27 @@ class MediaFile(object):
         StorageStyle('MUSICBRAINZ_ALBUMID'),
         ASFStorageStyle('MusicBrainz/Album Id'),
     )
-    mb_artistid = MediaField(
-        MP3DescStorageStyle(u'MusicBrainz Artist Id'),
-        MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Artist Id'),
-        StorageStyle('MUSICBRAINZ_ARTISTID'),
+    mb_artistids = ListMediaField(
+        MP3ListDescStorageStyle(u'MusicBrainz Artist Id', split_v23=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:MusicBrainz Artist Id'),
+        ListStorageStyle('MUSICBRAINZ_ARTISTID'),
         ASFStorageStyle('MusicBrainz/Artist Id'),
     )
-    mb_albumartistid = MediaField(
-        MP3DescStorageStyle(u'MusicBrainz Album Artist Id'),
-        MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Album Artist Id'),
-        StorageStyle('MUSICBRAINZ_ALBUMARTISTID'),
+    mb_artistid = mb_artistids.single_field()
+
+    mb_albumartistids = ListMediaField(
+        MP3ListDescStorageStyle(
+            u'MusicBrainz Album Artist Id',
+            split_v23=True,
+        ),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:MusicBrainz Album Artist Id',
+        ),
+        ListStorageStyle('MUSICBRAINZ_ALBUMARTISTID'),
         ASFStorageStyle('MusicBrainz/Album Artist Id'),
     )
+    mb_albumartistid = mb_albumartistids.single_field()
+
     mb_releasegroupid = MediaField(
         MP3DescStorageStyle(u'MusicBrainz Release Group Id'),
         MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Release Group Id'),

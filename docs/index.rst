@@ -139,6 +139,8 @@ v0.7.0
 ''''''
 
 - Mutagen 1.45.0 or later is now required.
+- MediaFile can now use file-like objects (instead of just the filesystem, via
+  filenames).
 
 v0.6.0
 ''''''

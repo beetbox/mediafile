@@ -436,7 +436,6 @@ class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
         shutil.copy(src, path)
         mf = mediafile.MediaFile(path)
         mf.read_only_field = "something terrible"
-        mf.path = os.path.join(self.temp_dir, b'test.flac')
         mf.save()
         self.assertNotIn(self.key, mf.mgfile.tags)
 

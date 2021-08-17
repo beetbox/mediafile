@@ -148,9 +148,12 @@ def mutagen_call(action, filename, func, *args, **kwargs):
 
 
 def loadfile(method=True, writable=False, create=False):
-    """Adds error handling to `mutagen._util.loadfile` decorator.
-    Handles file opening and passes `mutagen._utils.FileThing` to function.
-    Should be used as decorator for functions using `filething` parameter.
+    """A decorator that works like `mutagen._util.loadfile` but with
+    additional error handling.
+
+    Opens a file and passes a `mutagen._utils.FileThing` to the
+    decorated function. Should be used as a decorator for functions
+    using a `filething` parameter.
     """
     def decorator(func):
         f = mutagen._util.loadfile(method, writable, create)(func)
@@ -161,13 +164,14 @@ def loadfile(method=True, writable=False, create=False):
         return wrapper
     return decorator
 
+
 # Utility.
 
-
 def _update_filething(filething):
-    """Forces reopen of `filething` if it's local file.
+    """Reopen a `filething` if it's a local file.
 
-    Workaround for `mutagen._util._openfile` closing local files after use.
+    A filething that is *not* an actual file is left unchanged; a
+    filething with a filename is reopened and a new object is returned.
     """
     if filething.filename:
         return mutagen._util.FileThing(
@@ -1543,8 +1547,11 @@ class MediaFile(object):
     @loadfile()
     def __init__(self, filething, id3v23=False):
         """Constructs a new `MediaFile` reflecting the provided file.
+
+        `filething` can be a path to a file (i.e., a string) or a
+        file-like object.
+
         May throw `UnreadableFileError`.
-        First argument can be a string (file path) or filelike object.
 
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
@@ -1596,8 +1603,10 @@ class MediaFile(object):
 
     @property
     def filename(self):
-        """Returns name of the file.
-        It can be file path or name of filelike object.
+        """The name of the file.
+
+        This is the path if this object was opened from the filesystem,
+        or the name of the file-like object.
         """
         return self.filething.name
 
@@ -1610,14 +1619,16 @@ class MediaFile(object):
 
     @property
     def path(self):
-        """Returns path to the file.
-        In case of filelike objects it can be `None`.
+        """The path to the file.
+
+        This is `None` if the data comes from a file-like object instead
+        of a filesystem path.
         """
         return self.filething.filename
 
     @property
     def filesize(self):
-        """Returns size (in bytes) of underlying file.
+        """The size (in bytes) of the underlying file.
         """
         if self.filething.filename:
             return os.path.getsize(self.filething.filename)
@@ -1627,7 +1638,6 @@ class MediaFile(object):
             tell = self.filething.fileobj.tell()
             filesize = self.filething.fileobj.seek(0, 2)
             self.filething.fileobj.seek(tell)
-
             return filesize
 
     def save(self, **kwargs):
@@ -1744,7 +1754,7 @@ class MediaFile(object):
                     setattr(self, field, dict[field])
 
     def as_dict(self):
-        """Get dictionary with all writable properties that reflect
+        """Get a dictionary with all writable properties that reflect
         metadata tags (i.e., those that are instances of
         :class:`MediaField`).
         """

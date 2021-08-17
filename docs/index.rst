@@ -95,7 +95,7 @@ Internals
 .. autoclass:: StorageStyle
     :members:
 
-    
+
 Examples
 --------
 
@@ -112,7 +112,7 @@ To add cover art to a MediaFile:
     f = MediaFile("file.mp3)
     f.images = [cover]
     f.save()
-    
+
 
 To copy tags from one MediaFile to another:
 
@@ -130,7 +130,7 @@ To copy tags from one MediaFile to another:
             pass
 
     g.save()
-    
+
 
 Changelog
 ---------

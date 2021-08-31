@@ -135,6 +135,11 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.8.0
+''''''
+
+- MediaFile now requires Python 3.6 or later.
+
 v0.7.0
 ''''''
 

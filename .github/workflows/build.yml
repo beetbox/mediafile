@@ -14,8 +14,8 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                tox-env: [py27-test, py35-test, py36-test, py37-test,
-                          py38-test, pypy-test]
+                tox-env: [py35-test, py36-test, py37-test,
+                          py38-test, py39-test, pypy-test]
                 os: [ubuntu-latest, windows-latest]
 
                 # Only test on a couple of versions on Windows.
@@ -31,8 +31,6 @@ jobs:
 
                 # Python interpreter versions. :/
                 include:
-                    - tox-env: py27-test
-                      python: 2.7
                     - tox-env: py35-test
                       python: 3.5
                     - tox-env: py36-test
@@ -41,6 +39,8 @@ jobs:
                       python: 3.7
                     - tox-env: py38-test
                       python: 3.8
+                    - tox-env: py39-test
+                      python: 3.9
                     - tox-env: pypy-test
                       python: pypy3
 

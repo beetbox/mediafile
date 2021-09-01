@@ -952,6 +952,71 @@ class AIFFTest(ReadWriteTestBase, unittest.TestCase):
     }
 
 
+class WAVETest(ReadWriteTestBase, unittest.TestCase):
+    extension = 'wav'
+    audio_properties = {
+        'length': 1.0,
+        'bitrate': 88200,
+        'format': u'WAVE',
+        'samplerate': 44100,
+        'bitdepth': 16,
+        'channels': 1,
+    }
+
+    full_initial_tags = {
+        'title':             u'full',
+        'artist':            u'the artist',
+        'album':             u'the album',
+        'genre':             u'the genre',
+        'track':             2,
+        'tracktotal':        3,
+    }
+
+    tag_fields = [
+        'title',
+        'artist',
+        'album',
+        'genre',
+        'track',
+        'original_year',
+        'original_month',
+        'original_day',
+        'original_date',
+    ]
+
+    # Only a small subset of fields are supported by LIST/INFO
+    # metadata format in WAVE, so some fields have been removed
+    # from the inherited test cases below. Concerned fields are
+    # commented above each test case.
+
+    # Missing fields: disc, disctotal
+    def test_write_counters_without_total(self):
+        mediafile = self._mediafile_fixture('full')
+        self.assertEqual(mediafile.track, 2)
+        self.assertEqual(mediafile.tracktotal, 3)
+
+    # Missing fields: date, year
+    def test_delete_year(self):
+        mediafile = self._mediafile_fixture('full')
+
+        self.assertIsNotNone(mediafile.original_year)
+
+        delattr(mediafile, 'original_year')
+        mediafile.save()
+        mediafile = MediaFile(mediafile.filename)
+        self.assertIsNone(mediafile.original_year)
+
+    # Missing fields:  disctotal
+    def test_delete_packed_total(self):
+        mediafile = self._mediafile_fixture('full')
+
+        delattr(mediafile, 'tracktotal')
+
+        mediafile.save()
+        mediafile = MediaFile(mediafile.filename)
+        self.assertEqual(mediafile.track, self.full_initial_tags['track'])
+
+
 # Check whether we have a Mutagen version with DSF support. We can
 # remove this once we require a version that includes the feature.
 try:

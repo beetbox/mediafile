@@ -77,6 +77,7 @@ TYPES = {
     'asf':  'Windows Media',
     'aiff': 'AIFF',
     'dsf':  'DSD Stream File',
+    'wav':  'WAVE',
 }
 
 PREFERRED_IMAGE_EXTENSIONS = {'jpeg': 'jpg'}
@@ -777,7 +778,7 @@ class MP4ImageStorageStyle(MP4ListStorageStyle):
 class MP3StorageStyle(StorageStyle):
     """Store data in ID3 frames.
     """
-    formats = ['MP3', 'AIFF', 'DSF']
+    formats = ['MP3', 'AIFF', 'DSF', 'WAVE']
 
     def __init__(self, key, id3_lang=None, **kwargs):
         """Create a new ID3 storage style. `id3_lang` is the value for
@@ -1591,6 +1592,8 @@ class MediaFile(object):
             self.type = 'aiff'
         elif type(self.mgfile).__name__ == 'DSF':
             self.type = 'dsf'
+        elif type(self.mgfile).__name__ == 'WAVE':
+            self.type = 'wav'
         else:
             raise FileTypeError(self.filename, type(self.mgfile).__name__)
 

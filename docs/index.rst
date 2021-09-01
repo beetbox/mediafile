@@ -139,6 +139,7 @@ v0.8.0
 ''''''
 
 - MediaFile now requires Python 3.6 or later.
+- Added support for Wave (`.wav`) files.
 
 v0.7.0
 ''''''

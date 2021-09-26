@@ -949,7 +949,7 @@ class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):
         for frame in mutagen_file.tags.getall(self.key):
             if frame.desc.lower() == self.description.lower():
                 if mutagen_file.tags.version == (2, 3, 0) and self.split_v23:
-                    return sum([el.split('/') for el in frame.text], start=[])
+                    return sum((el.split('/') for el in frame.text), [])
                 else:
                     return frame.text
         return []

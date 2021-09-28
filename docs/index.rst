@@ -135,6 +135,11 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.8.1
+''''''
+
+- Fix a regression in v0.8.0 that caused a crash on Python versions below 3.8.
+
 v0.8.0
 ''''''
 

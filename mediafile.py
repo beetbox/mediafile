@@ -37,6 +37,7 @@ from __future__ import division, absolute_import, print_function
 
 import mutagen
 import mutagen.id3
+import mutagen.mp3
 import mutagen.mp4
 import mutagen.flac
 import mutagen.asf
@@ -1721,7 +1722,8 @@ class MediaFile(object):
         for property in cls.fields():
             yield property
         for property in ('length', 'samplerate', 'bitdepth', 'bitrate',
-                         'channels', 'format'):
+                         'bitrate_mode', 'channels', 'encoder_info',
+                         'encoder_settings', 'format'):
             yield property
 
     @classmethod
@@ -2325,6 +2327,42 @@ class MediaFile(object):
                 # Avoid division by zero if length is not available.
                 return 0
             return int(self.filesize * 8 / self.length)
+
+    @property
+    def bitrate_mode(self):
+        """The mode of the bitrate used in the audio coding
+        (a string, eg. "CBR", "VBR" or "ABR").
+        Only available for the MP3 file format (empty where unavailable).
+        """
+        if hasattr(self.mgfile.info, 'bitrate_mode'):
+            return {
+                mutagen.mp3.BitrateMode.CBR: 'CBR',
+                mutagen.mp3.BitrateMode.VBR: 'VBR',
+                mutagen.mp3.BitrateMode.ABR: 'ABR',
+            }.get(self.mgfile.info.bitrate_mode, '')
+        else:
+            return ''
+
+    @property
+    def encoder_info(self):
+        """The name and/or version of the encoder used
+        (a string, eg. "LAME 3.97.0").
+        Only available for some formats (empty where unavailable).
+        """
+        if hasattr(self.mgfile.info, 'encoder_info'):
+            return self.mgfile.info.encoder_info
+        else:
+            return ''
+
+    @property
+    def encoder_settings(self):
+        """A guess of the settings used for the encoder (a string, eg. "-V2").
+        Only available for the MP3 file format (empty where unavailable).
+        """
+        if hasattr(self.mgfile.info, 'encoder_settings'):
+            return self.mgfile.info.encoder_settings
+        else:
+            return ''
 
     @property
     def format(self):

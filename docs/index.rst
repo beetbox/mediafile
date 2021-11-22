@@ -30,7 +30,7 @@ The metadata schema is generally based on MusicBrainz' schema with similar namin
 * ``lyrics``, ``copyright``, ``url``
 * calculated metadata like ``bpm`` (beats per minute) and ``r128_track_gain`` (ReplayGain),
 * embedded images (e.g. album art),
-* file metadata like ``bitrate`` and ``length``.
+* file metadata like ``samplerate``, ``bitdepth``, ``channels``, ``bitrate``, ``bitrate_mode``, ``encoder_info``, ``encoder_settings`` and ``length``.
 
 Compatibility
 -------------
@@ -134,6 +134,12 @@ To copy tags from one MediaFile to another:
 
 Changelog
 ---------
+
+v0.9.0
+''''''
+
+- Add the properties ``bitrate_mode``, ``encoder_info`` and
+  ``encoder_settings``.
 
 v0.8.1
 ''''''

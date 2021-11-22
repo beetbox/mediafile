@@ -761,6 +761,9 @@ class MP3Test(ReadWriteTestBase, PartialTestMixin,
     audio_properties = {
         'length': 1.0,
         'bitrate': 80000,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': 'MP3',
         'samplerate': 44100,
         'bitdepth': 0,
@@ -771,6 +774,18 @@ class MP3Test(ReadWriteTestBase, PartialTestMixin,
         mediafile = self._mediafile_fixture('image_unknown_type')
         self.assertEqual(mediafile.images[0].type, ImageType.other)
 
+    def test_bitrate_mode(self):
+        mediafile = self._mediafile_fixture('cbr')
+        self.assertEqual(mediafile.bitrate_mode, 'CBR')
+
+    def test_encoder_info(self):
+        mediafile = self._mediafile_fixture('cbr')
+        self.assertEqual(mediafile.encoder_info, 'LAME 3.100.0+')
+
+    def test_encoder_settings(self):
+        mediafile = self._mediafile_fixture('cbr')
+        self.assertEqual(mediafile.encoder_settings, '-b 80')
+
 
 class MP4Test(ReadWriteTestBase, PartialTestMixin,
               ImageStructureTestMixin, unittest.TestCase):
@@ -778,6 +793,9 @@ class MP4Test(ReadWriteTestBase, PartialTestMixin,
     audio_properties = {
         'length': 1.0,
         'bitrate': 64000,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': 'AAC',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -799,6 +817,9 @@ class AlacTest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 1.0,
         'bitrate': 21830,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         # 'format': 'ALAC',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -811,6 +832,9 @@ class MusepackTest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 1.0,
         'bitrate': 24023,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'Musepack',
         'samplerate': 44100,
         'bitdepth': 0,
@@ -824,6 +848,9 @@ class WMATest(ReadWriteTestBase, ExtendedImageStructureTestMixin,
     audio_properties = {
         'length': 1.0,
         'bitrate': 128000,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'Windows Media',
         'samplerate': 44100,
         'bitdepth': 0,
@@ -852,6 +879,9 @@ class OggTest(ReadWriteTestBase, ExtendedImageStructureTestMixin,
     audio_properties = {
         'length': 1.0,
         'bitrate': 48000,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'OGG',
         'samplerate': 44100,
         'bitdepth': 0,
@@ -896,6 +926,9 @@ class FlacTest(ReadWriteTestBase, PartialTestMixin,
     audio_properties = {
         'length': 1.0,
         'bitrate': 108688,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'FLAC',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -909,6 +942,9 @@ class ApeTest(ReadWriteTestBase, ExtendedImageStructureTestMixin,
     audio_properties = {
         'length': 1.0,
         'bitrate': 112608,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'APE',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -921,6 +957,9 @@ class WavpackTest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 1.0,
         'bitrate': 109312,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'WavPack',
         'samplerate': 44100,
         'bitdepth': 16 if mutagen.version >= (1, 45, 0) else 0,
@@ -933,6 +972,9 @@ class OpusTest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 1.0,
         'bitrate': 66792,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'Opus',
         'samplerate': 48000,
         'bitdepth': 0,
@@ -945,6 +987,9 @@ class AIFFTest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 1.0,
         'bitrate': 705600,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'AIFF',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -957,6 +1002,9 @@ class WAVETest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 1.0,
         'bitrate': 88200,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'WAVE',
         'samplerate': 44100,
         'bitdepth': 16,
@@ -1033,6 +1081,9 @@ class DSFTest(ReadWriteTestBase, unittest.TestCase):
     audio_properties = {
         'length': 0.01,
         'bitrate': 11289600,
+        'bitrate_mode': '',
+        'encoder_info': '',
+        'encoder_settings': '',
         'format': u'DSD Stream File',
         'samplerate': 5644800,
         'bitdepth': 1,

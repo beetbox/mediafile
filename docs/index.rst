@@ -135,10 +135,11 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
-v0.8.2
+v0.9.0
 ''''''
 
-- Add the properties ``bitrate_mode``, ``encoder_info`` and ``encoder_settings``.
+- Add the properties ``bitrate_mode``, ``encoder_info`` and
+  ``encoder_settings``.
 
 v0.8.1
 ''''''

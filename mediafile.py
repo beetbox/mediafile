@@ -2137,6 +2137,42 @@ class MediaFile(object):
         ASFStorageStyle('Acoustid/Id'),
     )
 
+    # Acousticbrainz high-level fields.
+    danceable = MediaField(
+        MP3DescStorageStyle(u'Acousticbrainz Danceable'),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:Acousticbrainz Danceable'
+        ),
+        StorageStyle('AB:HI:DANCEABILITY:ALL:DANCEABLE'),
+        ASFStorageStyle('Acousticbrainz/Danceable'),
+    )
+    gender = MediaField(
+        MP3DescStorageStyle(u'Acousticbrainz Gender'),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:Acousticbrainz Gender'
+        ),
+        StorageStyle('AB:HI:GENDER:ALL:VALUE'),
+        ASFStorageStyle('Acousticbrainz/Gender'),
+    )
+
+    # Acousticbrainz low-level fields.
+    chords_changes_rate = MediaField(
+        MP3DescStorageStyle(u'Acousticbrainz Chords Changes Rate'),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:Acousticbrainz Chords Changes Rate'
+        ),
+        StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE'),
+        ASFStorageStyle('Acousticbrainz/Chords Changes Rate'),
+    )
+    chords_key = MediaField(
+        MP3DescStorageStyle(u'Acousticbrainz Chords Key'),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:Acousticbrainz Chords Key'
+        ),
+        StorageStyle('AB:LO:TONAL:CHORDS_KEY'),
+        ASFStorageStyle('Acousticbrainz/Chords Key'),
+    )
+
     # ReplayGain fields.
     rg_track_gain = MediaField(
         MP3DescStorageStyle(

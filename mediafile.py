@@ -2137,41 +2137,85 @@ class MediaFile(object):
         ASFStorageStyle('Acoustid/Id'),
     )
 
-    # Acousticbrainz high-level fields.
-    danceable = MediaField(
-        MP3DescStorageStyle(u'Acousticbrainz Danceable'),
-        MP4StorageStyle(
-            '----:com.apple.iTunes:Acousticbrainz Danceable'
-        ),
-        StorageStyle('AB:HI:DANCEABILITY:ALL:DANCEABLE'),
-        ASFStorageStyle('Acousticbrainz/Danceable'),
+    # AcousticBrainz high-level fields.
+    ab_hi_danceability_danceable = MediaField(
+        StorageStyle('AB:HI:DANCEABILITY:DANCEABLE'),
+        ASFStorageStyle('AB:HI:DANCEABILITY:DANCEABLE'),
+        MP3DescStorageStyle(u'ab:hi:danceability:danceable'),
+        MP4StorageStyle('----:com.apple.iTunes:AB:HI:danceability:danceable'),
     )
-    gender = MediaField(
-        MP3DescStorageStyle(u'Acousticbrainz Gender'),
-        MP4StorageStyle(
-            '----:com.apple.iTunes:Acousticbrainz Gender'
-        ),
-        StorageStyle('AB:HI:GENDER:ALL:VALUE'),
-        ASFStorageStyle('Acousticbrainz/Gender'),
+    ab_hi_danceability_not_danceable = MediaField(
+        StorageStyle('AB:HI:DANCEABILITY:NOT_DANCEABLE'),
+        ASFStorageStyle('AB:HI:DANCEABILITY:NOT_DANCEABLE'),
+        MP3DescStorageStyle(u'ab:hi:danceability:not_danceable'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:danceability:not_danceable'),
+    )
+    ab_hi_gender_male = MediaField(
+        StorageStyle('AB:HI:GENDER:MALE'),
+        ASFStorageStyle('AB:HI:GENDER:MALE'),
+        MP3DescStorageStyle(u'ab:hi:gender:male'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:gender:male'),
+    )
+    ab_hi_gender_female = MediaField(
+        StorageStyle('AB:HI:GENDER:FEMALE'),
+        ASFStorageStyle('AB:HI:GENDER:FEMALE'),
+        MP3DescStorageStyle(u'ab:hi:gender:female'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:gender:female'),
+    )
+    ab_hi_genre_rosamerica = MediaField(
+        StorageStyle('AB:HI:GENRE_ROSAMERICA'),
+        ASFStorageStyle('AB:HI:GENRE_ROSAMERICA'),
+        MP3DescStorageStyle(u'ab:hi:genre_rosamerica'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:genre_rosamerica'),
+    )
+    ab_hi_tonal_atonal = MediaField(
+        StorageStyle('AB:HI:TONAL_ATONAL:ATONAL'),
+        ASFStorageStyle('AB:HI:TONAL_ATONAL:ATONAL'),
+        MP3DescStorageStyle(u'ab:hi:tonal_atonal:atonal'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:tonal_atonal:atonal'),
+    )
+    ab_hi_tonal_tonal = MediaField(
+        StorageStyle('AB:HI:TONAL_ATONAL:TONAL'),
+        ASFStorageStyle('AB:HI:TONAL_ATONAL:TONAL'),
+        MP3DescStorageStyle(u'ab:hi:tonal_atonal:tonal'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:tonal_atonal:tonal'),
     )
 
-    # Acousticbrainz low-level fields.
-    chords_changes_rate = MediaField(
-        MP3DescStorageStyle(u'Acousticbrainz Chords Changes Rate'),
-        MP4StorageStyle(
-            '----:com.apple.iTunes:Acousticbrainz Chords Changes Rate'
-        ),
+    # AcousticBrainz low-level fields.
+    ab_lo_tonal_chords_changes_rate = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE'),
-        ASFStorageStyle('Acousticbrainz/Chords Changes Rate'),
+        ASFStorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE'),
+        MP3DescStorageStyle(u'ab:lo:tonal:chords_changes_rate'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:chords_changes_rate'),
     )
-    chords_key = MediaField(
-        MP3DescStorageStyle(u'Acousticbrainz Chords Key'),
-        MP4StorageStyle(
-            '----:com.apple.iTunes:Acousticbrainz Chords Key'
-        ),
+    ab_lo_tonal_chords_key = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_KEY'),
-        ASFStorageStyle('Acousticbrainz/Chords Key'),
+        ASFStorageStyle('AB:LO:TONAL:CHORDS_KEY'),
+        MP3DescStorageStyle(u'ab:lo:tonal:chords_key'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:chords_key'),
     )
+    ab_lo_tonal_chords_scale = MediaField(
+        StorageStyle('AB:LO:TONAL:CHORDS_SCALE'),
+        ASFStorageStyle('AB:LO:TONAL:CHORDS_SCALE'),
+        MP3DescStorageStyle(u'ab:lo:tonal:chords_scale'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:chords_scale'),
+    )
+
+    # Fields used in beets AcousticBrainz plugin.
+    # Some don't have a representation in our reference (MusicBrainz Picard),
+    # thus we choose our own name trying to fit the reference scheme.
+    danceable = ab_hi_danceability_danceable
+    gender = MediaField(
+        StorageStyle('AB:HI:GENDER'),
+        ASFStorageStyle('AB:HI:GENDER'),
+        MP3DescStorageStyle(u'ab:hi:gender'),
+        MP4StorageStyle('----:com.apple.iTunes:ab:hi:gender'),
+    )
+    genre_rosamerica = ab_hi_genre_rosamerica
+    tonal = ab_hi_tonal_tonal
+    chords_changes_rate = ab_lo_tonal_chords_changes_rate
+    chords_key = ab_lo_tonal_chords_key
+    chords_scale = ab_lo_tonal_chords_scale
 
     # ReplayGain fields.
     rg_track_gain = MediaField(

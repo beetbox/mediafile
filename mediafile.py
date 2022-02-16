@@ -2146,10 +2146,13 @@ class MediaFile(object):
     #
     # AcousticBrainz high-level fields.
     danceable = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:DANCEABILITY:DANCEABLE'),
-        ASFStorageStyle('AB:HI:DANCEABILITY:DANCEABLE'),
-        MP3DescStorageStyle(u'ab:hi:danceability:danceable'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:danceability:danceable'),
+        StorageStyle('AB:HI:DANCEABILITY:DANCEABLE', as_type=float),
+        ASFStorageStyle('AB:HI:DANCEABILITY:DANCEABLE', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:danceability:danceable', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:danceability:danceable',
+            float_places=13
+        ),
     )
     gender = MediaField(  # Different in Picard,
         # it uses AB:HI:GENDER:MALE and AB:HI:GENDER:FEMALE.
@@ -2165,52 +2168,76 @@ class MediaFile(object):
         MP4StorageStyle('----:com.apple.iTunes:ab:hi:genre_rosamerica'),
     )
     tonal = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:TONAL_ATONAL:TONAL'),
-        ASFStorageStyle('AB:HI:TONAL_ATONAL:TONAL'),
-        MP3DescStorageStyle(u'ab:hi:tonal_atonal:tonal'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:tonal_atonal:tonal'),
+        StorageStyle('AB:HI:TONAL_ATONAL:TONAL', as_type=float),
+        ASFStorageStyle('AB:HI:TONAL_ATONAL:TONAL', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:tonal_atonal:tonal', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:tonal_atonal:tonal',
+            float_places=13
+        )
     )
     mood_acoustic = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_ACOUSTIC:ACOUSTIC'),
-        ASFStorageStyle('AB:HI:MOOD_ACOUSTIC:ACOUSTIC'),
-        MP3DescStorageStyle(u'ab:hi:mood_acoustic:acoustic'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_acoustic:acoustic'),
+        StorageStyle('AB:HI:MOOD_ACOUSTIC:ACOUSTIC', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_ACOUSTIC:ACOUSTIC', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_acoustic:acoustic', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_acoustic:acoustic',
+            float_places=13
+        ),
     )
     mood_aggressive = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_AGGRESSIVE:AGGRESSIVE'),
-        ASFStorageStyle('AB:HI:MOOD_AGGRESSIVE:AGGRESSIVE'),
-        MP3DescStorageStyle(u'ab:hi:mood_aggressive:aggressive'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_aggressive:aggressive'),
+        StorageStyle('AB:HI:MOOD_AGGRESSIVE:AGGRESSIVE', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_AGGRESSIVE:AGGRESSIVE', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_aggressive:aggressive', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_aggressive:aggressive',
+            float_places=13
+        ),
     )
     mood_electronic = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC'),
-        ASFStorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC'),
-        MP3DescStorageStyle(u'ab:hi:mood_electronic:electronic'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_electronic:electronic'),
+        StorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_electronic:electronic', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_electronic:electronic',
+            float_places=13
+        ),
     )
     mood_happy = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_HAPPY:HAPPY'),
-        ASFStorageStyle('AB:HI:MOOD_HAPPY:HAPPY'),
-        MP3DescStorageStyle(u'ab:hi:mood_happy:happy'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_happy:happy'),
+        StorageStyle('AB:HI:MOOD_HAPPY:HAPPY', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_HAPPY:HAPPY', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_happy:happy', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_happy:happy',
+            float_places=13
+        ),
     )
     mood_party = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_PARTY:PARTY'),
-        ASFStorageStyle('AB:HI:MOOD_PARTY:PARTY'),
-        MP3DescStorageStyle(u'ab:hi:mood_party:party'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_party:party'),
+        StorageStyle('AB:HI:MOOD_PARTY:PARTY', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_PARTY:PARTY', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_party:party', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_party:party',
+            float_places=13
+        ),
     )
     mood_relaxed = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_RELAXED:RELAXED'),
-        ASFStorageStyle('AB:HI:MOOD_RELAXED:RELAXED'),
-        MP3DescStorageStyle(u'ab:hi:mood_relaxed:relaxed'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_relaxed:relaxed'),
+        StorageStyle('AB:HI:MOOD_RELAXED:RELAXED', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_RELAXED:RELAXED', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_relaxed:relaxed', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_relaxed:relaxed',
+            float_places=13
+        ),
     )
     mood_sad = MediaField(  # Two fields in Picard.
-        StorageStyle('AB:HI:MOOD_SAD:SAD'),
-        ASFStorageStyle('AB:HI:MOOD_SAD:SAD'),
-        MP3DescStorageStyle(u'ab:hi:mood_sad:sad'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:hi:mood_sad:sad'),
+        StorageStyle('AB:HI:MOOD_SAD:SAD', as_type=float),
+        ASFStorageStyle('AB:HI:MOOD_SAD:SAD', as_type=float),
+        MP3DescStorageStyle(u'ab:hi:mood_sad:sad', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:hi:mood_sad:sad',
+            float_places=13
+        ),
     )
     moods_mirex = MediaField(  # Different in Picard,
         # it saves several tags using long names like
@@ -2247,23 +2274,30 @@ class MediaFile(object):
 
     # AcousticBrainz low-level fields.
     average_loudness = MediaField(
-        StorageStyle('AB:LO:AVERAGE_LOUDNESS'),
-        ASFStorageStyle('AB:LO:AVERAGE_LOUDNESS'),
-        MP3DescStorageStyle(u'ab:lo:average_loudness'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:lo:average_loudness'),
+        StorageStyle('AB:LO:AVERAGE_LOUDNESS', as_type=float),
+        ASFStorageStyle('AB:LO:AVERAGE_LOUDNESS', as_type=float),
+        MP3DescStorageStyle(u'ab:lo:average_loudness', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:lo:average_loudness',
+            float_places=13
+        ),
     )
     ab_bpm = MediaField(
-        StorageStyle('AB:LO:RHYTHM:BPM'),
-        ASFStorageStyle('AB:LO:RHYTHM:BPM'),
-        MP3DescStorageStyle(u'ab:lo:rhythm:bpm'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:lo:rhythm:bpm'),
+        StorageStyle('AB:LO:RHYTHM:BPM', as_type=float),
+        ASFStorageStyle('AB:LO:RHYTHM:BPM', as_type=float),
+        MP3DescStorageStyle(u'ab:lo:rhythm:bpm', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:lo:rhythm:bpm',
+            float_places=13
+        ),
     )
     chords_changes_rate = MediaField(
-        StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE'),
-        ASFStorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE'),
-        MP3DescStorageStyle(u'ab:lo:tonal:chords_changes_rate'),
+        StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', as_type=float),
+        ASFStorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', as_type=float),
+        MP3DescStorageStyle(u'ab:lo:tonal:chords_changes_rate', as_type=float),
         MP4StorageStyle(
-            '----:com.apple.iTunes:ab:lo:tonal:chords_changes_rate'
+            '----:com.apple.iTunes:ab:lo:tonal:chords_changes_rate',
+            float_places=13
         ),
     )
     chords_key = MediaField(
@@ -2273,11 +2307,12 @@ class MediaFile(object):
         MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:chords_key'),
     )
     chords_number_rate = MediaField(
-        StorageStyle('AB:LO:TONAL:CHORDS_NUMBER_RATE'),
-        ASFStorageStyle('AB:LO:TONAL:CHORDS_NUMBER_RATE'),
-        MP3DescStorageStyle(u'ab:lo:tonal:chords_number_rate'),
+        StorageStyle('AB:LO:TONAL:CHORDS_NUMBER_RATE', as_type=float),
+        ASFStorageStyle('AB:LO:TONAL:CHORDS_NUMBER_RATE', as_type=float),
+        MP3DescStorageStyle(u'ab:lo:tonal:chords_number_rate', as_type=float),
         MP4StorageStyle(
-            '----:com.apple.iTunes:ab:lo:tonal:chords_number_rate'
+            '----:com.apple.iTunes:ab:lo:tonal:chords_number_rate',
+            float_places=20
         ),
     )
     chords_scale = MediaField(
@@ -2299,10 +2334,13 @@ class MediaFile(object):
         MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:key_scale'),
     )
     key_strength = MediaField(
-        StorageStyle('AB:LO:TONAL:KEY_STRENGTH'),
-        ASFStorageStyle('AB:LO:TONAL:KEY_STRENGTH'),
-        MP3DescStorageStyle(u'ab:lo:tonal:key_strength'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:key_strength'),
+        StorageStyle('AB:LO:TONAL:KEY_STRENGTH', as_type=float),
+        ASFStorageStyle('AB:LO:TONAL:KEY_STRENGTH', as_type=float),
+        MP3DescStorageStyle(u'ab:lo:tonal:key_strength', as_type=float),
+        MP4StorageStyle(
+            '----:com.apple.iTunes:ab:lo:tonal:key_strength',
+            float_places=20
+        ),
     )
 
     # ReplayGain fields.

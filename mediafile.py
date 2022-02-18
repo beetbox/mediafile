@@ -2286,15 +2286,6 @@ class MediaFile(object):
             float_places=12
         ),
     )
-    ab_bpm = MediaField(
-        StorageStyle('AB:LO:RHYTHM:BPM', float_places=12),
-        ASFStorageStyle('AB:LO:RHYTHM:BPM', float_places=12),
-        MP3DescStorageStyle(u'ab:lo:rhythm:bpm', float_places=12),
-        MP4StorageStyle(
-            '----:com.apple.iTunes:ab:lo:rhythm:bpm',
-            float_places=12
-        ),
-    )
     chords_changes_rate = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', float_places=12),
         ASFStorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', float_places=12),
@@ -2326,18 +2317,6 @@ class MediaFile(object):
         ASFStorageStyle('AB:LO:TONAL:CHORDS_SCALE'),
         MP3DescStorageStyle(u'ab:lo:tonal:chords_scale'),
         MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:chords_scale'),
-    )
-    ab_key_key = MediaField(
-        StorageStyle('AB:LO:TONAL:KEY_KEY'),
-        ASFStorageStyle('AB:LO:TONAL:KEY_KEY'),
-        MP3DescStorageStyle(u'ab:lo:tonal:key_key'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:key_key'),
-    )
-    ab_key_scale = MediaField(
-        StorageStyle('AB:LO:TONAL:KEY_SCALE'),
-        ASFStorageStyle('AB:LO:TONAL:KEY_SCALE'),
-        MP3DescStorageStyle(u'ab:lo:tonal:key_scale'),
-        MP4StorageStyle('----:com.apple.iTunes:ab:lo:tonal:key_scale'),
     )
     key_strength = MediaField(
         StorageStyle('AB:LO:TONAL:KEY_STRENGTH', float_places=12),

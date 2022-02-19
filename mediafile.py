@@ -1918,13 +1918,15 @@ class MediaFile(object):
         ListStorageStyle('ALBUMARTISTS'),
         ASFStorageStyle('WM/AlbumArtists'),
     )
-    albumtype = MediaField(
-        MP3DescStorageStyle(u'MusicBrainz Album Type'),
-        MP4StorageStyle('----:com.apple.iTunes:MusicBrainz Album Type'),
-        StorageStyle('RELEASETYPE'),
-        StorageStyle('MUSICBRAINZ_ALBUMTYPE'),
+    albumtypes = ListMediaField(
+        MP3ListDescStorageStyle('MusicBrainz Album Type', split_v23=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:MusicBrainz Album Type'),
+        ListStorageStyle('RELEASETYPE'),
+        ListStorageStyle('MUSICBRAINZ_ALBUMTYPE'),
         ASFStorageStyle('MusicBrainz/Album Type'),
     )
+    albumtype = albumtypes.single_field()
+
     label = MediaField(
         MP3StorageStyle('TPUB'),
         MP4StorageStyle('----:com.apple.iTunes:LABEL'),
@@ -1952,12 +1954,14 @@ class MediaFile(object):
         StorageStyle('ASIN'),
         ASFStorageStyle('MusicBrainz/ASIN'),
     )
-    catalognum = MediaField(
-        MP3DescStorageStyle(u'CATALOGNUMBER'),
-        MP4StorageStyle('----:com.apple.iTunes:CATALOGNUMBER'),
-        StorageStyle('CATALOGNUMBER'),
+    catalognums = ListMediaField(
+        MP3ListDescStorageStyle('CATALOGNUMBER', split_v23=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:CATALOGNUMBER'),
+        ListStorageStyle('CATALOGNUMBER'),
         ASFStorageStyle('WM/CatalogNo'),
     )
+    catalognum = catalognums.single_field()
+
     barcode = MediaField(
         MP3DescStorageStyle(u'BARCODE'),
         MP4StorageStyle('----:com.apple.iTunes:BARCODE'),
@@ -1993,12 +1997,14 @@ class MediaFile(object):
         StorageStyle('SCRIPT'),
         ASFStorageStyle('WM/Script'),
     )
-    language = MediaField(
-        MP3StorageStyle('TLAN'),
-        MP4StorageStyle('----:com.apple.iTunes:LANGUAGE'),
-        StorageStyle('LANGUAGE'),
+    languages = ListMediaField(
+        MP3ListStorageStyle('TLAN'),
+        MP4ListStorageStyle('----:com.apple.iTunes:LANGUAGE'),
+        ListStorageStyle('LANGUAGE'),
         ASFStorageStyle('WM/Language'),
     )
+    language = languages.single_field()
+
     country = MediaField(
         MP3DescStorageStyle(u'MusicBrainz Album Release Country'),
         MP4StorageStyle('----:com.apple.iTunes:MusicBrainz '

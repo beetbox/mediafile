@@ -2153,6 +2153,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:danceability:danceable',
             float_places=12
         ),
+        out_type=float
     )
     gender = MediaField(  # Different in Picard,
         # it uses AB:HI:GENDER:MALE and AB:HI:GENDER:FEMALE.
@@ -2175,6 +2176,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:tonal_atonal:tonal',
             float_places=12
         ),
+        out_type=float
     )
     mood_acoustic = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_ACOUSTIC:ACOUSTIC', float_places=12),
@@ -2184,6 +2186,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_acoustic:acoustic',
             float_places=12
         ),
+        out_type=float
     )
     mood_aggressive = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_AGGRESSIVE:AGGRESSIVE', float_places=12),
@@ -2195,6 +2198,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_aggressive:aggressive',
             float_places=12
         ),
+        out_type=float
     )
     mood_electronic = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC', float_places=12),
@@ -2206,6 +2210,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_electronic:electronic',
             float_places=12
         ),
+        out_type=float
     )
     mood_happy = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_HAPPY:HAPPY', float_places=12),
@@ -2215,6 +2220,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_happy:happy',
             float_places=12
         ),
+        out_type=float
     )
     mood_party = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_PARTY:PARTY', float_places=12),
@@ -2224,6 +2230,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_party:party',
             float_places=12
         ),
+        out_type=float
     )
     mood_relaxed = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_RELAXED:RELAXED', float_places=12),
@@ -2233,6 +2240,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_relaxed:relaxed',
             float_places=12
         ),
+        out_type=float
     )
     mood_sad = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_SAD:SAD', float_places=12),
@@ -2242,6 +2250,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:hi:mood_sad:sad',
             float_places=12
         ),
+        out_type=float
     )
     moods_mirex = MediaField(  # Different in Picard,
         # it saves several tags using long names like
@@ -2285,6 +2294,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:lo:average_loudness',
             float_places=12
         ),
+        out_type=float
     )
     chords_changes_rate = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', float_places=12),
@@ -2296,6 +2306,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:lo:tonal:chords_changes_rate',
             float_places=12
         ),
+        out_type=float
     )
     chords_key = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_KEY'),
@@ -2311,6 +2322,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:lo:tonal:chords_number_rate',
             float_places=12
         ),
+        out_type=float
     )
     chords_scale = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_SCALE'),
@@ -2326,6 +2338,7 @@ class MediaFile(object):
             '----:com.apple.iTunes:ab:lo:tonal:key_strength',
             float_places=12,
         ),
+        out_type=float
     )
 
     # ReplayGain fields.

@@ -424,7 +424,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         'average_loudness',
         'chords_changes_rate',
         'chords_key',
-        'chords_numbers_rate',
+        'chords_number_rate',
         'chords_scale',
         'key_strength',
     ]
@@ -730,6 +730,9 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
             elif key.startswith('r128_'):
                 # R128 is int
                 tags[key] = -1
+            elif key.startswith('mood_'):
+                # AcousticBrainz mood is float
+                tags[key] = 1.234E-5
             else:
                 tags[key] = 'value\u2010%s' % key
 
@@ -755,6 +758,13 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
         tags['original_year'] = original_date.year
         tags['original_month'] = original_date.month
         tags['original_day'] = original_date.day
+
+        tags['average_loudness'] = 0.123456789
+        tags['danceable'] = 0.123456789123
+        tags['chords_changes_rate'] = 2.345E-6
+        tags['chords_number_rate'] = 1.0
+        tags['key_strength'] = 1.0
+        tags['tonal'] = 1.0
 
         return tags
 

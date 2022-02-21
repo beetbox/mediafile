@@ -135,6 +135,12 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.10.0
+''''''
+
+- Add the properties ``albumtypes``, ``catalognums`` and
+  ``languages``.
+
 v0.9.0
 ''''''
 

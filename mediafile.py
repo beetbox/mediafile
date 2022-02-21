@@ -2139,10 +2139,10 @@ class MediaFile(object):
 
     # AcousticBrainz fields.
     # Some don't have a representation in our reference (MusicBrainz Picard),
-    # thus we choose our own name trying to fit the reference scheme.  Also note
-    # that often information in Picard is saved using two fields, while in beets
-    # AcousticBrainz plugin we only use one field. Eg. we save danceable, Picard
-    # saves danceable and not_danceable.
+    # thus we choose our own name trying to fit the reference scheme.  Also
+    # note that often information in Picard is saved using two fields, while in
+    # beets AcousticBrainz plugin we only use one field. Eg. we save danceable,
+    # Picard saves danceable and not_danceable.
     #
     # AcousticBrainz high-level fields.
     danceable = MediaField(  # Two fields in Picard.
@@ -2203,7 +2203,8 @@ class MediaFile(object):
     mood_electronic = MediaField(  # Two fields in Picard.
         StorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC', float_places=12),
         ASFStorageStyle('AB:HI:MOOD_ELECTRONIC:ELECTRONIC', float_places=12),
-        MP3DescStorageStyle(u'ab:hi:mood_electronic:electronic',
+        MP3DescStorageStyle(
+            u'ab:hi:mood_electronic:electronic',
             float_places=12
         ),
         MP4StorageStyle(
@@ -2299,7 +2300,8 @@ class MediaFile(object):
     chords_changes_rate = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', float_places=12),
         ASFStorageStyle('AB:LO:TONAL:CHORDS_CHANGES_RATE', float_places=12),
-        MP3DescStorageStyle(u'ab:lo:tonal:chords_changes_rate',
+        MP3DescStorageStyle(
+            u'ab:lo:tonal:chords_changes_rate',
             float_places=12
         ),
         MP4StorageStyle(
@@ -2317,7 +2319,10 @@ class MediaFile(object):
     chords_number_rate = MediaField(
         StorageStyle('AB:LO:TONAL:CHORDS_NUMBER_RATE', float_places=12),
         ASFStorageStyle('AB:LO:TONAL:CHORDS_NUMBER_RATE', float_places=12),
-        MP3DescStorageStyle(u'ab:lo:tonal:chords_number_rate', float_places=12),
+        MP3DescStorageStyle(
+            u'ab:lo:tonal:chords_number_rate',
+            float_places=12
+        ),
         MP4StorageStyle(
             '----:com.apple.iTunes:ab:lo:tonal:chords_number_rate',
             float_places=12

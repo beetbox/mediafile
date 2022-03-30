@@ -1956,9 +1956,21 @@ class MediaFile(object):
     )
     catalognums = ListMediaField(
         MP3ListDescStorageStyle('CATALOGNUMBER', split_v23=True),
+        MP3ListDescStorageStyle('CATALOGID', read_only=True),
+        MP3ListDescStorageStyle('DISCOGS_CATALOG', read_only=True),
         MP4ListStorageStyle('----:com.apple.iTunes:CATALOGNUMBER'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:CATALOGID', read_only=True
+        ),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:DISCOGS_CATALOG', read_only=True
+        ),
         ListStorageStyle('CATALOGNUMBER'),
+        ListStorageStyle('CATALOGID', read_only=True),
+        ListStorageStyle('DISCOGS_CATALOG', read_only=True),
         ASFStorageStyle('WM/CatalogNo'),
+        ASFStorageStyle('CATALOGID', read_only=True),
+        ASFStorageStyle('DISCOGS_CATALOG', read_only=True),
     )
     catalognum = catalognums.single_field()
 

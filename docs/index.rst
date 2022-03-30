@@ -135,17 +135,13 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
-v0.11.0
-'''''''
-
-- Property ``catalognum`` now refers to additional file tags ``CATALOGID`` and
-  ``DISCOGS_CATALOG`` (read-only).
-
 v0.10.0
 '''''''
 
-- Add the properties ``albumtypes``, ``catalognums`` and
+- Add the multiple-valued properties ``albumtypes``, ``catalognums`` and
   ``languages``.
+- The ``catalognum`` property now refers to additional file tags named
+  ``CATALOGID`` and ``DISCOGS_CATALOG`` (but only for reading, not writing).
 
 v0.9.0
 ''''''

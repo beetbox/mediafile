@@ -1312,11 +1312,12 @@ class ListMediaField(MediaField):
     Uses ``get_list`` and set_list`` methods of its ``StorageStyle``
     strategies to do the actual work.
     """
-    def __get__(self, mediafile, _):
-        values = []
+    def __get__(self, mediafile, _=None):
         for style in self.styles(mediafile.mgfile):
-            values.extend(style.get_list(mediafile.mgfile))
-        return [_safe_cast(self.out_type, value) for value in values]
+            values = style.get_list(mediafile.mgfile)
+            if values:
+                return [_safe_cast(self.out_type, value) for value in values]
+        return []
 
     def __set__(self, mediafile, values):
         for style in self.styles(mediafile.mgfile):
@@ -1909,13 +1910,22 @@ class MediaFile(object):
         MP3StorageStyle('TPE2'),
         MP4StorageStyle('aART'),
         StorageStyle('ALBUM ARTIST'),
+        StorageStyle('ALBUM_ARTIST'),
         StorageStyle('ALBUMARTIST'),
         ASFStorageStyle('WM/AlbumArtist'),
     )
     albumartists = ListMediaField(
         MP3ListDescStorageStyle(desc=u'ALBUMARTISTS'),
+        MP3ListDescStorageStyle(desc=u'ALBUM_ARTISTS'),
+        MP3ListDescStorageStyle(desc=u'ALBUM ARTISTS', read_only=True),
         MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUM_ARTISTS'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:ALBUM ARTISTS', read_only=True
+        ),
         ListStorageStyle('ALBUMARTISTS'),
+        ListStorageStyle('ALBUM_ARTISTS'),
+        ListStorageStyle('ALBUM ARTISTS', read_only=True),
         ASFStorageStyle('WM/AlbumArtists'),
     )
     albumtypes = ListMediaField(

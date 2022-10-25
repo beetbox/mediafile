@@ -15,7 +15,7 @@ jobs:
         strategy:
             matrix:
                 tox-env: [py36-test, py37-test, py38-test, py39-test,
-                          pypy-test]
+                          py310-test, pypy-test]
                 os: [ubuntu-latest, windows-latest]
 
                 # Only test on a couple of versions on Windows.
@@ -37,6 +37,8 @@ jobs:
                       python: 3.8
                     - tox-env: py39-test
                       python: 3.9
+                    - tox-env: py310-test
+                      python: 3.10
                     - tox-env: pypy-test
                       python: pypy3
 

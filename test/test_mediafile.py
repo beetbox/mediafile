@@ -1001,7 +1001,7 @@ class WAVETest(ReadWriteTestBase, unittest.TestCase):
     extension = 'wav'
     audio_properties = {
         'length': 1.0,
-        'bitrate': 88200,
+        'bitrate': 705600,
         'bitrate_mode': '',
         'encoder_info': '',
         'encoder_settings': '',

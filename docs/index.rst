@@ -135,6 +135,12 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.10.1
+'''''''
+
+- Fix a test failure that arose with Mutagen 1.46.
+- Require Python 3.7 or later.
+
 v0.10.0
 '''''''
 

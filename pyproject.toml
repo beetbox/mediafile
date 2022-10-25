@@ -12,12 +12,11 @@ requires = [
     "six>=1.9",
     "mutagen>=1.46",
 ]
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 classifiers = [
     'Topic :: Multimedia :: Sound/Audio',
     'License :: OSI Approved :: MIT License',
     'Environment :: Web Environment',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',

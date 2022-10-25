@@ -14,14 +14,12 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                tox-env: [py36-test, py37-test, py38-test, py39-test,
+                tox-env: [py37-test, py38-test, py39-test,
                           py310-test, pypy-test]
                 os: [ubuntu-latest, windows-latest]
 
                 # Only test on a couple of versions on Windows.
                 exclude:
-                    - os: windows-latest
-                      tox-env: py36-test
                     - os: windows-latest
                       tox-env: py37-test
                     - os: windows-latest
@@ -29,8 +27,6 @@ jobs:
 
                 # Python interpreter versions. :/
                 include:
-                    - tox-env: py36-test
-                      python: '3.6'
                     - tox-env: py37-test
                       python: '3.7'
                     - tox-env: py38-test

@@ -36,7 +36,7 @@ jobs:
                     - tox-env: py310-test
                       python: '3.10'
                     - tox-env: pypy-test
-                      python: pypy3
+                      python: pypy3.9
 
         steps:
             - uses: actions/checkout@v2

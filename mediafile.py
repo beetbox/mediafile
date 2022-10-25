@@ -59,7 +59,7 @@ import struct
 import traceback
 
 
-__version__ = '0.10.0'
+__version__ = '0.10.1'
 __all__ = ['UnreadableFileError', 'FileTypeError', 'MediaFile']
 
 log = logging.getLogger(__name__)

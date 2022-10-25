@@ -10,7 +10,7 @@ home-page = "https://github.com/beetbox/mediafile"
 description-file = "README.rst"
 requires = [
     "six>=1.9",
-    "mutagen>=1.45",
+    "mutagen>=1.46",
 ]
 requires-python = ">=3.6"
 classifiers = [

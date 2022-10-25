@@ -30,15 +30,15 @@ jobs:
                 # Python interpreter versions. :/
                 include:
                     - tox-env: py36-test
-                      python: 3.6
+                      python: '3.6'
                     - tox-env: py37-test
-                      python: 3.7
+                      python: '3.7'
                     - tox-env: py38-test
-                      python: 3.8
+                      python: '3.8'
                     - tox-env: py39-test
-                      python: 3.9
+                      python: '3.9'
                     - tox-env: py310-test
-                      python: 3.10
+                      python: '3.10'
                     - tox-env: pypy-test
                       python: pypy3
 

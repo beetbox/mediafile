@@ -160,7 +160,7 @@ class ImageStructureTestMixin(ArtTestMixin):
         mediafile.save()
 
         mediafile = MediaFile(mediafile.filename)
-        self.assertEqual(len(mediafile.images), 0)
+        self.assertIsNone(mediafile.images)
 
     def test_guess_cover(self):
         mediafile = self._mediafile_fixture('image')

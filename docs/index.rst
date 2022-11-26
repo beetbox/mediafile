@@ -135,6 +135,12 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.11.0
+'''''''
+
+- List-valued properties now return ``None`` instead of an empty list when the
+  underlying tags are missing altogether.
+
 v0.10.1
 '''''''
 

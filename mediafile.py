@@ -2102,15 +2102,31 @@ class MediaFile(object):
         ASFStorageStyle('beets/Artist Credit'),
     )
     artists_credits = ListMediaField(
-        MP3ListDescStorageStyle(u'Artists Credits'),
-        MP4ListStorageStyle('----:com.apple.iTunes:Artists Credits'),
+        MP3ListDescStorageStyle(desc=u'ARTISTSCREDITS'),
+        MP3ListDescStorageStyle(desc=u'ARTISTS_CREDITS'),
+        MP3ListDescStorageStyle(desc=u'ARTISTS CREDITS', read_only=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTSCREDITS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTS_CREDITS'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:ARTISTS CREDITS', read_only=True
+        ),
+        ListStorageStyle('ARTISTSCREDITS'),
         ListStorageStyle('ARTISTS_CREDITS'),
+        ListStorageStyle('ARTISTS CREDITS', read_only=True),
         ASFStorageStyle('beets/Artists Credits'),
     )
     artists_sort = ListMediaField(
-        MP3ListDescStorageStyle(u'Artists Sort'),
-        MP4ListStorageStyle('----:com.apple.iTunes:Artists Sort'),
+        MP3ListDescStorageStyle(desc=u'ARTISTSSORT'),
+        MP3ListDescStorageStyle(desc=u'ARTISTS_SORT'),
+        MP3ListDescStorageStyle(desc=u'ARTISTS SORT', read_only=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTSSORT'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTS_SORT'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:ARTISTS SORT', read_only=True
+        ),
+        ListStorageStyle('ARTISTSSORT'),
         ListStorageStyle('ARTISTS_SORT'),
+        ListStorageStyle('ARTISTS SORT', read_only=True),
         ASFStorageStyle('beets/Artists Sort'),
     )
     albumartist_credit = MediaField(
@@ -2120,15 +2136,31 @@ class MediaFile(object):
         ASFStorageStyle('beets/Album Artist Credit'),
     )
     albumartists_credits = ListMediaField(
-        MP3ListDescStorageStyle(u'Album Artists Credits'),
-        MP4ListStorageStyle('----:com.apple.iTunes:Album Artists Credits'),
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTSCREDITS'),
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS_CREDITS'),
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS CREDITS', read_only=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTSCREDITS'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS_CREDITS'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:ALBUMARTISTS CREDITS', read_only=True
+        ),
+        ListStorageStyle('ALBUMARTISTSCREDITS'),
         ListStorageStyle('ALBUMARTISTS_CREDITS'),
+        ListStorageStyle('ALBUMARTISTS CREDITS', read_only=True),
         ASFStorageStyle('beets/Album Artists Credits'),
     )
     albumartists_sort = ListMediaField(
-        MP3ListDescStorageStyle(u'Album Artists Sort'),
-        MP4ListStorageStyle('----:com.apple.iTunes:Album Artists Sort'),
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTSSORT'),
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS_SORT'),
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS SORT', read_only=True),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTSSORT'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS_SORT'),
+        MP4ListStorageStyle(
+            '----:com.apple.iTunes:ALBUMARTISTS SORT', read_only=True
+        ),
+        ListStorageStyle('ALBUMARTISTSSORT'),
         ListStorageStyle('ALBUMARTISTS_SORT'),
+        ListStorageStyle('ALBUMARTISTS SORT', read_only=True),
         ASFStorageStyle('beets/Album Artists Sort'),
     )
 

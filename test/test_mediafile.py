@@ -716,8 +716,8 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
             tags[key] = 1
 
         for key in [
-            'artists', 'albumartists', 'artists_credits',
-            'albumartists_credits', 'artists_sort', 'albumartists_sort'
+            'artists', 'albumartists', 'artists_credit',
+            'albumartists_credit', 'artists_sort', 'albumartists_sort'
         ]:
             tags[key] = ['multival', 'test']
 
@@ -1113,8 +1113,8 @@ class MediaFieldTest(unittest.TestCase):
         fields.extend(
             ('encoder', 'images', 'genres', 'albumtype', 'artists',
              'albumartists', 'url', 'mb_artistids', 'mb_albumartistids',
-             'albumtypes', 'catalognums', 'languages', 'artists_credits',
-             'artists_sort', 'albumartists_credits', 'albumartists_sort')
+             'albumtypes', 'catalognums', 'languages', 'artists_credit',
+             'artists_sort', 'albumartists_credit', 'albumartists_sort')
         )
         assertCountEqual(self, MediaFile.fields(), fields)
 

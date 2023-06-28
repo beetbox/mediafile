@@ -2101,11 +2101,35 @@ class MediaFile(object):
         StorageStyle('ARTIST_CREDIT'),
         ASFStorageStyle('beets/Artist Credit'),
     )
+    artists_credit = ListMediaField(
+        MP3ListDescStorageStyle(desc=u'ARTISTS_CREDIT'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTS_CREDIT'),
+        ListStorageStyle('ARTISTS_CREDIT'),
+        ASFStorageStyle('beets/ArtistsCredit'),
+    )
+    artists_sort = ListMediaField(
+        MP3ListDescStorageStyle(desc=u'ARTISTS_SORT'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ARTISTS_SORT'),
+        ListStorageStyle('ARTISTS_SORT'),
+        ASFStorageStyle('beets/ArtistsSort'),
+    )
     albumartist_credit = MediaField(
         MP3DescStorageStyle(u'Album Artist Credit'),
         MP4StorageStyle('----:com.apple.iTunes:Album Artist Credit'),
         StorageStyle('ALBUMARTIST_CREDIT'),
         ASFStorageStyle('beets/Album Artist Credit'),
+    )
+    albumartists_credit = ListMediaField(
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS_CREDIT'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS_CREDIT'),
+        ListStorageStyle('ALBUMARTISTS_CREDIT'),
+        ASFStorageStyle('beets/AlbumArtistsCredit'),
+    )
+    albumartists_sort = ListMediaField(
+        MP3ListDescStorageStyle(desc=u'ALBUMARTISTS_SORT'),
+        MP4ListStorageStyle('----:com.apple.iTunes:ALBUMARTISTS_SORT'),
+        ListStorageStyle('ALBUMARTISTS_SORT'),
+        ASFStorageStyle('beets/AlbumArtistsSort'),
     )
 
     # Legacy album art field

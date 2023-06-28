@@ -135,6 +135,11 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.11.1
+'''''''
+- Add the multiple-valued properties ``artists_credit``, ``artists_sort``,
+  ``albumartists_credit``, and ``albumartists_sort``.
+
 v0.11.0
 '''''''
 

@@ -17,8 +17,8 @@ project = 'MediaFile'
 copyright = '2016, the beets project'
 author = 'the beets project'
 
-version = '0.11'
-release = '0.11.0'
+version = '0.12'
+release = '0.12.0'
 
 pygments_style = 'sphinx'
 htmlhelp_basename = 'mediafiledoc'

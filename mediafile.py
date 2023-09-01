@@ -2087,6 +2087,7 @@ class MediaFile(object):
     original_date = DateField(
         MP3StorageStyle('TDOR'),
         MP4StorageStyle('----:com.apple.iTunes:ORIGINAL YEAR'),
+        MP4StorageStyle('----:com.apple.iTunes:ORIGINALDATE'),
         StorageStyle('ORIGINALDATE'),
         ASFStorageStyle('WM/OriginalReleaseYear'))
 

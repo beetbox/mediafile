@@ -135,6 +135,12 @@ To copy tags from one MediaFile to another:
 Changelog
 ---------
 
+v0.13.0
+'''''''
+
+- Add a mapping compatible with Plex and ffmpeg for the "original date"
+  fields.
+
 v0.12.0
 '''''''
 

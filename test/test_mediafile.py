@@ -16,14 +16,11 @@
 """Automatically-generated blanket testing for the MediaFile metadata
 layer.
 """
-from __future__ import division, absolute_import, print_function
-
 import os
 import shutil
 import datetime
 import time
 import unittest
-from six import assertCountEqual
 
 from test import _common
 from mediafile import MediaFile, Image, \
@@ -269,7 +266,7 @@ class GenreListTestMixin(object):
 
     def test_read_genre_list(self):
         mediafile = self._mediafile_fixture('full')
-        assertCountEqual(self, mediafile.genres, ['the genre'])
+        self.assertCountEqual(mediafile.genres, ['the genre'])
 
     def test_write_genre_list(self):
         mediafile = self._mediafile_fixture('empty')
@@ -277,7 +274,7 @@ class GenreListTestMixin(object):
         mediafile.save()
 
         mediafile = MediaFile(mediafile.filename)
-        assertCountEqual(self, mediafile.genres, [u'one', u'two'])
+        self.assertCountEqual(mediafile.genres, [u'one', u'two'])
 
     def test_write_genre_list_get_first(self):
         mediafile = self._mediafile_fixture('empty')
@@ -294,7 +291,7 @@ class GenreListTestMixin(object):
         mediafile.save()
 
         mediafile = MediaFile(mediafile.filename)
-        assertCountEqual(self, mediafile.genres, [u'the genre', u'another'])
+        self.assertCountEqual(mediafile.genres, [u'the genre', u'another'])
 
 
 class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin,
@@ -1116,7 +1113,7 @@ class MediaFieldTest(unittest.TestCase):
              'albumtypes', 'catalognums', 'languages', 'artists_credit',
              'artists_sort', 'albumartists_credit', 'albumartists_sort')
         )
-        assertCountEqual(self, MediaFile.fields(), fields)
+        self.assertCountEqual(MediaFile.fields(), fields)
 
     def test_fields_in_readable_fields(self):
         readable = MediaFile.readable_fields()

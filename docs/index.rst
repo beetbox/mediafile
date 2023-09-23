@@ -140,6 +140,7 @@ v0.13.0
 
 - Add a mapping compatible with Plex and ffmpeg for the "original date"
   fields.
+- Remove an unnecessary dependency on `six`.
 
 v0.12.0
 '''''''

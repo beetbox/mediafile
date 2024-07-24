@@ -1127,6 +1127,7 @@ class MediaFieldTest(unittest.TestCase):
                 "albumartists_credit",
                 "albumartists_sort",
                 "subtitle",
+                "popm"
             )
         )
         self.assertCountEqual(MediaFile.fields(), fields)

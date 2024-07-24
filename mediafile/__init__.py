@@ -424,7 +424,13 @@ class MediaFile:
         ASFStorageStyle("TotalDiscs"),
         out_type=int,
     )
-
+    popm = MediaField(
+        MP3StorageStyle("POPM"),
+        MP4StorageStyle("POPM", as_type=int),
+        StorageStyle("POPM"),
+        ASFStorageStyle("Popm"),
+        out_type=int,
+    )
     url = MediaField(
         MP3DescStorageStyle(key="WXXX", attr="url", multispec=False),
         MP4StorageStyle("\xa9url"),

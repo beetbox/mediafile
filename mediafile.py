@@ -352,7 +352,9 @@ def image_mime_type(data):
 
 
 def image_extension(data):
-    return filetype.guess_extension(data)
+    ext = filetype.guess_extension(data)
+    # imghdr returned "tiff", so we should keep returning it with filetype.
+    return ext if ext != 'tif' else 'tiff'
 
 
 class ImageType(enum.Enum):

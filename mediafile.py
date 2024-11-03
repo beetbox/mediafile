@@ -46,8 +46,8 @@ import binascii
 import codecs
 import datetime
 import enum
+import filetype
 import functools
-import imghdr
 import logging
 import math
 import os
@@ -77,8 +77,6 @@ TYPES = {
     'dsf':  'DSD Stream File',
     'wav':  'WAVE',
 }
-
-PREFERRED_IMAGE_EXTENSIONS = {'jpeg': 'jpg'}
 
 
 # Exceptions.
@@ -346,52 +344,17 @@ def _sc_encode(gain, peak):
 
 
 # Cover art and other images.
-def _imghdr_what_wrapper(data):
-    """A wrapper around imghdr.what to account for jpeg files that can only be
-    identified as such using their magic bytes
-    See #1545
-    See https://github.com/file/file/blob/master/magic/Magdir/jpeg#L12
-    """
-    # imghdr.what returns none for jpegs with only the magic bytes, so
-    # _wider_test_jpeg is run in that case. It still returns None if it didn't
-    # match such a jpeg file.
-    return imghdr.what(None, h=data) or _wider_test_jpeg(data)
-
-
-def _wider_test_jpeg(data):
-    """Test for a jpeg file following the UNIX file implementation which
-    uses the magic bytes rather than just looking for the bytes that
-    represent 'JFIF' or 'EXIF' at a fixed position.
-    """
-    if data[:2] == b'\xff\xd8':
-        return 'jpeg'
-
 
 def image_mime_type(data):
     """Return the MIME type of the image data (a bytestring).
     """
-    # This checks for a jpeg file with only the magic bytes (unrecognized by
-    # imghdr.what). imghdr.what returns none for that type of file, so
-    # _wider_test_jpeg is run in that case. It still returns None if it didn't
-    # match such a jpeg file.
-    kind = _imghdr_what_wrapper(data)
-    if kind in ['gif', 'jpeg', 'png', 'tiff', 'bmp']:
-        return 'image/{0}'.format(kind)
-    elif kind == 'pgm':
-        return 'image/x-portable-graymap'
-    elif kind == 'pbm':
-        return 'image/x-portable-bitmap'
-    elif kind == 'ppm':
-        return 'image/x-portable-pixmap'
-    elif kind == 'xbm':
-        return 'image/x-xbitmap'
-    else:
-        return 'image/x-{0}'.format(kind)
+    return filetype.guess_mime(data)
 
 
 def image_extension(data):
-    ext = _imghdr_what_wrapper(data)
-    return PREFERRED_IMAGE_EXTENSIONS.get(ext, ext)
+    ext = filetype.guess_extension(data)
+    # imghdr returned "tiff", so we should keep returning it with filetype.
+    return ext if ext != 'tif' else 'tiff'
 
 
 class ImageType(enum.Enum):

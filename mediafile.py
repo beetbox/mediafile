@@ -1774,8 +1774,12 @@ class MediaFile(object):
         ListStorageStyle('GENRE'),
         ASFStorageStyle('WM/Genre'),
     )
-    genre = genres.single_field()
-
+    genre = MediaField(
+        MP3StorageStyle('genre'),
+        MP4StorageStyle('\xa9gen'),
+        StorageStyle('GENRE'),
+        ASFStorageStyle('WM/Genre'),
+    )
     lyricist = MediaField(
         MP3StorageStyle('TEXT'),
         MP4StorageStyle('----:com.apple.iTunes:LYRICIST'),

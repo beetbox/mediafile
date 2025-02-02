@@ -189,7 +189,7 @@ def _safe_cast(out_type, val):
     if val is None:
         return None
 
-    if out_type == int:
+    if out_type is int:
         if isinstance(val, int) or isinstance(val, float):
             # Just a number.
             return int(val)
@@ -203,14 +203,14 @@ def _safe_cast(out_type, val):
             match = re.match(r'[\+-]?[0-9]+', val.strip())
             return int(match.group(0)) if match else 0
 
-    elif out_type == bool:
+    elif out_type is bool:
         try:
             # Should work for strings, bools, ints:
             return bool(int(val))
         except ValueError:
             return False
 
-    elif out_type == str:
+    elif out_type is str:
         if isinstance(val, bytes):
             return val.decode('utf-8', 'ignore')
         elif isinstance(val, str):
@@ -218,7 +218,7 @@ def _safe_cast(out_type, val):
         else:
             return str(val)
 
-    elif out_type == float:
+    elif out_type is float:
         if isinstance(val, int) or isinstance(val, float):
             return float(val)
         else:
@@ -1271,13 +1271,13 @@ class MediaField(object):
         """Get an appropriate "null" value for this field's type. This
         is used internally when setting the field to None.
         """
-        if self.out_type == int:
+        if self.out_type is int:
             return 0
-        elif self.out_type == float:
+        elif self.out_type is float:
             return 0.0
-        elif self.out_type == bool:
+        elif self.out_type is bool:
             return False
-        elif self.out_type == str:
+        elif self.out_type is str:
             return u''
 
 

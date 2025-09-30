@@ -1807,6 +1807,11 @@ class MediaFile(object):
         StorageStyle('GROUPING'),
         ASFStorageStyle('WM/ContentGroupDescription'),
     )
+    subtitle = MediaField(
+        MP3StorageStyle('TIT3'),
+        StorageStyle('SUBTITLE'),
+        ASFStorageStyle('Subtitle'),
+    )
     track = MediaField(
         MP3SlashPackStorageStyle('TRCK', pack_pos=0),
         MP4TupleStorageStyle('trkn', index=0),

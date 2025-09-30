@@ -13,10 +13,11 @@ jobs:
         name: '${{ matrix.os }}: ${{ matrix.tox-env }}'
         runs-on: ${{ matrix.os }}
         strategy:
+            fail-fast: false
             matrix:
                 tox-env: [py37-test, py38-test, py39-test,
                           py310-test, pypy-test]
-                os: [ubuntu-latest, windows-latest]
+                os: [ubuntu-22.04, windows-latest]
 
                 # Only test on a couple of versions on Windows.
                 exclude:

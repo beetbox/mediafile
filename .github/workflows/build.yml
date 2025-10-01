@@ -16,26 +16,33 @@ jobs:
             fail-fast: false
             matrix:
                 tox-env:
-                    [py37-test, py38-test, py39-test, py310-test, pypy-test]
-                os: [ubuntu-22.04, windows-latest]
+                    [
+                        py39-test,
+                        py310-test,
+                        py311-test,
+                        py312-test,
+                        py313-test,
+                        pypy-test,
+                    ]
+                os: [ubuntu-24.04, windows-latest]
 
                 # Only test on a couple of versions on Windows.
                 exclude:
-                    - os: windows-latest
-                      tox-env: py37-test
                     - os: windows-latest
                       tox-env: pypy-test
 
                 # Python interpreter versions. :/
                 include:
-                    - tox-env: py37-test
-                      python: "3.7"
-                    - tox-env: py38-test
-                      python: "3.8"
                     - tox-env: py39-test
                       python: "3.9"
                     - tox-env: py310-test
                       python: "3.10"
+                    - tox-env: py311-test
+                      python: "3.11"
+                    - tox-env: py312-test
+                      python: "3.12"
+                    - tox-env: py313-test
+                      python: "3.13"
                     - tox-env: pypy-test
                       python: pypy3.9
 

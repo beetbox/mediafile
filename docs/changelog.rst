@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Upcoming
+'''''''
+- Dropped support for Python 3.7 and 3.8
+
+
 v0.13.0
 '''''''
 

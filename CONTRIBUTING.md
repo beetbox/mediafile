@@ -1,6 +1,5 @@
 # Contributing to mediafile
 
-
 First off, thanks for taking the time to contribute! ❤️
 
 Please follow these guidelines to ensure a smooth contribution process.
@@ -12,6 +11,8 @@ Please follow these guidelines to ensure a smooth contribution process.
 
 ## Setup the Development Environment
 
+We recommend using a virtual environment to manage dependencies. You can use `venv`, `conda`, or any other tool of your choice.
+
 1. Fork/Clone the repository on GitHub
 ```bash
 git clone <your-fork-url>
@@ -19,7 +20,7 @@ cd mediafile
 ```
 2. Install dependencies and set up the development environment
 ```bash
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 ## Before submitting a Pull Request

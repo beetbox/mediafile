@@ -1,11 +1,41 @@
 """Custom exceptions for MediaFile metadata handling."""
 
+from __future__ import annotations
 
-class UnreadableFileError(Exception):
-    """Mutagen is not able to extract information from the file."""
 
-    def __init__(self, filename, msg):
-        Exception.__init__(self, msg if msg else repr(filename))
+class MediaFileError(Exception):
+    """Base exception for all MediaFile-related errors."""
+
+    def __init__(
+        self,
+        message: str,
+        filename: str | None = None,
+    ):
+        self.filename = filename
+        self.message = message
+        super().__init__(self._format_message())
+
+    def _format_message(self) -> str:
+        if self.filename:
+            return f"{self.filename}: {self.message}"
+        return self.message
+
+    def __str__(self) -> str:
+        return self._format_message()
+
+
+class UnreadableFileError(MediaFileError):
+    """Raised when Mutagen cannot extract information from the file."""
+
+    def __init__(
+        self,
+        filename: str,
+        message: str,
+    ):
+        super().__init__(
+            message,
+            filename,
+        )
 
 
 class FileTypeError(UnreadableFileError):
@@ -15,20 +45,28 @@ class FileTypeError(UnreadableFileError):
     mutagen type is not supported by `Mediafile`.
     """
 
-    def __init__(self, filename, mutagen_type=None):
+    def __init__(
+        self,
+        filename: str,
+        mutagen_type: str | None = None,
+    ):
         if mutagen_type is None:
-            msg = "{0!r}: not in a recognized format".format(filename)
+            msg = "File is not in a recognized format"
         else:
-            msg = "{0}: of mutagen type {1}".format(repr(filename), mutagen_type)
-        Exception.__init__(self, msg)
+            msg = f"File type '{mutagen_type}' is not supported"
+
+        super().__init__(filename, msg)
 
 
 class MutagenError(UnreadableFileError):
-    """Raised when Mutagen fails unexpectedly---probably due to a bug."""
+    """Raised when Mutagen fails unexpectedly, likely due to a bug."""
 
-    def __init__(self, filename, mutagen_exc):
-        msg = "{0}: {1}".format(repr(filename), mutagen_exc)
-        Exception.__init__(self, msg)
+    mutagen_exception: Exception
+
+    def __init__(self, filename: str, mutagen_exception: Exception):
+        self.mutagen_exception = mutagen_exception
+        message = f"Mutagen internal error: {mutagen_exception}"
+        super().__init__(filename, message)
 
 
 __all__ = ["UnreadableFileError", "FileTypeError", "MutagenError"]

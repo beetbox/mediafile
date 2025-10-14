@@ -3,6 +3,8 @@ import struct
 import mutagen
 import mutagen.asf
 
+from mediafile.utils import Image
+
 from .base import ListStorageStyle
 
 

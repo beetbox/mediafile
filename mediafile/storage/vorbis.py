@@ -3,6 +3,8 @@ import base64
 import mutagen
 import mutagen.flac
 
+from mediafile.utils import Image
+
 from .base import ListStorageStyle
 
 

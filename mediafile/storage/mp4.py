@@ -1,3 +1,7 @@
+import mutagen.mp4
+
+from mediafile.utils import Image
+
 from .base import ListStorageStyle, SoundCheckStorageStyleMixin, StorageStyle
 
 

@@ -1,3 +1,6 @@
+from mediafile.utils import sc_decode, sc_encode
+
+
 class StorageStyle(object):
     """A strategy for storing a value for a certain tag format (or set
     of tag formats). This basic StorageStyle describes simple 1:1
@@ -207,14 +210,14 @@ class SoundCheckStorageStyleMixin(object):
     def get(self, mutagen_file):
         data = self.fetch(mutagen_file)
         if data is not None:
-            return _sc_decode(data)[self.index]
+            return sc_decode(data)[self.index]
 
     def set(self, mutagen_file, value):
         data = self.fetch(mutagen_file)
         if data is None:
             gain_peak = [0, 0]
         else:
-            gain_peak = list(_sc_decode(data))
+            gain_peak = list(sc_decode(data))
         gain_peak[self.index] = value or 0
-        data = self.serialize(_sc_encode(*gain_peak))
+        data = self.serialize(sc_encode(*gain_peak))
         self.store(mutagen_file, data)

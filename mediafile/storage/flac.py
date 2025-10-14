@@ -1,3 +1,10 @@
+import mutagen.flac
+
+from mediafile.utils import Image
+
+from .base import ListStorageStyle
+
+
 class FlacImageStorageStyle(ListStorageStyle):
     """Converts between ``mutagen.flac.Picture`` and ``Image`` instances."""
 

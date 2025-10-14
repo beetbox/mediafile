@@ -34,38 +34,55 @@ data from the tags. In turn ``MediaField`` uses a number of
 ``StorageStyle`` strategies to handle format specific logic.
 """
 
-import base64
-import binascii
-import codecs
-import datetime
-import enum
-import functools
 import logging
-import math
 import os
 import re
-import struct
-import traceback
 
-import filetype
 import mutagen
-import mutagen._util
-import mutagen.asf
-import mutagen.flac
-import mutagen.id3
 import mutagen.mp3
-import mutagen.mp4
 
-from .exceptions import FileTypeError, MutagenError, UnreadableFileError
+from .constants import TYPES, ImageType
+from .exceptions import FileTypeError, UnreadableFileError
+from .fields import (
+    CoverArtField,
+    DateField,
+    DateItemField,
+    ImageListField,
+    ListMediaField,
+    MediaField,
+    QNumberField,
+)
+from .storage import (
+    ASFStorageStyle,
+    ListStorageStyle,
+    MP3DescStorageStyle,
+    MP3ListDescStorageStyle,
+    MP3ListStorageStyle,
+    MP3PeopleStorageStyle,
+    MP3SlashPackStorageStyle,
+    MP3SoundCheckStorageStyle,
+    MP3StorageStyle,
+    MP3UFIDStorageStyle,
+    MP4BoolStorageStyle,
+    MP4ListStorageStyle,
+    MP4SoundCheckStorageStyle,
+    MP4StorageStyle,
+    MP4TupleStorageStyle,
+    StorageStyle,
+)
+from .utils import Image, loadfile, mutagen_call, update_filething
 
-__version__ = "0.13.0"
-__all__ = ["UnreadableFileError", "FileTypeError", "MediaFile"]
+__version__ = "1.0.0-rc1"
+__all__ = [
+    "UnreadableFileError",
+    "FileTypeError",
+    "MediaFile",
+    "Image",
+    "TYPES",
+    "ImageType",
+]
 
 log = logging.getLogger(__name__)
-
-
-
-
 
 
 # MediaFile is a collection of fields.
@@ -190,7 +207,7 @@ class MediaFile(object):
             "save",
             self.filename,
             self.mgfile.save,
-            _update_filething(self.filething),
+            update_filething(self.filething),
             **kwargs,
         )
 
@@ -202,7 +219,7 @@ class MediaFile(object):
             "delete",
             self.filename,
             self.mgfile.delete,
-            _update_filething(self.filething),
+            update_filething(self.filething),
         )
 
     # Convenient access to the set of available fields.

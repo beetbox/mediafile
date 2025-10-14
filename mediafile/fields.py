@@ -1,5 +1,10 @@
+# MediaField is a descriptor that represents a single logical field. It
+# aggregates several StorageStyles describing how to access the data for
+# each file type.
 import datetime
 import re
+
+from mediafile.utils import Image, safe_cast
 
 from .constants import ImageType
 from .storage import (
@@ -10,10 +15,6 @@ from .storage import (
     MP4ImageStorageStyle,
     VorbisImageStorageStyle,
 )
-
-# MediaField is a descriptor that represents a single logical field. It
-# aggregates several StorageStyles describing how to access the data for
-# each file type.
 
 
 class MediaField(object):
@@ -50,7 +51,7 @@ class MediaField(object):
             out = style.get(mediafile.mgfile)
             if out:
                 break
-        return _safe_cast(self.out_type, out)
+        return safe_cast(self.out_type, out)
 
     def __set__(self, mediafile, value):
         if value is None:
@@ -89,7 +90,7 @@ class ListMediaField(MediaField):
         for style in self.styles(mediafile.mgfile):
             values = style.get_list(mediafile.mgfile)
             if values:
-                return [_safe_cast(self.out_type, value) for value in values]
+                return [safe_cast(self.out_type, value) for value in values]
         return None
 
     def __set__(self, mediafile, values):

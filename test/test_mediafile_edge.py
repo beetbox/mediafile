@@ -24,7 +24,7 @@ import mutagen.id3
 import mediafile
 from test import _common
 
-_sc = mediafile._safe_cast
+_sc = mediafile.utils.safe_cast
 
 
 class EdgeTest(unittest.TestCase):
@@ -278,8 +278,8 @@ class TypeTest(unittest.TestCase):
 
 class SoundCheckTest(unittest.TestCase):
     def test_round_trip(self):
-        data = mediafile._sc_encode(1.0, 1.0)
-        gain, peak = mediafile._sc_decode(data)
+        data = mediafile.utils.sc_encode(1.0, 1.0)
+        gain, peak = mediafile.utils.sc_decode(data)
         self.assertEqual(gain, 1.0)
         self.assertEqual(peak, 1.0)
 
@@ -288,31 +288,31 @@ class SoundCheckTest(unittest.TestCase):
             b" 80000000 80000000 00000000 00000000 00000000 00000000 "
             b"00000000 00000000 00000000 00000000"
         )
-        gain, peak = mediafile._sc_decode(data)
+        gain, peak = mediafile.utils.sc_decode(data)
         self.assertEqual(gain, 0.0)
         self.assertEqual(peak, 0.0)
 
     def test_malformatted(self):
-        gain, peak = mediafile._sc_decode(b"foo")
+        gain, peak = mediafile.utils.sc_decode(b"foo")
         self.assertEqual(gain, 0.0)
         self.assertEqual(peak, 0.0)
 
     def test_special_characters(self):
-        gain, peak = mediafile._sc_decode("caf\xe9".encode("utf-8"))
+        gain, peak = mediafile.utils.sc_decode("caf\xe9".encode("utf-8"))
         self.assertEqual(gain, 0.0)
         self.assertEqual(peak, 0.0)
 
     def test_decode_handles_unicode(self):
         # Most of the time, we expect to decode the raw bytes. But some formats
         # might give us text strings, which we need to handle.
-        gain, peak = mediafile._sc_decode("caf\xe9")
+        gain, peak = mediafile.utils.sc_decode("caf\xe9")
         self.assertEqual(gain, 0.0)
         self.assertEqual(peak, 0.0)
 
     def test_encode_excessive_gain(self):
         # The mimimum value of SoundCheck gain is 30.0dB.
-        data = mediafile._sc_encode(60.0, 1.0)
-        gain, _ = mediafile._sc_decode(data)
+        data = mediafile.utils.sc_encode(60.0, 1.0)
+        gain, _ = mediafile.utils.sc_decode(data)
         self.assertEqual(gain, 30.0)
 
 

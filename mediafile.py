@@ -774,6 +774,13 @@ class MP3StorageStyle(StorageStyle):
     def fetch(self, mutagen_file):
         try:
             return mutagen_file[self.key].text[0]
+        except AttributeError:
+            try:
+                if isinstance(mutagen_file[self.key].url, list):
+                    return mutagen_file[self.key].url[0]
+                return mutagen_file[self.key].url
+            except AttributeError:
+                return None
         except (KeyError, IndexError):
             return None
 

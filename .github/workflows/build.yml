@@ -34,8 +34,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest -v --cov=mediafile --cov-report=xml tests/
-
+          pytest -v
   style:
     name: Style
     runs-on: ubuntu-latest

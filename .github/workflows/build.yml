@@ -1,56 +1,81 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
 env:
-  MAIN_PYTHON_VERSION: "3.12"
+    MAIN_PYTHON_VERSION: "3.12"
+
+concurrency:
+    # Cancel previous workflow run when a new commit is pushed to a feature branch
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  test:
-    name: "${{ matrix.os }}: ${{ matrix.python-version }}"
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-24.04, windows-latest]
+    changed-files:
+        runs-on: ubuntu-latest
+        name: Get changed files
+        steps:
+            - uses: actions/checkout@v5
 
-    steps:
-      - uses: actions/checkout@v5
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
+            - name: Get changed python files
+              id: raw-changed-python-files
+              uses: tj-actions/changed-files@v46
+              with:
+                  files: |
+                      **.py
+                      uv.lock
 
-      - name: Run tests
-        run: |
-          pytest -v
-  style:
-    name: Style
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Set up Python ${{ env.MAIN_PYTHON_VERSION }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
-      - name: Check style with Ruff
-        run: |
-          ruff check --output-format=github .
-      - name: Check format with Ruff
-        run: |
-          ruff format --check .
+    test:
+        name: "${{ matrix.os }}: ${{ matrix.python-version }}"
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+                os: [ubuntu-24.04, windows-latest]
+
+        steps:
+            - uses: actions/checkout@v5
+            - name: Install uv and set the Python version
+              uses: astral-sh/setup-uv@v6
+              with:
+                  python-version: ${{ matrix.python-version }}
+                  enable-cache: true
+            - name: Install dependencies
+              run: |
+                  uv sync --frozen --all-extras --dev
+            - name: Run tests with coverage
+              run: |
+                  uv run poe test-with-coverage -v
+            - name: Upload coverage reports
+              if: matrix.os == 'ubuntu-24.04' && matrix.python-version == env.MAIN_PYTHON_VERSION
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage-${{ github.run_id }}
+                  path: reports
+                  retention-days: 30
+
+    style:
+        name: Style
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - name: Install uv and set the Python version
+              uses: astral-sh/setup-uv@v6
+              with:
+                  python-version: ${{ env.MAIN_PYTHON_VERSION }}
+                  enable-cache: true
+            - name: Install dependencies
+              run: |
+                  uv sync --frozen --group dev
+            - name: Check style with Ruff
+              run: |
+                  uv run ruff check --output-format=github
+            - name: Check format with Ruff
+              run: |
+                  uv run ruff format --check

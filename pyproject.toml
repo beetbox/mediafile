@@ -4,6 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "mediafile"
+version = "1.0.0-rc1"
 authors = [
     { name = "Adrian Sampson", email = "adrian@radbox.org" },
 ]
@@ -11,7 +12,6 @@ readme = "README.rst"
 license = "MIT"
 requires-python = ">=3.9"
 description = "A simple, cross-format library for reading and writing media file metadata."
-dynamic = ["version"]
 classifiers = [
     'Topic :: Multimedia :: Sound/Audio',
     'Environment :: Web Environment',
@@ -32,15 +32,10 @@ dependencies = [
 Documentation = "https://mediafile.readthedocs.io"
 Source = "https://github.com/beetbox/mediafile"
 
-[project.optional-dependencies]
-dev = [
-    "ruff",
-    "pytest"
-]
 
 [tool.ruff]
 target-version = "py39"
-include = ["mediafile.py", "test/**/*.py"]
+include = ["mediafile/**/*", "test/**/*.py"]
 
 [tool.ruff.lint]
 select = [
@@ -58,3 +53,46 @@ ignore = [
 
 [tool.ruff.format]
 quote-style = "double"
+
+[dependency-groups]
+dev = [
+    "poethepoet>=0.37.0",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.1",
+]
+
+[tool.poe]
+executor.type = "uv"
+
+[tool.poe.tasks.build]
+help = "Build the package"
+cmd = "uv build"
+
+[tool.poe.tasks.test]
+help = "Run the test suite with coverage"
+cmd = "pytest $OPTS"
+env.OPTS.default = "--cov=mediafile test/"
+
+[tool.poe.tasks.test-with-coverage]
+help = "Run the test suite with coverage (alias for 'poe test')"
+ref = "test"
+env.OPTS.default = """
+--cov=mediafile
+--cov-report=xml:.reports/coverage.xml
+--cov-report=html:.reports/html
+--cov-branch
+--cov-context=test
+"""
+
+[tool.poe.tasks.lint]
+help = "Run ruff linter"
+cmd = "ruff check"
+
+[tool.poe.tasks.format]
+help = "Autoformat code with ruff"
+cmd = "ruff format"
+
+[tool.poe.tasks.check-types]
+help = "Check the code for typing issues. Accepts mypy options."
+cmd = "mypy"

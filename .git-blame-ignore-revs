@@ -1,18 +1,29 @@
-# Migrated to ruff
+# Moved changelog into its own file and added changelog reminder.
 7ff9d471b23c45b6d957e7507035af39885546ab
+# Removed flask8 in favor of ruff.
 226e455a5605cf70a4387ba6a17da85d41c6ce87
 
-# Major refactor 2025
-710b62ceb63b4fd7c2f03acef3ccbf9e1b0ce1ac
-50599d09236e408e6f0d473e2daf536876eaa762
-921f0882bf21d0f43b68a6d356dde9a8f901a0aa
-ad4d35c81b4739da9e61375607d77fe2a9a5a84e
-3579aaa4aa1992f13bf7716605936a63ce0e4f9d
-ddc2f69bdb7e4acca5d85c869c9c4b888a51a3ec
-3fa7f2d0c6e4facb9fa6559c43cebfc21495a07f
-5eb62e2c099e38d3beefda7c7266247b4286aa80
-97bb4b43f82eb2cf6067ebdb9d626a4471559e55
-dbd0ca86085792a2c358fcd2778a8de0cd403a58
-00942a696db8912cbe6b71cd4daf960d91faf979
-58da1e7cfdd3d17f20d7de175a81931d840e145c
-cbc64e3e0903585e1865f7e80f92a2b066776ac7
+# Moved mediafile.py into mediafile/__init__.py to allow easier refactoring.
+4d508f94aef6976162993b7d92dc2347120ee306
+# Moved exceptions into own file.
+075749781172208a6ce6bfda0e31e9ab6e42f340
+# Modernized exceptions and added common type.
+891eef5b2d117b07dd74b17fb84e509db9c24f4c
+# Moved constants into own file.
+9470f8e4d7b3bd17372d6c82aa19834f2148a795
+# Moved storage classes into own files and folder.
+146a462e44e0bd4efa4f67a06378686adc8d38b4
+# Moved field classes to own file.
+80145c8c2e0a031c1d4da7a872ca200cc0e2d3af
+# Moved afs unpack util functions to asf module.
+5bfd2cb144ce618c7a8fff7a713addc661bd7465
+# Moved mutagen util functions
+28f336523d26f8ba1d3996c9b90ae5b8c8411b5d
+# Moved soundcheck util functions into own file.
+8a1769f9731cc9aec44c707b07941ce3824e6e0b
+# Moved image util functions into own file
+184f59c727612978e7c5f64ff24e07019094599e
+# Moved safecast util functions.
+a5b5c6c8ff61b0271df36e17633c34503f1de189
+# Fixed imports
+bb3857d297596b589302c9d7b4bd166e5184a59b

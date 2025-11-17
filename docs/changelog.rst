@@ -10,6 +10,7 @@ Upcoming
     the codebase with ``ruff``.
 - Moved changelog into its own file, ``changelog.rst``. Also added github workflow
     for automatic changelog reminders.
+- The project now uses ``uv`` for dependency management.
 
 v0.13.0
 '''''''

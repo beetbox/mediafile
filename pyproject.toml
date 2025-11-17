@@ -4,6 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "mediafile"
+version = "1.0.0-rc1"
 authors = [
     { name = "Adrian Sampson", email = "adrian@radbox.org" },
 ]
@@ -11,7 +12,6 @@ readme = "README.rst"
 license = "MIT"
 requires-python = ">=3.9"
 description = "A simple, cross-format library for reading and writing media file metadata."
-dynamic = ["version"]
 classifiers = [
     'Topic :: Multimedia :: Sound/Audio',
     'Environment :: Web Environment',
@@ -40,7 +40,7 @@ dev = [
 
 [tool.ruff]
 target-version = "py39"
-include = ["mediafile.py", "test/**/*.py"]
+include = ["mediafile/**/*", "test/**/*.py"]
 
 [tool.ruff.lint]
 select = [

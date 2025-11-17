@@ -24,7 +24,7 @@ We use `uv` to manage virtual environments. If you don't have it installed, see 
 uv sync --frozen --group dev
 ```
 
-3. Activate the virtual environment (optional):
+3. Activate the virtual environment managed by `uv`:
 ```bash
 source .venv/bin/activate
 ```

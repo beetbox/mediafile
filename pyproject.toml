@@ -72,7 +72,7 @@ cmd = "uv build"
 [tool.poe.tasks.test]
 help = "Run the test suite with coverage"
 cmd = "pytest $OPTS"
-env.OPTS.default = "---cov=mediafile test/"
+env.OPTS.default = "--cov=mediafile test/"
 
 [tool.poe.tasks.test-with-coverage]
 help = "Run the test suite with coverage (alias for 'poe test')"

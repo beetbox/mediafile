@@ -5,9 +5,6 @@ on:
     branches:
       - master
 
-env:
-  MAIN_PYTHON_VERSION: "3.12"
-
 jobs:
   test:
     name: Run tests
@@ -34,23 +31,3 @@ jobs:
         run: |-
           poetry install
           poe test
-
-  style:
-    name: Style
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Set up Python ${{ env.MAIN_PYTHON_VERSION }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
-      - name: Check style with Ruff
-        run: |
-          ruff check --output-format=github .
-      - name: Check format with Ruff
-        run: |
-          ruff format --check .

@@ -1,42 +1,76 @@
-[build-system]
-requires = ["flit_core >=3.11,<4"]
-build-backend = "flit_core.buildapi"
-
 [project]
 name = "mediafile"
-authors = [
-    { name = "Adrian Sampson", email = "adrian@radbox.org" },
-]
+version = "0.13.0"
+description = "A simple, cross-format library for reading and writing media file metadata."
+authors = [{ name = "Adrian Sampson", email = "adrian@radbox.org" }]
 readme = "README.rst"
 license = "MIT"
 requires-python = ">=3.9"
-description = "A simple, cross-format library for reading and writing media file metadata."
 dynamic = ["version"]
 classifiers = [
-    'Topic :: Multimedia :: Sound/Audio',
-    'Environment :: Web Environment',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10',
-    'Programming Language :: Python :: 3.11',
-    'Programming Language :: Python :: 3.12',
-    'Programming Language :: Python :: 3.13',
-    'Programming Language :: Python :: Implementation :: PyPy',
+    "Topic :: Multimedia :: Sound/Audio",
+    "Environment :: Web Environment",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "mutagen>=1.46",
-    "filetype>=1.2.0",
+    "mutagen >= 1.46",
+    "filetype >= 1.2.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest >= 8",
+    "pytest-cov >= 7.0.0",
+    "ruff",
+]
 
 [project.urls]
 Documentation = "https://mediafile.readthedocs.io"
-Source = "https://github.com/beetbox/mediafile"
+Hopepage = "https://mediafile.readthedocs.io"
+Repository = "https://github.com/beetbox/mediafile"
+"Bug Tracker" = "https://github.com/beetbox/mediafile/issues"
 
-[project.optional-dependencies]
-dev = [
-    "ruff",
-    "pytest"
-]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pipx-install]
+poethepoet = ">=0.26"
+poetry = ">=2.1"
+
+[tool.poetry.requires-plugins]
+poethepoet = ">=0.32"
+
+[tool.poe.tasks.docs]
+help = "Build documentation"
+args = [{ name = "COMMANDS", positional = true, multiple = true, default = "html" }]
+cmd = "make -C docs $COMMANDS"
+
+[tool.poe.tasks.test]
+help = "Run tests with pytest"
+cmd = "pytest $OPTS"
+env.OPTS.default = "-p no:cov"
+
+[tool.poe.tasks.test-with-coverage]
+help = "Run tests and record coverage"
+ref = "test"
+# record coverage in mediafile package
+# save xml for coverage upload to codecov
+# save html report for local dev use
+# measure coverage across logical branches
+# show which tests cover specific lines in the code (see the HTML report)
+env.OPTS = """
+--cov=mediafile
+--cov-report=xml:.reports/coverage.xml
+--cov-report=html:.reports/html
+--cov-branch
+--cov-context=test
+"""
 
 [tool.ruff]
 target-version = "py39"

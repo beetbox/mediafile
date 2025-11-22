@@ -14,13 +14,23 @@ Please follow these guidelines to ensure a smooth contribution process.
 We recommend using a virtual environment to manage dependencies. You can use `venv`, `conda`, or any other tool of your choice.
 
 1. Fork/Clone the repository on GitHub
+
 ```bash
-git clone <your-fork-url>
-cd mediafile
+$ git clone <your-fork-url>
+$ cd mediafile
 ```
-2. Install dependencies and set up the development environment
+
+2. Set up your development environment
+
 ```bash
-pip install -e '.[dev]'
+$ python -m pip install --user pipx
+$ pipx install poetry poethepoet
+```
+
+3. Install project dependencies
+
+```bash
+$ poetry install
 ```
 
 ## Before submitting a Pull Request
@@ -29,7 +39,7 @@ Verify that your code adheres to the project standards and conventions. Run
 ruff and pytest to ensure your code is properly formatted and all tests pass.
 
 ```bash
-ruff check .
-ruff format .
-pytest .
+$ poe lint
+$ poe format
+$ poe test
 ```

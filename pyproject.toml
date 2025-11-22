@@ -1,6 +1,6 @@
 [project]
 name = "mediafile"
-version = "1.0.0-rc1"
+version = "0.13.0"
 description = "A simple, cross-format library for reading and writing media file metadata."
 authors = [{ name = "Adrian Sampson", email = "adrian@radbox.org" }]
 readme = "README.rst"

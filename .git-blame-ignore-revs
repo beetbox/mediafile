@@ -27,3 +27,9 @@
 a5b5c6c8ff61b0271df36e17633c34503f1de189
 # Fixed imports
 bb3857d297596b589302c9d7b4bd166e5184a59b
+# Fix linting issues
+e9e44272a6ba8ae93f94e40ec63f43b25547bf12
+# Fix docs formatting
+f27a994243f5933344b9e65cda0c5e5d6641fe91
+# Fix docs links
+7eb134b3726b9729c3c0d8be42dbd4e1930a4260

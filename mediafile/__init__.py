@@ -42,7 +42,7 @@ import mutagen
 import mutagen.mp3
 
 from .constants import TYPES, ImageType
-from .exceptions import FileTypeError, UnreadableFileError
+from .exceptions import FileTypeError, MutagenError, UnreadableFileError
 from .fields import (
     CoverArtField,
     DateField,
@@ -72,10 +72,10 @@ from .storage import (
 )
 from .utils import Image, loadfile, mutagen_call, update_filething
 
-__version__ = "1.0.0-rc1"
 __all__ = [
     "UnreadableFileError",
     "FileTypeError",
+    "MutagenError",
     "MediaFile",
     "Image",
     "TYPES",

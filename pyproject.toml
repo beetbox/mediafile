@@ -34,6 +34,9 @@ lint = [
     "sphinx-lint >= 1.0.0",
 ]
 
+[project.optional-dependencies]
+docs = ["sphinx >= 7.4.7"]
+
 [project.urls]
 Documentation = "https://mediafile.readthedocs.io"
 Hopepage = "https://mediafile.readthedocs.io"

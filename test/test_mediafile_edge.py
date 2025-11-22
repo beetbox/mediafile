@@ -217,7 +217,7 @@ class MP3EncodingTest(unittest.TestCase, _common.TempDirMixin):
     def test_comment_with_latin1_encoding(self):
         # Set up the test file with a Latin1-encoded COMM frame. The encoding
         # indices defined by MP3 are listed here:
-        # http://id3.org/id3v2.4.0-structure
+        # https://id3.org/id3v2.4.0-structure
         self.mf.mgfile["COMM::eng"].encoding = 0
 
         # Try to store non-Latin1 text.

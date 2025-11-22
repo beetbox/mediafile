@@ -4,7 +4,7 @@ MediaFile: read and write audio files' tags in Python
 .. image:: https://github.com/beetbox/mediafile/actions/workflows/build.yml/badge.svg?branch=master
     :target: https://github.com/beetbox/mediafile/actions
 
-.. image:: http://img.shields.io/pypi/v/mediafile.svg
+.. image:: https://img.shields.io/pypi/v/mediafile.svg
     :target: https://pypi.python.org/pypi/mediafile
 
 MediaFile is a simple interface to the metadata tags for many audio file
@@ -37,7 +37,7 @@ Documentation
 
 See the `full documentation`_.
 
-.. _full documentation: http://mediafile.readthedocs.io/
+.. _full documentation: https://mediafile.readthedocs.io/
 
 Authors
 -------
@@ -49,4 +49,4 @@ Sampson`_ and is now developed by the beets community. The license is MIT.
 
 .. _beets: https://github.com/beetbox/beets
 
-.. _mit: http://www.opensource.org/licenses/mit-license.php
+.. _mit: https://www.opensource.org/licenses/mit-license.php

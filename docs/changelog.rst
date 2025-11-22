@@ -83,7 +83,7 @@ v0.5.0
 
 - Refactored the distribution to use Flit_.
 
-.. _flit: https://flit.readthedocs.io/
+.. _flit: https://flit.pypa.io/en/stable
 
 v0.4.0
 ------
@@ -107,7 +107,7 @@ v0.2.0
 - The Python source distribution now includes an ``__init__.py`` file that makes
   it easier to run the tests.
 
-.. _the relevant standard: https://tools.ietf.org/html/rfc7845.html#page-25
+.. _the relevant standard: https://datatracker.ietf.org/doc/html/rfc7845.html
 
 v0.1.0
 ------

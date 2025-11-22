@@ -50,10 +50,6 @@ closely aligns with those three applications. Some open questions remain about
 how to most compatibly tag files. In particular, some fields MediaFile supports
 don't seem standardized among FLAC/Ogg taggers:
 
-.. _mediarage: http://www.chaoticsoftware.com/ProductPages/MediaRage.html
-
-.. _tag: http://sbooth.org/Tag/
-
     - ``grouping`` and ``lyrics``: couldn't find anyone who supports these in a
       cursory search; MediaFile uses the keys ``grouping`` and ``lyrics``
     - ``tracktotal`` and ``disctotal``: we use the keys ``tracktotal``,
@@ -68,13 +64,16 @@ that other players with slightly divergent opinions on tag names will all be
 able to interact with beets_.
 
 Images (album art) are stored in the standard ways for ID3 and MPEG-4. For all
-other formats, images are stored with the `METADATA_BLOCK_PICTURE standard
-<mbp>`_ from Vorbis Comments. The older COVERART_ unofficial format is also read
-but is not written.
+other formats, images are stored with the `METADATA_BLOCK_PICTURE standard`_
+from Vorbis Comments.
 
-.. _coverart: http://wiki.xiph.org/VorbisComment#Unofficial_COVERART_field_.28deprecated.29
+.. _beets: https://beets.io
 
-.. _mbp: http://wiki.xiph.org/VorbisComment#METADATA_BLOCK_PICTURE
+.. _mediarage: https://www.chaoticsoftware.com/ProductPages/MediaRage.html
+
+.. _metadata_block_picture standard: https://wiki.xiph.org/VorbisComment#METADATA_BLOCK_PICTURE
+
+.. _tag: https://www.feisty-dog.com/tag
 
 .. currentmodule:: mediafile
 

@@ -18,7 +18,7 @@ Synopsis
 --------
 
 MediaFile is available `on PyPI`_. Install it by typing ``pip install
-mediafile``. It works on Python 3.9 or later. Then:
+mediafile``. It works on Python 3.10 or later. Then:
 
 .. code-block:: python
 

@@ -20,7 +20,7 @@ def image_extension(data):
     return ext if ext != "tif" else "tiff"
 
 
-class Image(object):
+class Image:
     """Structure representing image data and metadata that can be
     stored and retrieved from tags.
 

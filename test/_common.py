@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This file is part of mediafile.
 # Copyright 2016, Adrian Sampson.
 #
@@ -29,7 +28,7 @@ HAVE_SYMLINK = sys.platform != "win32"
 
 # Convenience methods for setting up a temporary sandbox directory for tests
 # that need to interact with the filesystem.
-class TempDirMixin(object):
+class TempDirMixin:
     """Text mixin for creating and deleting a temporary directory."""
 
     def create_temp_dir(self):

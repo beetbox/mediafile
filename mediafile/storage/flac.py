@@ -11,7 +11,7 @@ class FlacImageStorageStyle(ListStorageStyle):
     formats = ["FLAC"]
 
     def __init__(self):
-        super(FlacImageStorageStyle, self).__init__(key="")
+        super().__init__(key="")
 
     def fetch(self, mutagen_file):
         return mutagen_file.pictures

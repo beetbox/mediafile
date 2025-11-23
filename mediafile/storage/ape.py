@@ -34,7 +34,7 @@ class APEv2ImageStorageStyle(ListStorageStyle):
     }
 
     def __init__(self):
-        super(APEv2ImageStorageStyle, self).__init__(key="")
+        super().__init__(key="")
 
     def fetch(self, mutagen_file):
         images = []

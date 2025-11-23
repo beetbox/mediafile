@@ -1,7 +1,7 @@
 from mediafile.utils import sc_decode, sc_encode
 
 
-class StorageStyle(object):
+class StorageStyle:
     """A strategy for storing a value for a certain tag format (or set
     of tag formats). This basic StorageStyle describes simple 1:1
     mapping from raw values to keys in a Mutagen file object; subclasses
@@ -200,7 +200,7 @@ class ListStorageStyle(StorageStyle):
         mutagen_file[self.key] = values
 
 
-class SoundCheckStorageStyleMixin(object):
+class SoundCheckStorageStyleMixin:
     """A mixin for storage styles that read and write iTunes SoundCheck
     analysis values. The object must have an `index` field that
     indicates which half of the gain/peak pair---0 or 1---the field

@@ -11,7 +11,7 @@ class MP4StorageStyle(StorageStyle):
     formats = ["MP4"]
 
     def serialize(self, value):
-        value = super(MP4StorageStyle, self).serialize(value)
+        value = super().serialize(value)
         if self.key.startswith("----:") and isinstance(value, str):
             value = value.encode("utf-8")
         return value
@@ -23,7 +23,7 @@ class MP4TupleStorageStyle(MP4StorageStyle):
     """
 
     def __init__(self, key, index=0, **kwargs):
-        super(MP4TupleStorageStyle, self).__init__(key, **kwargs)
+        super().__init__(key, **kwargs)
         self.index = index
 
     def deserialize(self, mutagen_value):
@@ -32,7 +32,7 @@ class MP4TupleStorageStyle(MP4StorageStyle):
         return list(items) + [0] * (packing_length - len(items))
 
     def get(self, mutagen_file):
-        value = super(MP4TupleStorageStyle, self).get(mutagen_file)[self.index]
+        value = super().get(mutagen_file)[self.index]
         if value == 0:
             # The values are always present and saved as integers. So we
             # assume that "0" indicates it is not set.
@@ -49,7 +49,7 @@ class MP4TupleStorageStyle(MP4StorageStyle):
 
     def delete(self, mutagen_file):
         if self.index == 0:
-            super(MP4TupleStorageStyle, self).delete(mutagen_file)
+            super().delete(mutagen_file)
         else:
             self.set(mutagen_file, None)
 
@@ -60,7 +60,7 @@ class MP4ListStorageStyle(ListStorageStyle, MP4StorageStyle):
 
 class MP4SoundCheckStorageStyle(SoundCheckStorageStyleMixin, MP4StorageStyle):
     def __init__(self, key, index=0, **kwargs):
-        super(MP4SoundCheckStorageStyle, self).__init__(key, **kwargs)
+        super().__init__(key, **kwargs)
         self.index = index
 
 
@@ -89,7 +89,7 @@ class MP4ImageStorageStyle(MP4ListStorageStyle):
     """Store images as MPEG-4 image atoms. Values are `Image` objects."""
 
     def __init__(self, **kwargs):
-        super(MP4ImageStorageStyle, self).__init__(key="covr", **kwargs)
+        super().__init__(key="covr", **kwargs)
 
     def deserialize(self, data):
         return Image(data)

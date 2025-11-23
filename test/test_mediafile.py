@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This file is part of MediaFile.
 # Copyright 2016, Adrian Sampson.
 #
@@ -29,7 +28,7 @@ from mediafile import CoverArtField, Image, ImageType, MediaFile, UnreadableFile
 from test import _common
 
 
-class ArtTestMixin(object):
+class ArtTestMixin:
     """Test reads and writes of the ``art`` property."""
 
     @property
@@ -202,7 +201,7 @@ class ExtendedImageStructureTestMixin(ImageStructureTestMixin):
         )
 
 
-class LazySaveTestMixin(object):
+class LazySaveTestMixin:
     """Mediafile should only write changes when tags have changed"""
 
     @unittest.skip("not yet implemented")
@@ -259,7 +258,7 @@ class LazySaveTestMixin(object):
         return mtime
 
 
-class GenreListTestMixin(object):
+class GenreListTestMixin:
     """Tests access to the ``genres`` property as a list."""
 
     def test_read_genre_list(self):
@@ -611,7 +610,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin, _common.TempDirMixin):
         mediafile = self._mediafile_fixture("full")
 
         keys = self.full_initial_tags.keys()
-        for key in set(keys) - set(["art", "month", "day"]):
+        for key in set(keys) - {"art", "month", "day"}:
             self.assertIsNotNone(getattr(mediafile, key))
         for key in keys:
             delattr(mediafile, key)
@@ -673,10 +672,10 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin, _common.TempDirMixin):
             try:
                 value2 = getattr(mediafile, key)
             except AttributeError:
-                errors.append("Tag %s does not exist" % key)
+                errors.append(f"Tag {key} does not exist")
             else:
                 if value2 != value:
-                    errors.append("Tag %s: %r != %r" % (key, value2, value))
+                    errors.append(f"Tag {key}: {value2!r} != {value!r}")
         if any(errors):
             errors = ["Tags did not match"] + errors
             self.fail("\n  ".join(errors))
@@ -702,7 +701,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin, _common.TempDirMixin):
                 # R128 is int
                 tags[key] = -1
             else:
-                tags[key] = "value\u2010%s" % key
+                tags[key] = f"value\u2010{key}"
 
         for key in ["disc", "disctotal", "track", "tracktotal", "bpm"]:
             tags[key] = 1
@@ -737,7 +736,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin, _common.TempDirMixin):
         return tags
 
 
-class PartialTestMixin(object):
+class PartialTestMixin:
     tags_without_total = {
         "track": 2,
         "tracktotal": 0,

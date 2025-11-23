@@ -7,7 +7,7 @@ Upcoming
 v1.0.0
 ------
 
-- Refactored the monolith ``mediafile.py``(2400 lines) into a modular structure
+- Refactored the monolith ``mediafile.py`` (2400 lines) into a modular structure
   with multiple files under the ``mediafile/`` directory. This should make it
   easier to maintain and extend the codebase.
 - Dropped support for Python 3.7, 3.8 and 3.9. MediaFile now requires Python

@@ -1,28 +1,114 @@
+from __future__ import annotations
+
 # MediaField is a descriptor that represents a single logical field. It
 # aggregates several StorageStyles describing how to access the data for
 # each file type.
 import datetime
 import re
+from abc import ABC, abstractmethod
+from collections.abc import Iterable, Sequence
+from typing import TYPE_CHECKING, Generic
+
+from typing_extensions import TypeVar
 
 from mediafile.utils import Image, safe_cast
+from mediafile.utils.type_conversion import cast_list, none_value
 
 from .constants import ImageType
 from .storage import (
     APEv2ImageStorageStyle,
     ASFImageStorageStyle,
     FlacImageStorageStyle,
+    ListStorageStyle,
     MP3ImageStorageStyle,
     MP4ImageStorageStyle,
+    StorageStyle,
     VorbisImageStorageStyle,
 )
 
+if TYPE_CHECKING:
+    from . import MediaFile
 
-class MediaField:
+T = TypeVar("T", default=str)
+S = TypeVar("S", bound=StorageStyle, default=StorageStyle)
+DEFAULT_OUT_TYPE: type = str
+
+
+class BaseMediaField(ABC, Generic[T, S]):
+    """Abstract base class for media file metadata field descriptors.
+
+    Subclasses must implement the ``__get__``, ``__set__``, and
+    ``__delete__`` methods.
+    """
+
+    _styles: Sequence[S]
+
+    def styles(self, mutagen_file) -> Iterable[S]:
+        """Yields the list of storage styles of this field that can
+        handle the MediaFile's format.
+        """
+        for style in self._styles:
+            if mutagen_file.__class__.__name__ in style.formats:
+                yield style
+
+    @abstractmethod
+    def __get__(self, mediafile: MediaFile, owner: object = None) -> T | None: ...
+
+    @abstractmethod
+    def __set__(self, mediafile: MediaFile, value: T | None) -> None: ...
+
+    def __delete__(self, mediafile: MediaFile) -> None:
+        for style in self.styles(mediafile.mgfile):
+            style.delete(mediafile.mgfile)
+
+
+def _set_data_in_styles(
+    value: T | None,
+    mediafile: MediaFile,
+    styles: Iterable[StorageStyle],
+    out_type: type[T],
+) -> None:
+    """Helpers to set data in multiple styles.
+
+    Mainly created to avoid code duplication and keep type checking happy.
+    """
+
+    if value is None:
+        value = none_value(out_type)
+    for style in styles:
+        if not style.read_only:
+            style.set(mediafile.mgfile, value)
+
+
+def _get_data_from_styles(
+    mediafile: MediaFile,
+    styles: Iterable[StorageStyle],
+    out_type: type[T],
+) -> T | None:
+    """Helper to get data from multiple styles.
+
+    Mainly created to avoid code duplication and keep type checking happy.
+    """
+    out = None
+    for style in styles:
+        out = style.get(mediafile.mgfile)
+        if out:
+            break
+    return safe_cast(out_type, out)
+
+
+class MediaField(BaseMediaField[T, StorageStyle]):
     """A descriptor providing access to a particular (abstract) metadata
     field.
     """
 
-    def __init__(self, *styles, **kwargs):
+    out_type: type[T]
+
+    def __init__(
+        self,
+        *styles: StorageStyle,
+        out_type: type[T] = DEFAULT_OUT_TYPE,
+    ):
         """Creates a new MediaField.
 
         :param styles: `StorageStyle` instances that describe the strategy
@@ -34,51 +120,26 @@ class MediaField:
                          getting this property.
 
         """
-        self.out_type = kwargs.get("out_type", str)
+        self.out_type = out_type
         self._styles = styles
 
-    def styles(self, mutagen_file):
-        """Yields the list of storage styles of this field that can
-        handle the MediaFile's format.
-        """
-        for style in self._styles:
-            if mutagen_file.__class__.__name__ in style.formats:
-                yield style
+    def __get__(self, mediafile: MediaFile, owner=None) -> T | None:
+        return _get_data_from_styles(
+            mediafile,
+            self.styles(mediafile.mgfile),
+            self.out_type,
+        )
 
-    def __get__(self, mediafile, owner=None):
-        out = None
-        for style in self.styles(mediafile.mgfile):
-            out = style.get(mediafile.mgfile)
-            if out:
-                break
-        return safe_cast(self.out_type, out)
-
-    def __set__(self, mediafile, value):
-        if value is None:
-            value = self._none_value()
-        for style in self.styles(mediafile.mgfile):
-            if not style.read_only:
-                style.set(mediafile.mgfile, value)
-
-    def __delete__(self, mediafile):
-        for style in self.styles(mediafile.mgfile):
-            style.delete(mediafile.mgfile)
-
-    def _none_value(self):
-        """Get an appropriate "null" value for this field's type. This
-        is used internally when setting the field to None.
-        """
-        if self.out_type is int:
-            return 0
-        elif self.out_type is float:
-            return 0.0
-        elif self.out_type is bool:
-            return False
-        elif self.out_type is str:
-            return ""
+    def __set__(self, mediafile: MediaFile, value: T | None) -> None:
+        return _set_data_in_styles(
+            value,
+            mediafile,
+            self.styles(mediafile.mgfile),
+            self.out_type,
+        )
 
 
-class ListMediaField(MediaField):
+class ListMediaField(BaseMediaField[list[T], ListStorageStyle]):
     """Property descriptor that retrieves a list of multiple values from
     a tag.
 
@@ -86,19 +147,39 @@ class ListMediaField(MediaField):
     strategies to do the actual work.
     """
 
-    def __get__(self, mediafile, _=None):
+    _styles: Sequence[ListStorageStyle]
+
+    def __init__(
+        self,
+        *styles: ListStorageStyle,
+        out_type: type[T] = DEFAULT_OUT_TYPE,
+    ):
+        """Creates a new ListMediaField.
+
+        :param styles: `ListStorageStyle` instances that describe the
+                       strategy for reading and writing the field in
+                       particular formats. There must be at least one
+                       style for each possible file format.
+
+        :param out_type: the type of the elements in the list that
+                         should be returned when getting this property.
+
+        """
+        self.out_type = out_type
+        self._styles = styles
+
+    def __get__(self, mediafile: MediaFile, owner=None) -> list[T] | None:
         for style in self.styles(mediafile.mgfile):
             values = style.get_list(mediafile.mgfile)
-            if values:
-                return [safe_cast(self.out_type, value) for value in values]
+            return cast_list(self.out_type, values)
         return None
 
-    def __set__(self, mediafile, values):
+    def __set__(self, mediafile: MediaFile, values: list[T] | None) -> None:
         for style in self.styles(mediafile.mgfile):
             if not style.read_only:
                 style.set_list(mediafile.mgfile, values)
 
-    def single_field(self):
+    def single_field(self) -> MediaField[T]:
         """Returns a ``MediaField`` descriptor that gets and sets the
         first item.
         """
@@ -106,7 +187,7 @@ class ListMediaField(MediaField):
         return MediaField(*self._styles, **options)
 
 
-class DateField(MediaField):
+class DateField(BaseMediaField[datetime.date, StorageStyle]):
     """Descriptor that handles serializing and deserializing dates
 
     The getter parses value from tags into a ``datetime.date`` instance
@@ -116,19 +197,24 @@ class DateField(MediaField):
     methods to create corresponding `DateItemField`s.
     """
 
-    def __init__(self, *date_styles, **kwargs):
+    def __init__(
+        self,
+        *date_styles,
+        year: Sequence[StorageStyle] | None = None,
+    ):
         """``date_styles`` is a list of ``StorageStyle``s to store and
         retrieve the whole date from. The ``year`` option is an
         additional list of fallback styles for the year. The year is
         always set on this style, but is only retrieved if the main
         storage styles do not return a value.
         """
-        super().__init__(*date_styles)
-        year_style = kwargs.get("year", None)
-        if year_style:
-            self._year_field = MediaField(*year_style)
+        # The OOP pattern is janky here, while
+        # the base class should handle strings
+        self._styles = date_styles
+        if year is not None:
+            self._year_field = MediaField(*year, out_type=str)
 
-    def __get__(self, mediafile, owner=None):
+    def __get__(self, mediafile: MediaFile, owner=None) -> None | datetime.date:
         year, month, day = self._get_date_tuple(mediafile)
         if not year:
             return None
@@ -137,25 +223,31 @@ class DateField(MediaField):
         except ValueError:  # Out of range values.
             return None
 
-    def __set__(self, mediafile, date):
+    def __set__(self, mediafile: MediaFile, date: datetime.date | None):
         if date is None:
             self._set_date_tuple(mediafile, None, None, None)
         else:
             self._set_date_tuple(mediafile, date.year, date.month, date.day)
 
-    def __delete__(self, mediafile):
+    def __delete__(self, mediafile: MediaFile):
         super().__delete__(mediafile)
         if hasattr(self, "_year_field"):
             self._year_field.__delete__(mediafile)
 
-    def _get_date_tuple(self, mediafile):
+    def _get_date_tuple(self, mediafile: MediaFile) -> list[int | None]:
         """Get a 3-item sequence representing the date consisting of a
-        year, month, and day number. Each number is either an integer or
-        None.
+        year, month, and day number.
         """
-        # Get the underlying data and split on hyphens and slashes.
-        datestring = super().__get__(mediafile, None)
-        if isinstance(datestring, str):
+        # Get the underlying data as string
+        datestring = _get_data_from_styles(
+            mediafile,
+            self.styles(mediafile.mgfile),
+            str,
+        )
+
+        # Split the date string into components.
+        items: list[str | None]
+        if datestring:
             datestring = re.sub(r"[Tt ].*$", "", str(datestring))
             items = re.split("[-/]", str(datestring))
         else:
@@ -172,15 +264,15 @@ class DateField(MediaField):
             items[0] = self._year_field.__get__(mediafile)
 
         # Convert each component to an integer if possible.
-        items_ = []
-        for item in items:
-            try:
-                items_.append(int(item))
-            except (TypeError, ValueError):
-                items_.append(None)
-        return items_
+        return [int(x) if x and x.isdigit() else None for x in items]
 
-    def _set_date_tuple(self, mediafile, year, month=None, day=None):
+    def _set_date_tuple(
+        self,
+        mediafile: MediaFile,
+        year: int | None,
+        month: int | None = None,
+        day: int | None = None,
+    ):
         """Set the value of the field given a year, month, and day
         number. Each number can be an integer or None to indicate an
         unset component.
@@ -194,11 +286,16 @@ class DateField(MediaField):
             date.append(f"{int(month):02d}")
         if month and day:
             date.append(f"{int(day):02d}")
-        date = map(str, date)
-        super().__set__(mediafile, "-".join(date))
+
+        _set_data_in_styles(
+            "-".join(map(str, date)),
+            mediafile,
+            self.styles(mediafile.mgfile),
+            str,
+        )
 
         if hasattr(self, "_year_field"):
-            self._year_field.__set__(mediafile, year)
+            self._year_field.__set__(mediafile, safe_cast(str, year))
 
     def year_field(self):
         return DateItemField(self, 0)
@@ -210,24 +307,25 @@ class DateField(MediaField):
         return DateItemField(self, 2)
 
 
-class DateItemField(MediaField):
+class DateItemField(MediaField[int]):
     """Descriptor that gets and sets constituent parts of a `DateField`:
     the month, day, or year.
     """
 
-    def __init__(self, date_field, item_pos):
+    def __init__(self, date_field: DateField, item_pos: int):
         self.date_field = date_field
         self.item_pos = item_pos
+        super().__init__(out_type=int)
 
-    def __get__(self, mediafile, _):
+    def __get__(self, mediafile: MediaFile, owner=None) -> int | None:
         return self.date_field._get_date_tuple(mediafile)[self.item_pos]
 
-    def __set__(self, mediafile, value):
+    def __set__(self, mediafile: MediaFile, value: int | None) -> None:
         items = self.date_field._get_date_tuple(mediafile)
         items[self.item_pos] = value
         self.date_field._set_date_tuple(mediafile, *items)
 
-    def __delete__(self, mediafile):
+    def __delete__(self, mediafile: MediaFile):
         self.__set__(mediafile, None)
 
 
@@ -243,7 +341,7 @@ class CoverArtField(MediaField):
     def __init__(self):
         pass
 
-    def __get__(self, mediafile, _):
+    def __get__(self, mediafile, owner=None):
         candidates = mediafile.images
         if candidates:
             return self.guess_cover_image(candidates).data
@@ -269,7 +367,7 @@ class CoverArtField(MediaField):
         delattr(mediafile, "images")
 
 
-class QNumberField(MediaField):
+class QNumberField(MediaField[float]):
     """Access integer-represented Q number fields.
 
     Access a fixed-point fraction as a float. The stored value is shifted by
@@ -287,13 +385,13 @@ class QNumberField(MediaField):
             return None
         return q_num / pow(2, self.__fraction_bits)
 
-    def __set__(self, mediafile, value):
-        q_num = round(value * pow(2, self.__fraction_bits))
-        q_num = int(q_num)  # needed for py2.7
-        super().__set__(mediafile, q_num)
+    def __set__(self, mediafile, value: float | None):
+        if value is not None:
+            value = round(value * pow(2, self.__fraction_bits))
+        super().__set__(mediafile, value)
 
 
-class ImageListField(ListMediaField):
+class ImageListField(ListMediaField[Image]):
     """Descriptor to access the list of images embedded in tags.
 
     The getter returns a list of `Image` instances obtained from

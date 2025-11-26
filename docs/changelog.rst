@@ -20,6 +20,8 @@ v1.0.0
   workflow for automatic changelog reminders.
 - Modernized package and tests setup to use ``poetry``.
 - Run pyupgrade to align code with Python 3.10+ syntax.
+- Added TSO2 tag to ``albumartist_sort``, matching how Picard >= 1.2, iTunes and
+      Swinsian interpret tags.
 
 v0.13.0
 -------

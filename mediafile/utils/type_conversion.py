@@ -1,5 +1,5 @@
 import re
-from typing import Any, TypeVar, cast, get_args
+from typing import Any, TypeVar, cast
 
 T = TypeVar("T")
 

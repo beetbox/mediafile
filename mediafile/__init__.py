@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This file is part of MediaFile.
 # Copyright 2016, Adrian Sampson.
 #
@@ -88,7 +87,7 @@ log = logging.getLogger(__name__)
 # MediaFile is a collection of fields.
 
 
-class MediaFile(object):
+class MediaFile:
     """Represents a multimedia file on disk and provides access to its
     metadata.
     """
@@ -264,17 +263,15 @@ class MediaFile(object):
         :class:`DateItemField`, which are sorted in year-month-day
         order.
         """
-        for property in sorted(cls.fields(), key=cls._field_sort_name):
-            yield property
+        yield from sorted(cls.fields(), key=cls._field_sort_name)
 
     @classmethod
     def readable_fields(cls):
         """Get all metadata fields: the writable ones from
         :meth:`fields` and also other audio properties.
         """
-        for property in cls.fields():
-            yield property
-        for property in (
+        yield from cls.fields()
+        yield from (
             "length",
             "samplerate",
             "bitdepth",
@@ -284,8 +281,7 @@ class MediaFile(object):
             "encoder_info",
             "encoder_settings",
             "format",
-        ):
-            yield property
+        )
 
     @classmethod
     def add_field(cls, name, descriptor):
@@ -297,9 +293,9 @@ class MediaFile(object):
         :param descriptor: an instance of :class:`MediaField`.
         """
         if not isinstance(descriptor, MediaField):
-            raise ValueError("{0} must be an instance of MediaField".format(descriptor))
+            raise ValueError(f"{descriptor} must be an instance of MediaField")
         if name in cls.__dict__:
-            raise ValueError('property "{0}" already exists on MediaFile'.format(name))
+            raise ValueError(f'property "{name}" already exists on MediaFile')
         setattr(cls, name, descriptor)
 
     def update(self, dict):
@@ -322,7 +318,7 @@ class MediaFile(object):
         metadata tags (i.e., those that are instances of
         :class:`MediaField`).
         """
-        return dict((x, getattr(self, x)) for x in self.fields())
+        return {x: getattr(self, x) for x in self.fields()}
 
     # Field definitions.
 

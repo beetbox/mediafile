@@ -7,13 +7,19 @@ Upcoming
 v1.0.0
 ------
 
-- Dropped support for Python 3.7 and 3.8
+- Refactored the monolith ``mediafile.py`` (2400 lines) into a modular structure
+  with multiple files under the ``mediafile/`` directory. This should make it
+  easier to maintain and extend the codebase.
+- Dropped support for Python 3.7, 3.8 and 3.9. MediaFile now requires Python
+  3.10 or later. This aligns with the current long-term support (LTS) versions
+  of Python.
 - Added minimal contribution guidelines to CONTRIBUTING.md
 - Changed project linter and formatter from ``flake8`` to ``ruff``. Reformatted
   the codebase with ``ruff``.
 - Moved changelog into its own file, ``changelog.rst``. Also added github
   workflow for automatic changelog reminders.
 - Modernized package and tests setup to use ``poetry``.
+- Run pyupgrade to align code with Python 3.10+ syntax.
 
 v0.13.0
 -------

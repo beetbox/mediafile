@@ -17,7 +17,7 @@ class VorbisImageStorageStyle(ListStorageStyle):
     formats = ["OggOpus", "OggTheora", "OggSpeex", "OggVorbis", "OggFlac"]
 
     def __init__(self):
-        super(VorbisImageStorageStyle, self).__init__(key="metadata_block_picture")
+        super().__init__(key="metadata_block_picture")
         self.as_type = bytes
 
     def fetch(self, mutagen_file):
@@ -42,7 +42,7 @@ class VorbisImageStorageStyle(ListStorageStyle):
             del mutagen_file["coverart"]
         if "coverartmime" in mutagen_file:
             del mutagen_file["coverartmime"]
-        super(VorbisImageStorageStyle, self).store(mutagen_file, image_data)
+        super().store(mutagen_file, image_data)
 
     def serialize(self, image):
         """Turn a Image into a base64 encoded FLAC picture block."""

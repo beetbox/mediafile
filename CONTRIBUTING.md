@@ -6,7 +6,7 @@ Please follow these guidelines to ensure a smooth contribution process.
 
 ## Pre-requisites
 
-- Python 3.9 or higher
+- Python 3.10 or higher
 - Git
 
 ## Setup the Development Environment

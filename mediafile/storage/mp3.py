@@ -16,7 +16,7 @@ class MP3StorageStyle(StorageStyle):
         the language field of newly created frames.
         """
         self.id3_lang = id3_lang
-        super(MP3StorageStyle, self).__init__(key, **kwargs)
+        super().__init__(key, **kwargs)
 
     def fetch(self, mutagen_file):
         try:
@@ -34,7 +34,7 @@ class MP3PeopleStorageStyle(MP3StorageStyle):
 
     def __init__(self, key, involvement="", **kwargs):
         self.involvement = involvement
-        super(MP3PeopleStorageStyle, self).__init__(key, **kwargs)
+        super().__init__(key, **kwargs)
 
     def store(self, mutagen_file, value):
         frames = mutagen_file.tags.getall(self.key)
@@ -85,7 +85,7 @@ class MP3UFIDStorageStyle(MP3StorageStyle):
 
     def __init__(self, owner, **kwargs):
         self.owner = owner
-        super(MP3UFIDStorageStyle, self).__init__("UFID:" + owner, **kwargs)
+        super().__init__("UFID:" + owner, **kwargs)
 
     def fetch(self, mutagen_file):
         try:
@@ -123,7 +123,7 @@ class MP3DescStorageStyle(MP3StorageStyle):
         self.description = desc
         self.attr = attr
         self.multispec = multispec
-        super(MP3DescStorageStyle, self).__init__(key=key, **kwargs)
+        super().__init__(key=key, **kwargs)
 
     def store(self, mutagen_file, value):
         frames = mutagen_file.tags.getall(self.key)
@@ -172,7 +172,7 @@ class MP3DescStorageStyle(MP3StorageStyle):
 class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):
     def __init__(self, desc="", key="TXXX", split_v23=False, **kwargs):
         self.split_v23 = split_v23
-        super(MP3ListDescStorageStyle, self).__init__(desc=desc, key=key, **kwargs)
+        super().__init__(desc=desc, key=key, **kwargs)
 
     def fetch(self, mutagen_file):
         for frame in mutagen_file.tags.getall(self.key):
@@ -201,7 +201,7 @@ class MP3SlashPackStorageStyle(MP3StorageStyle):
     """
 
     def __init__(self, key, pack_pos=0, **kwargs):
-        super(MP3SlashPackStorageStyle, self).__init__(key, **kwargs)
+        super().__init__(key, **kwargs)
         self.pack_pos = pack_pos
 
     def _fetch_unpacked(self, mutagen_file):
@@ -227,7 +227,7 @@ class MP3SlashPackStorageStyle(MP3StorageStyle):
 
     def delete(self, mutagen_file):
         if self.pack_pos == 0:
-            super(MP3SlashPackStorageStyle, self).delete(mutagen_file)
+            super().delete(mutagen_file)
         else:
             self.set(mutagen_file, None)
 
@@ -241,7 +241,7 @@ class MP3ImageStorageStyle(ListStorageStyle, MP3StorageStyle):
     """
 
     def __init__(self):
-        super(MP3ImageStorageStyle, self).__init__(key="APIC")
+        super().__init__(key="APIC")
         self.as_type = bytes
 
     def deserialize(self, apic_frame):
@@ -280,5 +280,5 @@ class MP3ImageStorageStyle(ListStorageStyle, MP3StorageStyle):
 
 class MP3SoundCheckStorageStyle(SoundCheckStorageStyleMixin, MP3DescStorageStyle):
     def __init__(self, index=0, **kwargs):
-        super(MP3SoundCheckStorageStyle, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.index = index

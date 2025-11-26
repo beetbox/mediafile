@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This file is part of MediaFile.
 # Copyright 2016, Adrian Sampson.
 #
@@ -233,7 +232,7 @@ class ZeroLengthMediaFile(mediafile.MediaFile):
 
 class MissingAudioDataTest(unittest.TestCase):
     def setUp(self):
-        super(MissingAudioDataTest, self).setUp()
+        super().setUp()
         path = os.path.join(_common.RSRC, b"full.mp3")
         self.mf = ZeroLengthMediaFile(path)
 
@@ -244,7 +243,7 @@ class MissingAudioDataTest(unittest.TestCase):
 
 class TypeTest(unittest.TestCase):
     def setUp(self):
-        super(TypeTest, self).setUp()
+        super().setUp()
         path = os.path.join(_common.RSRC, b"full.mp3")
         self.mf = mediafile.MediaFile(path)
 
@@ -298,7 +297,7 @@ class SoundCheckTest(unittest.TestCase):
         self.assertEqual(peak, 0.0)
 
     def test_special_characters(self):
-        gain, peak = mediafile.utils.sc_decode("caf\xe9".encode("utf-8"))
+        gain, peak = mediafile.utils.sc_decode("caf\xe9".encode())
         self.assertEqual(gain, 0.0)
         self.assertEqual(peak, 0.0)
 
@@ -373,7 +372,7 @@ class ID3v23Test(unittest.TestCase, _common.TempDirMixin):
                 ]
                 mf.save()
                 apic_frames = mf.mgfile.tags.getall("APIC")
-                encodings = dict([(f.desc, f.encoding) for f in apic_frames])
+                encodings = {f.desc: f.encoding for f in apic_frames}
                 self.assertEqual(
                     encodings,
                     {

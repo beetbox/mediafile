@@ -61,7 +61,7 @@ class ASFImageStorageStyle(ListStorageStyle):
     formats = ["ASF"]
 
     def __init__(self):
-        super(ASFImageStorageStyle, self).__init__(key="WM/Picture")
+        super().__init__(key="WM/Picture")
 
     def deserialize(self, asf_picture):
         mime, data, type, desc = _unpack_asf_image(asf_picture.value)

@@ -17,7 +17,7 @@ from .storage import (
 )
 
 
-class MediaField(object):
+class MediaField:
     """A descriptor providing access to a particular (abstract) metadata
     field.
     """
@@ -123,7 +123,7 @@ class DateField(MediaField):
         always set on this style, but is only retrieved if the main
         storage styles do not return a value.
         """
-        super(DateField, self).__init__(*date_styles)
+        super().__init__(*date_styles)
         year_style = kwargs.get("year", None)
         if year_style:
             self._year_field = MediaField(*year_style)
@@ -144,7 +144,7 @@ class DateField(MediaField):
             self._set_date_tuple(mediafile, date.year, date.month, date.day)
 
     def __delete__(self, mediafile):
-        super(DateField, self).__delete__(mediafile)
+        super().__delete__(mediafile)
         if hasattr(self, "_year_field"):
             self._year_field.__delete__(mediafile)
 
@@ -154,7 +154,7 @@ class DateField(MediaField):
         None.
         """
         # Get the underlying data and split on hyphens and slashes.
-        datestring = super(DateField, self).__get__(mediafile, None)
+        datestring = super().__get__(mediafile, None)
         if isinstance(datestring, str):
             datestring = re.sub(r"[Tt ].*$", "", str(datestring))
             items = re.split("[-/]", str(datestring))
@@ -189,13 +189,13 @@ class DateField(MediaField):
             self.__delete__(mediafile)
             return
 
-        date = ["{0:04d}".format(int(year))]
+        date = [f"{int(year):04d}"]
         if month:
-            date.append("{0:02d}".format(int(month)))
+            date.append(f"{int(month):02d}")
         if month and day:
-            date.append("{0:02d}".format(int(day)))
+            date.append(f"{int(day):02d}")
         date = map(str, date)
-        super(DateField, self).__set__(mediafile, "-".join(date))
+        super().__set__(mediafile, "-".join(date))
 
         if hasattr(self, "_year_field"):
             self._year_field.__set__(mediafile, year)
@@ -278,11 +278,11 @@ class QNumberField(MediaField):
     """
 
     def __init__(self, fraction_bits, *args, **kwargs):
-        super(QNumberField, self).__init__(out_type=int, *args, **kwargs)
+        super().__init__(out_type=int, *args, **kwargs)
         self.__fraction_bits = fraction_bits
 
     def __get__(self, mediafile, owner=None):
-        q_num = super(QNumberField, self).__get__(mediafile, owner)
+        q_num = super().__get__(mediafile, owner)
         if q_num is None:
             return None
         return q_num / pow(2, self.__fraction_bits)
@@ -290,7 +290,7 @@ class QNumberField(MediaField):
     def __set__(self, mediafile, value):
         q_num = round(value * pow(2, self.__fraction_bits))
         q_num = int(q_num)  # needed for py2.7
-        super(QNumberField, self).__set__(mediafile, q_num)
+        super().__set__(mediafile, q_num)
 
 
 class ImageListField(ListMediaField):
@@ -305,7 +305,7 @@ class ImageListField(ListMediaField):
         # The storage styles used here must implement the
         # `ListStorageStyle` interface and get and set lists of
         # `Image`s.
-        super(ImageListField, self).__init__(
+        super().__init__(
             MP3ImageStorageStyle(),
             MP4ImageStorageStyle(),
             ASFImageStorageStyle(),

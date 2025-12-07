@@ -36,11 +36,11 @@ data from the tags. In turn ``MediaField`` uses a number of
 import logging
 import os
 import re
-from typing import Any
 
 from mutagen._file import File as MutagenFileFactory
 from mutagen.mp3 import BitrateMode
 
+from ._types import MutagenFile
 from .constants import TYPES, ImageType
 from .exceptions import FileTypeError, MutagenError, UnreadableFileError
 from .fields import (
@@ -94,9 +94,7 @@ class MediaFile:
     metadata.
     """
 
-    # Warning: It is close to impossible to type this
-    # correctly due to Mutagen's dynamic typing.
-    mgfile: Any
+    mgfile: MutagenFile
 
     @loadfile()
     def __init__(self, filething, id3v23=False):

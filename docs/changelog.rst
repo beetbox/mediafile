@@ -18,7 +18,7 @@ v1.0.0
   the codebase with ``ruff``.
 - Moved changelog into its own file, ``changelog.rst``. Also added github
   workflow for automatic changelog reminders.
-- Modernized package and tests setup to use ``poetry``.
+- Modernized package and tests setup to use ``uv``.
 - Run pyupgrade to align code with Python 3.10+ syntax.
 - Added TSO2 tag to ``albumartist_sort``, matching how Picard >= 1.2, iTunes and
       Swinsian interpret tags.

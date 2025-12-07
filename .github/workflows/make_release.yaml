@@ -19,7 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Setup Python with uv
-        # poetry cache requires poetry to already be installed, weirdly
         uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -44,7 +43,6 @@ jobs:
           ref: ${{ env.NEW_TAG }}
 
       - name: Setup Python with uv
-        # poetry cache requires poetry to already be installed, weirdly
         uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}

@@ -46,9 +46,8 @@ Repository = "https://github.com/beetbox/mediafile"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.pipx-install]
-poethepoet = ">=0.32"
-poetry = ">=2.1"
+[tool.poe]
+executor.type = "uv"
 
 [tool.poe.tasks.check-docs-links]
 help = "Check the documentation for broken URLs"

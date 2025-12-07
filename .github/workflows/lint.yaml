@@ -37,15 +37,15 @@ jobs:
         with:
           files: |
             **.py
-            poetry.lock
+            uv.lock
 
       - name: Check changed python files
         id: changed-python-files
         env:
           CHANGED_PYTHON_FILES: ${{ steps.raw-changed-python-files.outputs.all_changed_files }}
         run: |
-          if [[ " $CHANGED_PYTHON_FILES " == *" poetry.lock "* ]]; then
-            # if poetry.lock is changed, we need to check everything
+          if [[ " $CHANGED_PYTHON_FILES " == *" uv.lock "* ]]; then
+            # if uv.lock is changed, we need to check everything
             CHANGED_PYTHON_FILES="."
           fi
           echo "all_changed_files=$CHANGED_PYTHON_FILES" >> "$GITHUB_OUTPUT"
@@ -57,19 +57,20 @@ jobs:
     needs: changed-files
     steps:
       - uses: actions/checkout@v5
-      - name: Install Python tools
-        uses: BrandonLWhite/pipx-install-action@v1.0.3
-      - uses: actions/setup-python@v6
+      - name: Setup Python with uv
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: poetry
+          enable-cache: true
 
       - name: Install dependencies
-        run: poetry install --only=lint
+        run: uv sync --locked --group lint
 
       - name: Check code formatting
         # the job output will contain colored diffs with what needs adjusting
-        run: poe check-format --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
+        run: |
+          source .venv/bin/activate
+          poe check-format --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
 
   lint:
     if: needs.changed-files.outputs.any_python_changed == 'true'
@@ -78,18 +79,18 @@ jobs:
     needs: changed-files
     steps:
       - uses: actions/checkout@v5
-      - name: Install Python tools
-        uses: BrandonLWhite/pipx-install-action@v1.0.3
-      - uses: actions/setup-python@v6
+      - name: Setup Python with uv
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: poetry
-
+          enable-cache: true
       - name: Install dependencies
-        run: poetry install --only=lint
+        run: uv sync --locked --group lint
 
       - name: Lint code
-        run: poe lint --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
+        run: |
+          source .venv/bin/activate  
+          poe lint --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
 
   mypy:
     if: needs.changed-files.outputs.any_python_changed == 'true'
@@ -98,21 +99,18 @@ jobs:
     needs: changed-files
     steps:
       - uses: actions/checkout@v5
-      - name: Install Python tools
-        uses: BrandonLWhite/pipx-install-action@v1.0.3
-      - uses: actions/setup-python@v6
+      - name: Setup Python with uv
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: poetry
-
+          enable-cache: true
       - name: Install dependencies
-        run: poetry install --only=lint
-
+        run: uv sync --locked --group test
       - name: Type check code
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: poe check-types --show-column-numbers --no-error-summary .
+          run: uv run poe check-types --show-column-numbers --no-error-summary .
 
   docs:
     if: needs.changed-files.outputs.any_docs_changed == 'true'
@@ -121,15 +119,13 @@ jobs:
     needs: changed-files
     steps:
       - uses: actions/checkout@v5
-      - name: Install Python tools
-        uses: BrandonLWhite/pipx-install-action@v1.0.3
-      - uses: actions/setup-python@v6
+      - name: Setup Python with uv
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: poetry
-
+          enable-cache: true
       - name: Install dependencies
-        run: poetry install --extras=docs
+        run: uv sync --locked --extra docs --group lint
 
       - name: Add Sphinx problem matchers
         run: |
@@ -137,10 +133,15 @@ jobs:
           echo "::add-matcher::.github/problem-matchers/sphinx-lint.json"
 
       - name: Check docs formatting
-        run: poe format-docs --check
+        run: |
+          source .venv/bin/activate
+          poe format-docs --check
 
       - name: Lint docs
-        run: poe lint-docs
-
+        run: |
+          source .venv/bin/activate
+          poe lint-docs
       - name: Build docs
-        run: poe docs -- -e 'SPHINXOPTS=--fail-on-warning --keep-going'
+        run: |
+          source .venv/bin/activate
+          poe docs -- -e 'SPHINXOPTS=--fail-on-warning --keep-going'

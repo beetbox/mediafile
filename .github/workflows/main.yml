@@ -19,19 +19,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Setup Python with uv
-        # poetry cache requires poetry to already be installed, weirdly
         uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
       - name: Install dependencies with uv
-        run: uv sync --locked --all-extras --dev
+        run: uv sync --locked --group test
 
       - name: Test
         env:
           POETRY_VIRTUALENVS_IN_PROJECT: true
         run: |
-          # Activate the environment
           source .venv/bin/activate
           poe test-with-coverage
 

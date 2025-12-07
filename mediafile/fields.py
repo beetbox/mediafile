@@ -15,6 +15,7 @@ from mediafile.constants import null_value
 from mediafile.utils import Image, safe_cast
 from mediafile.utils.type_conversion import safe_cast_list
 
+from ._types import MutagenFile
 from .constants import ImageType
 from .storage import (
     APEv2ImageStorageStyle,
@@ -44,7 +45,7 @@ class BaseMediaField(ABC, Generic[T, S]):
 
     _styles: Sequence[S]
 
-    def styles(self, mutagen_file) -> Iterable[S]:
+    def styles(self, mutagen_file: MutagenFile) -> Iterable[S]:
         """Yields the list of storage styles of this field that can
         handle the MediaFile's format.
         """
@@ -124,7 +125,7 @@ class MediaField(BaseMediaField[T, StorageStyle]):
         self.out_type = out_type
         self._styles = styles
 
-    def __get__(self, mediafile: MediaFile, owner=None) -> T | None:
+    def __get__(self, mediafile: MediaFile, owner: object | None = None) -> T | None:
         return _get_data_from_styles(
             mediafile,
             self.styles(mediafile.mgfile),
@@ -169,7 +170,9 @@ class ListMediaField(BaseMediaField[list[T], ListStorageStyle]):
         self.out_type = out_type
         self._styles = styles
 
-    def __get__(self, mediafile: MediaFile, owner=None) -> list[T] | None:
+    def __get__(
+        self, mediafile: MediaFile, owner: object | None = None
+    ) -> list[T] | None:
         """Returns the list of values, or None if no values are set.
 
         Note: the list is always non-empty when returned; if the underlying
@@ -205,7 +208,7 @@ class DateField(BaseMediaField[datetime.date, StorageStyle]):
 
     def __init__(
         self,
-        *date_styles,
+        *date_styles: StorageStyle,
         year: Sequence[StorageStyle] | None = None,
     ):
         """``date_styles`` is a list of ``StorageStyle``s to store and
@@ -220,7 +223,9 @@ class DateField(BaseMediaField[datetime.date, StorageStyle]):
         if year is not None:
             self._year_field = MediaField(*year, out_type=str)
 
-    def __get__(self, mediafile: MediaFile, owner=None) -> None | datetime.date:
+    def __get__(
+        self, mediafile: MediaFile, owner: object | None = None
+    ) -> None | datetime.date:
         year, month, day = self._get_date_tuple(mediafile)
         if not year:
             return None
@@ -229,13 +234,13 @@ class DateField(BaseMediaField[datetime.date, StorageStyle]):
         except ValueError:  # Out of range values.
             return None
 
-    def __set__(self, mediafile: MediaFile, date: datetime.date | None):
+    def __set__(self, mediafile: MediaFile, date: datetime.date | None) -> None:
         if date is None:
             self._set_date_tuple(mediafile, None, None, None)
         else:
             self._set_date_tuple(mediafile, date.year, date.month, date.day)
 
-    def __delete__(self, mediafile: MediaFile):
+    def __delete__(self, mediafile: MediaFile) -> None:
         super().__delete__(mediafile)
         if hasattr(self, "_year_field"):
             self._year_field.__delete__(mediafile)
@@ -278,7 +283,7 @@ class DateField(BaseMediaField[datetime.date, StorageStyle]):
         year: int | None,
         month: int | None = None,
         day: int | None = None,
-    ):
+    ) -> None:
         """Set the value of the field given a year, month, and day
         number. Each number can be an integer or None to indicate an
         unset component.
@@ -303,13 +308,13 @@ class DateField(BaseMediaField[datetime.date, StorageStyle]):
         if hasattr(self, "_year_field"):
             self._year_field.__set__(mediafile, safe_cast(str, year))
 
-    def year_field(self):
+    def year_field(self) -> DateItemField:
         return DateItemField(self, 0)
 
-    def month_field(self):
+    def month_field(self) -> DateItemField:
         return DateItemField(self, 1)
 
-    def day_field(self):
+    def day_field(self) -> DateItemField:
         return DateItemField(self, 2)
 
 
@@ -323,7 +328,7 @@ class DateItemField(MediaField[int]):
         self.item_pos = item_pos
         super().__init__(out_type=int)
 
-    def __get__(self, mediafile: MediaFile, owner=None) -> int | None:
+    def __get__(self, mediafile: MediaFile, owner: object | None = None) -> int | None:
         return self.date_field._get_date_tuple(mediafile)[self.item_pos]
 
     def __set__(self, mediafile: MediaFile, value: int | None) -> None:
@@ -331,11 +336,11 @@ class DateItemField(MediaField[int]):
         items[self.item_pos] = value
         self.date_field._set_date_tuple(mediafile, *items)
 
-    def __delete__(self, mediafile: MediaFile):
+    def __delete__(self, mediafile: MediaFile) -> None:
         self.__set__(mediafile, None)
 
 
-class CoverArtField(MediaField):
+class CoverArtField(MediaField[bytes]):
     """A descriptor that provides access to the *raw image data* for the
     cover image on a file. This is used for backwards compatibility: the
     full `ImageListField` provides richer `Image` objects.
@@ -344,10 +349,12 @@ class CoverArtField(MediaField):
     cover.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def __get__(self, mediafile, owner=None):
+    def __get__(
+        self, mediafile: MediaFile, owner: object | None = None
+    ) -> bytes | None:
         candidates = mediafile.images
         if candidates:
             return self.guess_cover_image(candidates).data
@@ -355,7 +362,7 @@ class CoverArtField(MediaField):
             return None
 
     @staticmethod
-    def guess_cover_image(candidates):
+    def guess_cover_image(candidates: list[Image]) -> Image:
         if len(candidates) == 1:
             return candidates[0]
         try:
@@ -363,13 +370,13 @@ class CoverArtField(MediaField):
         except StopIteration:
             return candidates[0]
 
-    def __set__(self, mediafile, data):
+    def __set__(self, mediafile: MediaFile, data: bytes | None) -> None:
         if data:
             mediafile.images = [Image(data=data)]
         else:
             mediafile.images = []
 
-    def __delete__(self, mediafile):
+    def __delete__(self, mediafile: MediaFile) -> None:
         delattr(mediafile, "images")
 
 
@@ -381,19 +388,30 @@ class QNumberField(MediaField[float]):
     simple integer.
     """
 
-    def __init__(self, fraction_bits, *args, **kwargs):
-        super().__init__(out_type=int, *args, **kwargs)
+    __fraction_bits: int
+
+    def __init__(
+        self,
+        fraction_bits: int,
+        *styles: StorageStyle,
+    ):
+        super().__init__(
+            *styles,
+            out_type=int,
+        )
         self.__fraction_bits = fraction_bits
 
-    def __get__(self, mediafile, owner=None):
-        q_num = super().__get__(mediafile, owner)
+    def __get__(
+        self, mediafile: MediaFile, owner: object | None = None
+    ) -> float | None:
+        q_num: int | None = super().__get__(mediafile, owner)  # type: ignore[assignment]
         if q_num is None:
             return None
-        return q_num / pow(2, self.__fraction_bits)
+        return q_num / 2**self.__fraction_bits  # type: ignore[no-any-return]
 
-    def __set__(self, mediafile, value: float | None):
+    def __set__(self, mediafile: MediaFile, value: float | None) -> None:
         if value is not None:
-            value = round(value * pow(2, self.__fraction_bits))
+            value = round(value * 2**self.__fraction_bits)
         super().__set__(mediafile, value)
 
 
@@ -405,7 +423,7 @@ class ImageListField(ListMediaField[Image]):
     written to the tags.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # The storage styles used here must implement the
         # `ListStorageStyle` interface and get and set lists of
         # `Image`s.

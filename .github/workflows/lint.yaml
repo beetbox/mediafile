@@ -69,8 +69,7 @@ jobs:
       - name: Check code formatting
         # the job output will contain colored diffs with what needs adjusting
         run: |
-          source .venv/bin/activate
-          poe check-format --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
+          uv run poe check-format --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
 
   lint:
     if: needs.changed-files.outputs.any_python_changed == 'true'
@@ -89,8 +88,7 @@ jobs:
 
       - name: Lint code
         run: |
-          source .venv/bin/activate  
-          poe lint --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
+          uv run poe lint --output-format=github ${{ needs.changed-files.outputs.changed_python_files }}
 
   mypy:
     if: needs.changed-files.outputs.any_python_changed == 'true'
@@ -134,14 +132,11 @@ jobs:
 
       - name: Check docs formatting
         run: |
-          source .venv/bin/activate
-          poe format-docs --check
+          uv run poe format-docs --check
 
       - name: Lint docs
         run: |
-          source .venv/bin/activate
-          poe lint-docs
+          uv run poe lint-docs
       - name: Build docs
         run: |
-          source .venv/bin/activate
-          poe docs -- -e 'SPHINXOPTS=--fail-on-warning --keep-going'
+          uv run poe docs -- -e 'SPHINXOPTS=--fail-on-warning --keep-going'

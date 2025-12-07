@@ -27,11 +27,8 @@ jobs:
         run: uv sync --locked --group test
 
       - name: Test
-        env:
-          POETRY_VIRTUALENVS_IN_PROJECT: true
         run: |
-          source .venv/bin/activate
-          poe test-with-coverage
+          uv run poe test-with-coverage
 
       - name: Upload test results to Codecov
         uses: codecov/test-results-action@v1

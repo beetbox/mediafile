@@ -18,20 +18,21 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v5
-      - name: Install Python tools
-        uses: BrandonLWhite/pipx-install-action@v1.0.3
-      - name: Setup Python with poetry caching
+      - name: Setup Python with uv
         # poetry cache requires poetry to already be installed, weirdly
-        uses: actions/setup-python@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-          cache: poetry
+          enable-cache: true
+      - name: Install dependencies with uv
+        run: uv sync --locked --all-extras --dev
 
       - name: Test
         env:
           POETRY_VIRTUALENVS_IN_PROJECT: true
-        run: |-
-          poetry install
+        run: |
+          # Activate the environment
+          source .venv/bin/activate
           poe test-with-coverage
 
       - name: Upload test results to Codecov

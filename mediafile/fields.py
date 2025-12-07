@@ -11,8 +11,9 @@ from typing import TYPE_CHECKING, Generic
 
 from typing_extensions import TypeVar
 
+from mediafile.constants import null_value
 from mediafile.utils import Image, safe_cast
-from mediafile.utils.type_conversion import cast_list, none_value
+from mediafile.utils.type_conversion import safe_cast_list
 
 from .constants import ImageType
 from .storage import (
@@ -74,7 +75,7 @@ def _set_data_in_styles(
     """
 
     if value is None:
-        value = none_value(out_type)
+        value = null_value(out_type)
     for style in styles:
         if not style.read_only:
             style.set(mediafile.mgfile, value)
@@ -169,9 +170,14 @@ class ListMediaField(BaseMediaField[list[T], ListStorageStyle]):
         self._styles = styles
 
     def __get__(self, mediafile: MediaFile, owner=None) -> list[T] | None:
+        """Returns the list of values, or None if no values are set.
+
+        Note: the list is always non-empty when returned; if the underlying
+        styles return an empty list, None is returned instead.
+        """
         for style in self.styles(mediafile.mgfile):
             values = style.get_list(mediafile.mgfile)
-            return cast_list(self.out_type, values)
+            return safe_cast_list(self.out_type, values) or None
         return None
 
     def __set__(self, mediafile: MediaFile, values: list[T] | None) -> None:

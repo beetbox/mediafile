@@ -63,33 +63,16 @@ def safe_cast(out_type: type[T], val: Any) -> T | None:
         return cast(T, val)
 
 
-def cast_list(out_type: type[T], val: list[Any] | None) -> list[T] | None:
+def safe_cast_list(out_type: type[T], val: list[Any] | None) -> list[T] | None:
     """Cast a value to a list of out_type elements, or None.
 
-    If the value is None, return None. If the value is already a list or
-    tuple, cast each element to out_type. Otherwise, cast the single value
-    to out_type and return it in a single-element list.
+    If the value is None or, return None. If the value is already a list or
+    tuple, cast each element to out_type.
     """
-    if not val:
+    if val is None:
         return None
 
     if isinstance(val, (list, tuple)):
         return list(filter(None, (safe_cast(out_type, v) for v in val)))
 
     raise ValueError("Value is not a list or tuple")
-
-
-def none_value(out_type: type[T]) -> T | None:
-    """Get an appropriate "null" value for the given type.
-
-    This is used internally when setting a field to None.
-    """
-    if out_type is int:
-        return cast(T, 0)
-    elif out_type is bool:
-        return cast(T, False)
-    elif out_type is str:
-        return cast(T, "")
-    elif out_type is float:
-        return cast(T, 0.0)
-    return None

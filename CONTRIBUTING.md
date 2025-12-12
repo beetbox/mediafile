@@ -11,8 +11,6 @@ Please follow these guidelines to ensure a smooth contribution process.
 
 ## Setup the Development Environment
 
-We recommend using a virtual environment to manage dependencies. You can use `venv`, `conda`, or any other tool of your choice.
-
 1. Fork/Clone the repository on GitHub
 
 ```bash
@@ -20,17 +18,16 @@ $ git clone <your-fork-url>
 $ cd mediafile
 ```
 
-2. Set up your development environment
+We use `uv` to manage virtual environments. If you don't have it installed, see [here](https://pypi.org/project/uv/).
 
+2. Install dependencies and set up the development environment (using same lockfile as production):
 ```bash
-$ python -m pip install --user pipx
-$ pipx install poetry poethepoet
+uv sync --frozen --group dev
 ```
 
-3. Install project dependencies
-
+3. Activate the virtual environment managed by `uv`:
 ```bash
-$ poetry install
+source .venv/bin/activate
 ```
 
 ## Before submitting a Pull Request

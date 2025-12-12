@@ -23,15 +23,23 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    {include-group = "test"},
+    {include-group = "lint"},
+]
+test = [
     "pytest >= 8",
     "pytest-cov >= 7.0.0",
+    {include-group = "poe"},
 ]
+
 lint = [
     "docstrfmt >= 1.11.1",
     "mypy >= 1.18.2",
     "ruff >= 0.6.4",
     "sphinx-lint >= 1.0.0",
+    {include-group = "poe"},
 ]
+poe = ["poethepoet >= 0.38.0"]
 
 [project.optional-dependencies]
 docs = ["sphinx >= 7.4.7"]
@@ -46,9 +54,8 @@ Repository = "https://github.com/beetbox/mediafile"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.pipx-install]
-poethepoet = ">=0.32"
-poetry = ">=2.1"
+[tool.poe]
+executor.type = "uv"
 
 [tool.poe.tasks.check-docs-links]
 help = "Check the documentation for broken URLs"

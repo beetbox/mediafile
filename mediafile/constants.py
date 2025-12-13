@@ -1,4 +1,7 @@
 import enum
+from typing import TypeVar, cast
+
+T = TypeVar("T")
 
 # Human-readable type names.
 TYPES = {
@@ -42,3 +45,16 @@ class ImageType(enum.Enum):
     illustration = 18
     artist_logo = 19
     publisher_logo = 20
+
+
+NULL_VALUES = {
+    int: 0,
+    bool: False,
+    str: "",
+    float: 0.0,
+}
+
+
+def null_value(out_type: type[T]) -> T | None:
+    """Get an appropriate "null" value for the given type."""
+    return cast(T, NULL_VALUES.get(out_type))

@@ -4,8 +4,8 @@ Changelog
 Upcoming
 --------
 
-v1.0.0
-------
+v0.14.0
+-------
 
 - Refactored the monolith ``mediafile.py`` (2400 lines) into a modular structure
   with multiple files under the ``mediafile/`` directory. This should make it

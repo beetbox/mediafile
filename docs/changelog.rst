@@ -24,6 +24,7 @@ v0.14.0
       Swinsian interpret tags.
 - Added ``TXXX:LABEL`` and ``TXXX:MEDIA`` tags to ``label`` and ``media``
   fields, respectively, for MP3 files.
+- Added POPM (popularity meter) tag support.
 
 v0.13.0
 -------

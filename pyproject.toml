@@ -25,6 +25,7 @@ dependencies = [
 dev = [
     "pytest >= 8",
     "pytest-cov >= 7.0.0",
+    "typing-extensions >=4.15.0",
 ]
 lint = [
     "docstrfmt >= 1.11.1",

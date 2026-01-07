@@ -4,6 +4,17 @@ Changelog
 Upcoming
 --------
 
+v0.15.0
+-------
+
+- The main `MediaFile` class has been extracted from `__init__.py` into its own
+  dedicated file `mediafile.py`. This improves code organization, separation of
+  concerns, and maintainability.
+- Simplified `__init__.py` to expose only core API: `MediaFile`, `Image`, and
+  exceptions
+- Added deprecation system for legacy style imports (storage styles, field
+  descriptors, utilities)
+
 v0.14.0
 -------
 

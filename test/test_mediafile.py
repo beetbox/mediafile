@@ -24,7 +24,9 @@ import unittest
 
 import mutagen
 
-from mediafile import CoverArtField, Image, ImageType, MediaFile, UnreadableFileError
+from mediafile import Image, MediaFile, UnreadableFileError
+from mediafile.constants import ImageType
+from mediafile.fields import CoverArtField
 from test import _common
 
 

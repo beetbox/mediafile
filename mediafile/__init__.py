@@ -13,92 +13,71 @@
 # included in all copies or substantial portions of the Software.
 
 
-
-from .constants import TYPES, ImageType
-from .exceptions import FileTypeError, MutagenError, UnreadableFileError
-from .fields import (
-    CoverArtField,
-    DateField,
-    DateItemField,
-    ImageListField,
-    ListMediaField,
-    MediaField,
-    QNumberField,
-)
+from .deprecation import deprecate_imports
+from .exceptions import FileTypeError, MediaFileError, MutagenError, UnreadableFileError
 from .mediafile import MediaFile
-from .storage import (
-    APEv2ImageStorageStyle,
-    ASFImageStorageStyle,
-    ASFStorageStyle,
-    FlacImageStorageStyle,
-    ListStorageStyle,
-    MP3DescStorageStyle,
-    MP3ImageStorageStyle,
-    MP3ListDescStorageStyle,
-    MP3ListStorageStyle,
-    MP3PeopleStorageStyle,
-    MP3SlashPackStorageStyle,
-    MP3SoundCheckStorageStyle,
-    MP3StorageStyle,
-    MP3UFIDStorageStyle,
-    MP4BoolStorageStyle,
-    MP4ImageStorageStyle,
-    MP4ListStorageStyle,
-    MP4SoundCheckStorageStyle,
-    MP4StorageStyle,
-    MP4TupleStorageStyle,
-    SoundCheckStorageStyleMixin,
-    StorageStyle,
-    VorbisImageStorageStyle,
-)
-from .utils import (
-    Image,
-    image_extension,
-    image_mime_type,
-    loadfile,
-    mutagen_call,
-)
+from .utils import Image
 
 __all__ = [
-    "TYPES",
-    "APEv2ImageStorageStyle",
-    "ASFImageStorageStyle",
-    "ASFStorageStyle",
-    "CoverArtField",
-    "DateField",
-    "DateItemField",
-    "FileTypeError",
-    "FlacImageStorageStyle",
-    "Image",
-    "ImageListField",
-    "ImageType",
-    "ListMediaField",
-    "ListStorageStyle",
-    "MP3DescStorageStyle",
-    "MP3ImageStorageStyle",
-    "MP3ListDescStorageStyle",
-    "MP3ListStorageStyle",
-    "MP3PeopleStorageStyle",
-    "MP3SlashPackStorageStyle",
-    "MP3SoundCheckStorageStyle",
-    "MP3StorageStyle",
-    "MP3UFIDStorageStyle",
-    "MP4BoolStorageStyle",
-    "MP4ImageStorageStyle",
-    "MP4ListStorageStyle",
-    "MP4SoundCheckStorageStyle",
-    "MP4StorageStyle",
-    "MP4TupleStorageStyle",
-    "MediaField",
     "MediaFile",
-    "MutagenError",
-    "QNumberField",
-    "SoundCheckStorageStyleMixin",
-    "StorageStyle",
+    "Image",
+    "MediaFileError",
     "UnreadableFileError",
-    "VorbisImageStorageStyle",
-    "image_extension",
-    "image_mime_type",
-    "loadfile",
-    "mutagen_call",
+    "FileTypeError",
+    "MutagenError",
 ]
+
+
+def __getattr__(name: str):
+    """Handle deprecated imports."""
+
+    return deprecate_imports(
+        __name__,
+        {
+            # Constants
+            "TYPES": "mediafile.constants",
+            "ImageType": "mediafile.constants",
+            # Fields
+            "MediaField": "mediafile.fields",
+            "CoverArtField": "mediafile.fields",
+            "DateField": "mediafile.fields",
+            "DateItemField": "mediafile.fields",
+            "ImageListField": "mediafile.fields",
+            "ListMediaField": "mediafile.fields",
+            "QNumberField": "mediafile.fields",
+            # Storage
+            "StorageStyle": "mediafile.storage",
+            "ListStorageStyle": "mediafile.storage",
+            "SoundCheckStorageStyleMixin": "mediafile.storage",
+            "ASFStorageStyle": "mediafile.storage",
+            "ASFImageStorageStyle": "mediafile.storage",
+            "APEv2ImageStorageStyle": "mediafile.storage",
+            "FlacImageStorageStyle": "mediafile.storage",
+            "MP3StorageStyle": "mediafile.storage",
+            "MP3SoundCheckStorageStyle": "mediafile.storage",
+            "MP3DescStorageStyle": "mediafile.storage",
+            "MP3PeopleStorageStyle": "mediafile.storage",
+            "MP3SlashPackStorageStyle": "mediafile.storage",
+            "MP3ImageStorageStyle": "mediafile.storage",
+            "MP3ListStorageStyle": "mediafile.storage",
+            "MP3UFIDStorageStyle": "mediafile.storage",
+            "MP3ListDescStorageStyle": "mediafile.storage",
+            "MP4StorageStyle": "mediafile.storage",
+            "MP4TupleStorageStyle": "mediafile.storage",
+            "MP4BoolStorageStyle": "mediafile.storage",
+            "MP4SoundCheckStorageStyle": "mediafile.storage",
+            "MP4ImageStorageStyle": "mediafile.storage",
+            "MP4ListStorageStyle": "mediafile.storage",
+            "VorbisImageStorageStyle": "mediafile.storage",
+            # Utils
+            "image_mime_type": "mediafile.utils",
+            "image_extension": "mediafile.utils",
+            "loadfile": "mediafile.utils",
+            "mutagen_call": "mediafile.utils",
+            "update_filething": "mediafile.utils",
+            "sc_encode": "mediafile.utils",
+            "sc_decode": "mediafile.utils",
+            "safe_cast": "mediafile.utils",
+        },
+        name,
+    )

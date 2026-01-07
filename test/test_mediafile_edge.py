@@ -21,6 +21,8 @@ import unittest
 import mutagen.id3
 
 import mediafile
+import mediafile.fields
+import mediafile.storage
 from test import _common
 
 _sc = mediafile.utils.safe_cast
@@ -389,13 +391,13 @@ class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
     def setUp(self):
         self.create_temp_dir()
         self.key = "READ_ONLY_TEST"
-        self.field = mediafile.MediaField(
-            mediafile.MP3StorageStyle(self.key, read_only=True),
-            mediafile.MP4StorageStyle(
+        self.field = mediafile.fields.MediaField(
+            mediafile.storage.MP3StorageStyle(self.key, read_only=True),
+            mediafile.storage.MP4StorageStyle(
                 "----:com.apple.iTunes:" + self.key, read_only=True
             ),
-            mediafile.StorageStyle(self.key, read_only=True),
-            mediafile.ASFStorageStyle(self.key, read_only=True),
+            mediafile.storage.StorageStyle(self.key, read_only=True),
+            mediafile.storage.ASFStorageStyle(self.key, read_only=True),
         )
 
         if "read_only_test" not in mediafile.MediaFile.fields():

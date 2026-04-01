@@ -713,6 +713,7 @@ class ReadWriteTestBase(ArtTestMixin, GenreListTestMixin, _common.TempDirMixin):
             "albumartists_credit",
             "artists_sort",
             "albumartists_sort",
+            "remixers",
         ]:
             tags[key] = ["multival", "test"]
 
@@ -1127,6 +1128,7 @@ class MediaFieldTest(unittest.TestCase):
                 "albumartists_credit",
                 "albumartists_sort",
                 "subtitle",
+                "remixers",
             )
         )
         self.assertCountEqual(MediaFile.fields(), fields)

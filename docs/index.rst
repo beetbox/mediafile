@@ -28,7 +28,7 @@ naming. MediaFile supports:
 
 - basic fields like ``title``, ``album``, ``artist`` and ``albumartist``,
 - sorting variants like ``albumartist_sort`` and ``composer_sort``,
-- plural/list variants like ``artists`` and ``albumartists``,
+- plural/list variants like ``artists``, ``albumartists`` and ``remixers``,
 - identifiers like ``asin``, ``isrc`` or ``mb_releasegroupid``,
 - dates like the release ``year``, ``month`` and ``day`` with convenience
   wrapper ``date``,

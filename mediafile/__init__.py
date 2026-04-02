@@ -721,6 +721,12 @@ class MediaFile:
         ListStorageStyle("ALBUMARTISTS_SORT"),
         ASFStorageStyle("beets/AlbumArtistsSort"),
     )
+    remixers = ListMediaField(
+        MP3ListStorageStyle("TPE4"),
+        MP4ListStorageStyle("----:com.apple.iTunes:REMIXERS"),
+        ListStorageStyle("REMIXER"),
+        ASFStorageStyle("WM/REMIXERS"),
+    )
 
     # Legacy album art field
     art = CoverArtField()

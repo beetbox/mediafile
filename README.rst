@@ -31,7 +31,7 @@ mediafile``. It works on Python 3.10 or later. Then:
     f.save()
 
 MediaFile also exposes plural fields for repeated metadata values, such as
-``artists``, ``albumartists``, and ``remixers``.
+``artists``, ``albumartists``, ``lyricists``, and ``remixers``.
 
 .. _on pypi: https://pypi.python.org/pypi/mediafile
 

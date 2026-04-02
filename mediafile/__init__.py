@@ -402,12 +402,13 @@ class MediaFile:
     )
     genre = genres.single_field()
 
-    lyricist = MediaField(
-        MP3StorageStyle("TEXT"),
-        MP4StorageStyle("----:com.apple.iTunes:LYRICIST"),
-        StorageStyle("LYRICIST"),
+    lyricists = ListMediaField(
+        MP3ListStorageStyle("TEXT"),
+        MP4ListStorageStyle("----:com.apple.iTunes:LYRICIST"),
+        ListStorageStyle("LYRICIST"),
         ASFStorageStyle("WM/Writer"),
     )
+    lyricist = lyricists.single_field()
     composer = MediaField(
         MP3StorageStyle("TCOM"),
         MP4StorageStyle("\xa9wrt"),

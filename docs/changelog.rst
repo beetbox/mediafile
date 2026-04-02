@@ -4,6 +4,9 @@ Changelog
 Upcoming
 --------
 
+- Added a multiple-valued ``lyricists`` field while preserving ``lyricist`` as a
+  first-value convenience alias.
+
 v0.15.0
 -------
 

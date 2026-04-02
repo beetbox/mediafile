@@ -6,6 +6,8 @@ Upcoming
 
 - Added a multiple-valued ``lyricists`` field while preserving ``lyricist`` as a
   first-value convenience alias.
+- Added a multiple-valued ``composers`` field while preserving ``composer`` as a
+  first-value convenience alias.
 
 v0.15.0
 -------

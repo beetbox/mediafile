@@ -409,12 +409,13 @@ class MediaFile:
         ASFStorageStyle("WM/Writer"),
     )
     lyricist = lyricists.single_field()
-    composer = MediaField(
-        MP3StorageStyle("TCOM"),
-        MP4StorageStyle("\xa9wrt"),
-        StorageStyle("COMPOSER"),
+    composers = ListMediaField(
+        MP3ListStorageStyle("TCOM"),
+        MP4ListStorageStyle("\xa9wrt"),
+        ListStorageStyle("COMPOSER"),
         ASFStorageStyle("WM/Composer"),
     )
+    composer = composers.single_field()
     composer_sort = MediaField(
         MP3StorageStyle("TSOC"),
         MP4StorageStyle("soco"),

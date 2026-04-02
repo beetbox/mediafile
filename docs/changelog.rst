@@ -4,6 +4,9 @@ Changelog
 Upcoming
 --------
 
+v0.15.0
+-------
+
 - Added a multiple-valued ``remixers`` field.
 
 v0.14.0

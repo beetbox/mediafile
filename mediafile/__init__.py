@@ -60,6 +60,7 @@ from .storage import (
     MP3DescStorageStyle,
     MP3ImageStorageStyle,
     MP3ListDescStorageStyle,
+    MP3ListPeopleStorageStyle,
     MP3ListStorageStyle,
     MP3PeopleStorageStyle,
     MP3SlashPackStorageStyle,
@@ -422,12 +423,13 @@ class MediaFile:
         StorageStyle("COMPOSERSORT"),
         ASFStorageStyle("WM/Composersortorder"),
     )
-    arranger = MediaField(
-        MP3PeopleStorageStyle("TIPL", involvement="arranger"),
-        MP4StorageStyle("----:com.apple.iTunes:Arranger"),
-        StorageStyle("ARRANGER"),
+    arrangers = ListMediaField(
+        MP3ListPeopleStorageStyle("TIPL", involvement="arranger"),
+        MP4ListStorageStyle("----:com.apple.iTunes:Arranger"),
+        ListStorageStyle("ARRANGER"),
         ASFStorageStyle("beets/Arranger"),
     )
+    arranger = arrangers.single_field()
 
     grouping = MediaField(
         MP3StorageStyle("TIT1"),

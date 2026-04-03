@@ -36,34 +36,56 @@ class MP3PeopleStorageStyle(MP3StorageStyle):
         self.involvement = involvement
         super().__init__(key, **kwargs)
 
-    def store(self, mutagen_file, value):
-        frames = mutagen_file.tags.getall(self.key)
-
-        # Try modifying in place.
-        found = False
-        for frame in frames:
-            if frame.encoding == mutagen.id3._specs.Encoding.UTF8:
-                for pair in frame.people:
-                    if pair[0].lower() == self.involvement.lower():
-                        pair[1] = value
-                        found = True
-
-        # Try creating a new frame.
-        if not found:
-            frame = mutagen.id3.Frames[self.key](
-                encoding=mutagen.id3._specs.Encoding.UTF8,
-                people=[[self.involvement, value]],
-            )
-            mutagen_file.tags.add(frame)
-
-    def fetch(self, mutagen_file):
+    def _matching_people(self, mutagen_file):
+        values = []
         for frame in mutagen_file.tags.getall(self.key):
             for pair in frame.people:
-                if pair[0].lower() == self.involvement.lower():
-                    try:
-                        return pair[1]
-                    except IndexError:
-                        return None
+                if pair[0].lower() == self.involvement.lower() and len(pair) > 1:
+                    values.append(pair[1])
+        return values
+
+    def _other_people(self, mutagen_file):
+        values = []
+        for frame in mutagen_file.tags.getall(self.key):
+            for pair in frame.people:
+                if pair[0].lower() != self.involvement.lower():
+                    values.append(pair)
+        return values
+
+    def _store_people(self, mutagen_file, values):
+        people = self._other_people(mutagen_file)
+        people.extend([[self.involvement, value] for value in values])
+
+        if people:
+            frame = mutagen.id3.Frames[self.key](
+                encoding=mutagen.id3._specs.Encoding.UTF8,
+                people=people,
+            )
+            mutagen_file.tags.setall(self.key, [frame])
+        else:
+            mutagen_file.tags.delall(self.key)
+
+    def store(self, mutagen_file, value):
+        self._store_people(mutagen_file, [value])
+
+    def fetch(self, mutagen_file):
+        try:
+            return self._matching_people(mutagen_file)[0]
+        except IndexError:
+            return None
+
+    def delete(self, mutagen_file):
+        self._store_people(mutagen_file, [])
+
+
+class MP3ListPeopleStorageStyle(ListStorageStyle, MP3PeopleStorageStyle):
+    """Store multiple values for one involvement in ID3 people frames."""
+
+    def fetch(self, mutagen_file):
+        return self._matching_people(mutagen_file)
+
+    def store(self, mutagen_file, values):
+        self._store_people(mutagen_file, values)
 
 
 class MP3ListStorageStyle(ListStorageStyle, MP3StorageStyle):

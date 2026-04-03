@@ -331,11 +331,32 @@ class ComposerListTestMixin:
         self.assertEqual(mediafile.composer, "one")
 
 
+class ArrangerListTestMixin:
+    """Tests access to the ``arrangers`` property as a list."""
+
+    def test_write_arranger_list(self):
+        mediafile = self._mediafile_fixture("empty")
+        mediafile.arrangers = ["one", "two"]
+        mediafile.save()
+
+        mediafile = MediaFile(mediafile.filename)
+        self.assertCountEqual(mediafile.arrangers, ["one", "two"])
+
+    def test_write_arranger_list_get_first(self):
+        mediafile = self._mediafile_fixture("empty")
+        mediafile.arrangers = ["one", "two"]
+        mediafile.save()
+
+        mediafile = MediaFile(mediafile.filename)
+        self.assertEqual(mediafile.arranger, "one")
+
+
 class ReadWriteTestBase(
     ArtTestMixin,
     GenreListTestMixin,
     LyricistListTestMixin,
     ComposerListTestMixin,
+    ArrangerListTestMixin,
     _common.TempDirMixin,
 ):
     """Test writing and reading tags. Subclasses must set ``extension``
@@ -932,6 +953,15 @@ class WMATest(ReadWriteTestBase, ExtendedImageStructureTestMixin, unittest.TestC
         mediafile = MediaFile(mediafile.filename)
         self.assertIn(mediafile.composer, ["one", "two"])
 
+    def test_write_arranger_list_get_first(self):
+        # WMA does not preserve list order
+        mediafile = self._mediafile_fixture("empty")
+        mediafile.arrangers = ["one", "two"]
+        mediafile.save()
+
+        mediafile = MediaFile(mediafile.filename)
+        self.assertIn(mediafile.arranger, ["one", "two"])
+
     def test_read_pure_tags(self):
         mediafile = self._mediafile_fixture("pure")
         self.assertEqual(mediafile.comments, "the comments")
@@ -1180,6 +1210,7 @@ class MediaFieldTest(unittest.TestCase):
                 "genres",
                 "lyricists",
                 "composers",
+                "arrangers",
                 "albumtype",
                 "artists",
                 "albumartists",

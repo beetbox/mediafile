@@ -4,10 +4,9 @@ Changelog
 Upcoming
 --------
 
-- Added a multiple-valued ``lyricists`` field while preserving ``lyricist`` as a
-  first-value convenience alias.
-- Added a multiple-valued ``composers`` field while preserving ``composer`` as a
-  first-value convenience alias.
+- Added a multiple-valued ``lyricists``, ``composers`` and ``arrangers`` fields
+  while preserving ``lyricist``, ``composer`` and ``arranger`` as first-value
+  convenience aliases.
 
 v0.15.0
 -------

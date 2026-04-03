@@ -4,6 +4,9 @@ Changelog
 Upcoming
 --------
 
+v0.16.0
+-------
+
 - Added a multiple-valued ``lyricists``, ``composers`` and ``arrangers`` fields
   while preserving ``lyricist``, ``composer`` and ``arranger`` as first-value
   convenience aliases.

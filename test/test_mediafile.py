@@ -21,6 +21,7 @@ import os
 import shutil
 import time
 import unittest
+from typing import ClassVar
 
 import mutagen
 
@@ -258,107 +259,57 @@ class LazySaveTestMixin:
         return mtime
 
 
-class GenreListTestMixin:
-    """Tests access to the ``genres`` property as a list."""
+class ListFieldTestMixin:
+    """Tests list-backed metadata fields from declarative field specs."""
 
-    def test_read_genre_list(self):
+    str_with_list_field_spec = (
+        ("genre", "genres"),
+        ("lyricist", "lyricists"),
+        ("composer", "composers"),
+        ("arranger", "arrangers"),
+    )
+    values: ClassVar[list[str]] = ["one", "two"]
+
+    def _assert_first_list_value(self, actual, values):
+        assert actual == values[0]
+
+    def test_read_list_fields(self):
         mediafile = self._mediafile_fixture("full")
-        self.assertCountEqual(mediafile.genres, ["the genre"])
+        assert mediafile.genres == ["the genre"]
 
-    def test_write_genre_list(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.genres = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertCountEqual(mediafile.genres, ["one", "two"])
-
-    def test_write_genre_list_get_first(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.genres = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertEqual(mediafile.genre, "one")
-
-    def test_append_genre_list(self):
+    def test_append_value(self):
         mediafile = self._mediafile_fixture("full")
-        self.assertEqual(mediafile.genre, "the genre")
+        assert mediafile.genre == "the genre"
         mediafile.genres += ["another"]
         mediafile.save()
 
         mediafile = MediaFile(mediafile.filename)
-        self.assertCountEqual(mediafile.genres, ["the genre", "another"])
+        assert mediafile.genres == ["the genre", "another"]
+
+    def test_write_list_fields(self):
+        for _, list_field in self.str_with_list_field_spec:
+            with self.subTest(field=list_field):
+                mediafile = self._mediafile_fixture("empty")
+                setattr(mediafile, list_field, self.values)
+                mediafile.save()
+
+                mediafile = MediaFile(mediafile.filename)
+                assert len(getattr(mediafile, list_field)) == len(self.values)
+
+    def test_write_list_fields_get_first(self):
+        for str_field, list_field in self.str_with_list_field_spec:
+            with self.subTest(field=str_field):
+                mediafile = self._mediafile_fixture("empty")
+                setattr(mediafile, list_field, self.values)
+                mediafile.save()
+
+                mediafile = MediaFile(mediafile.filename)
+                self._assert_first_list_value(
+                    getattr(mediafile, str_field), self.values
+                )
 
 
-class LyricistListTestMixin:
-    """Tests access to the ``lyricists`` property as a list."""
-
-    def test_write_lyricist_list(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.lyricists = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertCountEqual(mediafile.lyricists, ["one", "two"])
-
-    def test_write_lyricist_list_get_first(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.lyricists = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertEqual(mediafile.lyricist, "one")
-
-
-class ComposerListTestMixin:
-    """Tests access to the ``composers`` property as a list."""
-
-    def test_write_composer_list(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.composers = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertCountEqual(mediafile.composers, ["one", "two"])
-
-    def test_write_composer_list_get_first(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.composers = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertEqual(mediafile.composer, "one")
-
-
-class ArrangerListTestMixin:
-    """Tests access to the ``arrangers`` property as a list."""
-
-    def test_write_arranger_list(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.arrangers = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertCountEqual(mediafile.arrangers, ["one", "two"])
-
-    def test_write_arranger_list_get_first(self):
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.arrangers = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertEqual(mediafile.arranger, "one")
-
-
-class ReadWriteTestBase(
-    ArtTestMixin,
-    GenreListTestMixin,
-    LyricistListTestMixin,
-    ComposerListTestMixin,
-    ArrangerListTestMixin,
-    _common.TempDirMixin,
-):
+class ReadWriteTestBase(ArtTestMixin, ListFieldTestMixin, _common.TempDirMixin):
     """Test writing and reading tags. Subclasses must set ``extension``
     and ``audio_properties``.
 
@@ -926,41 +877,9 @@ class WMATest(ReadWriteTestBase, ExtendedImageStructureTestMixin, unittest.TestC
         "channels": 1,
     }
 
-    def test_write_genre_list_get_first(self):
+    def _assert_first_list_value(self, actual, values):
         # WMA does not preserve list order
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.genres = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertIn(mediafile.genre, ["one", "two"])
-
-    def test_write_lyricist_list_get_first(self):
-        # WMA does not preserve list order
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.lyricists = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertIn(mediafile.lyricist, ["one", "two"])
-
-    def test_write_composer_list_get_first(self):
-        # WMA does not preserve list order
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.composers = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertIn(mediafile.composer, ["one", "two"])
-
-    def test_write_arranger_list_get_first(self):
-        # WMA does not preserve list order
-        mediafile = self._mediafile_fixture("empty")
-        mediafile.arrangers = ["one", "two"]
-        mediafile.save()
-
-        mediafile = MediaFile(mediafile.filename)
-        self.assertIn(mediafile.arranger, ["one", "two"])
+        self.assertIn(actual, values)
 
     def test_read_pure_tags(self):
         mediafile = self._mediafile_fixture("pure")

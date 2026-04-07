@@ -9,7 +9,7 @@ from mediafile.constants import ImageType
 log = logging.getLogger(__name__)
 
 
-def image_mime_type(data):
+def image_mime_type(data) -> str | None:
     """Return the MIME type of the image data (a bytestring)."""
     return filetype.guess_mime(data)
 
@@ -32,7 +32,16 @@ class Image:
                     the binary data
     """
 
-    def __init__(self, data, desc=None, type=None):
+    data: bytes
+    desc: str | None
+    type: ImageType | None
+
+    def __init__(
+        self,
+        data: bytes,
+        desc: str | None = None,
+        type: ImageType | None = None,
+    ) -> None:
         assert isinstance(data, bytes)
         if desc is not None:
             assert isinstance(desc, str)
@@ -47,12 +56,13 @@ class Image:
         self.type = type
 
     @property
-    def mime_type(self):
+    def mime_type(self) -> str | None:
         if self.data:
             return image_mime_type(self.data)
+        return None
 
     @property
-    def type_index(self):
+    def type_index(self) -> int:
         if self.type is None:
             # This method is used when a tag format requires the type
             # index to be set, so we return "other" as the default value.

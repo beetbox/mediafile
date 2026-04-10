@@ -187,6 +187,10 @@ class MediaFile:
         elif type(self.mgfile).__name__ == "DSF":
             self.type = "dsf"
         elif type(self.mgfile).__name__ == "WAVE":
+            # WAVE_FORMAT_MPEGLAYER3 (0x0055) : MP3 stream in a WAV container
+            # mutagen cannot tag it correctly.
+            if getattr(self.mgfile.info, "audio_format", 1) == 0x55:
+                raise FileTypeError(self.filename, "WAVE_FORMAT_MPEGLAYER3")
             self.type = "wav"
         else:
             raise FileTypeError(self.filename, type(self.mgfile).__name__)

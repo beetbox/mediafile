@@ -3,6 +3,9 @@ Changelog
 
 Upcoming
 --------
+- Raise ``FileTypeError`` for WAV files containing an MP3 stream
+  (``WAVE_FORMAT_MPEGLAYER3``, ``wFormatTag=0x0055``), which mutagen cannot tag
+  correctly, instead of returning the wrong metadata.
 
 v0.16.0
 -------

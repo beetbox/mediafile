@@ -173,6 +173,12 @@ class SafetyTest(unittest.TestCase, _common.TempDirMixin):
         finally:
             os.unlink(fn)
 
+    def test_mpeglayer3_wav_raises_filetypeerror(self):
+        # WAV files with WAVE_FORMAT_MPEGLAYER3 (OxOO55) contain a MP3 stream
+        # and cannot be tagged correctly
+        fn = os.path.join(_common.RSRC, b"mpeglayer3.wav")
+        self.assertRaises(mediafile.FileTypeError, mediafile.MediaFile, fn)
+
 
 class SideEffectsTest(unittest.TestCase):
     def setUp(self):

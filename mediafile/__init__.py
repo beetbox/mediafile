@@ -187,6 +187,19 @@ class MediaFile:
         elif type(self.mgfile).__name__ == "DSF":
             self.type = "dsf"
         elif type(self.mgfile).__name__ == "WAVE":
+            # WAV files can contain non-PCM audio streams that mutagen
+            # cannot tag correctly. Rejects them with a clear error.
+            _unsupported_wav_formats = {
+                0x0002: "WAVE_FORMAT_ADPCM",
+                0x0006: "WAVE_FORMAT_ALAW",
+                0x0007: "WAVE_FORMAT_MULAW",
+                0x0055: "WAVE_FORMAT_MPEGLAYER3",
+            }
+            audio_fmt = getattr(self.mgfile.info, "audio_format", 0x0001)
+            if audio_fmt in _unsupported_wav_formats:
+                raise FileTypeError(
+                    self.filename, _unsupported_wav_formats[audio_fmt]
+                )
             self.type = "wav"
         else:
             raise FileTypeError(self.filename, type(self.mgfile).__name__)

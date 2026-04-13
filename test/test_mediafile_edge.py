@@ -19,6 +19,7 @@ import shutil
 import unittest
 
 import mutagen.id3
+import pytest
 
 import mediafile
 from test import _common
@@ -177,7 +178,8 @@ class SafetyTest(unittest.TestCase, _common.TempDirMixin):
         # WAV files with WAVE_FORMAT_MPEGLAYER3 (OxOO55) contain a MP3 stream
         # and cannot be tagged correctly
         fn = os.path.join(_common.RSRC, b"mpeglayer3.wav")
-        self.assertRaises(mediafile.FileTypeError, mediafile.MediaFile, fn)
+        with pytest.raises(mediafile.FileTypeError):
+            mediafile.MediaFile(fn)
 
 
 class SideEffectsTest(unittest.TestCase):

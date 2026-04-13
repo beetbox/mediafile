@@ -197,9 +197,7 @@ class MediaFile:
             }
             audio_fmt = getattr(self.mgfile.info, "audio_format", 0x0001)
             if audio_fmt in _unsupported_wav_formats:
-                raise FileTypeError(
-                    self.filename, _unsupported_wav_formats[audio_fmt]
-                )
+                raise FileTypeError(self.filename, _unsupported_wav_formats[audio_fmt])
             self.type = "wav"
         else:
             raise FileTypeError(self.filename, type(self.mgfile).__name__)

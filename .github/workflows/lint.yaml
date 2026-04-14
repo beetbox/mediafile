@@ -106,7 +106,7 @@ jobs:
           cache: poetry
 
       - name: Install dependencies
-        run: poetry install --only=lint
+        run: poetry install
 
       - name: Type check code
         uses: liskin/gh-problem-matcher-wrap@v3

@@ -8,6 +8,13 @@ Upcoming
   optionally raise ``FileTypeError`` for WAV files containing non-PCM audio
   streams (``WAVE_FORMAT_MPEGLAYER3``, ``WAVE_FORMAT_ADPCM``, ``WAVE_FORMAT_ALAW``,
   ``WAVE_FORMAT_MULAW``).
+v0.16.1
+-------
+
+- Raise ``FileTypeError`` for WAV files containing non-PCM audio streams that
+  mutagen cannot tag correctly, including ``WAVE_FORMAT_MPEGLAYER3`` (0x0055),
+  ``WAVE_FORMAT_ADPCM`` (0x0002), ``WAVE_FORMAT_ALAW`` (0x0006), and
+  ``WAVE_FORMAT_MULAW`` (0x0007).
 
 v0.16.0
 -------

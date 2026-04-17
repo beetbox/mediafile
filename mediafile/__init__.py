@@ -142,7 +142,7 @@ class MediaFile:
     """
 
     @loadfile()
-    def __init__(self, filething, id3v23=False):
+    def __init__(self, filething, id3v23=False, raise_on_unsupported_wav=False):
         """Constructs a new `MediaFile` reflecting the provided file.
 
         `filething` can be a path to a file (i.e., a string) or a
@@ -152,6 +152,9 @@ class MediaFile:
 
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
+
+        If `raise_on_unsupported_wav` is True, a `FileTypeError` is raised for WAV
+        files containing non-PCM audio streams that cannot be tagged correctly.
         """
         self.filething = filething
 
@@ -196,7 +199,7 @@ class MediaFile:
                 0x0055: "WAVE_FORMAT_MPEGLAYER3",
             }
             audio_fmt = getattr(self.mgfile.info, "audio_format", 0x0001)
-            if audio_fmt in _unsupported_wav_formats:
+            if audio_fmt in _unsupported_wav_formats and raise_on_unsupported_wav:
                 raise FileTypeError(self.filename, _unsupported_wav_formats[audio_fmt])
             self.type = "wav"
         else:

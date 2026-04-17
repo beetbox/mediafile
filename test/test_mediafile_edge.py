@@ -179,7 +179,7 @@ class SafetyTest(unittest.TestCase, _common.TempDirMixin):
         # and cannot be tagged correctly
         fn = os.path.join(_common.RSRC, b"mpeglayer3.wav")
         with pytest.raises(mediafile.FileTypeError):
-            mediafile.MediaFile(fn)
+            mediafile.MediaFile(fn, raise_on_unsupported_wav=True)
 
 
 class SideEffectsTest(unittest.TestCase):

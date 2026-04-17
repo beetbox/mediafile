@@ -4,6 +4,9 @@ Changelog
 Upcoming
 --------
 
+v0.16.2
+-------
+
 - Add ``raise_on_unsupported_wav`` parameter to ``MediaFile.__init__`` to
   optionally raise ``FileTypeError`` for WAV files containing non-PCM audio
   streams (``WAVE_FORMAT_MPEGLAYER3``, ``WAVE_FORMAT_ADPCM``,

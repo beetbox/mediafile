@@ -8,6 +8,7 @@ Upcoming
   optionally raise ``FileTypeError`` for WAV files containing non-PCM audio
   streams (``WAVE_FORMAT_MPEGLAYER3``, ``WAVE_FORMAT_ADPCM``, ``WAVE_FORMAT_ALAW``,
   ``WAVE_FORMAT_MULAW``).
+
 v0.16.1
 -------
 

@@ -199,7 +199,7 @@ class MediaFile:
                 0x0055: "WAVE_FORMAT_MPEGLAYER3",
             }
             audio_fmt = getattr(self.mgfile.info, "audio_format", 0x0001)
-            if audio_fmt in _unsupported_wav_formats and raise_on_unsupported_wav:
+            if raise_on_unsupported_wav and audio_fmt in _unsupported_wav_formats:
                 raise FileTypeError(self.filename, _unsupported_wav_formats[audio_fmt])
             self.type = "wav"
         else:

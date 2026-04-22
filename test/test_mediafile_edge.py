@@ -445,8 +445,9 @@ def _copy_fixture(tmp_path, name):
 class TestSyncedLyrics:
     """Tests for the ``synced_lyrics`` field backed by the SYLT ID3 frame."""
 
-    def test_write_and_read_mp3(self, tmp_path):
-        path = _copy_fixture(tmp_path, "empty.mp3")
+    @pytest.mark.parametrize("ext", ["mp3", "aiff"])
+    def test_write_and_read(self, tmp_path, ext):
+        path = _copy_fixture(tmp_path, f"empty.{ext}")
         mf = mediafile.MediaFile(path)
         mf.synced_lyrics = SYNCED_LYRICS
         mf.save()
@@ -454,36 +455,15 @@ class TestSyncedLyrics:
         mf2 = mediafile.MediaFile(path)
         assert mf2.synced_lyrics == SYNCED_LYRICS
 
-    def test_write_and_read_aiff(self, tmp_path):
-        path = _copy_fixture(tmp_path, "empty.aiff")
-        mf = mediafile.MediaFile(path)
-        mf.synced_lyrics = SYNCED_LYRICS
-        mf.save()
-
-        mf2 = mediafile.MediaFile(path)
-        assert mf2.synced_lyrics == SYNCED_LYRICS
-
-    def test_clear_with_none(self, tmp_path):
+    @pytest.mark.parametrize("clear_value", [None, []])
+    def test_clear(self, tmp_path, clear_value):
         path = _copy_fixture(tmp_path, "empty.mp3")
         mf = mediafile.MediaFile(path)
         mf.synced_lyrics = SYNCED_LYRICS
         mf.save()
 
         mf2 = mediafile.MediaFile(path)
-        mf2.synced_lyrics = None
-        mf2.save()
-
-        mf3 = mediafile.MediaFile(path)
-        assert not mf3.synced_lyrics
-
-    def test_clear_with_empty_list(self, tmp_path):
-        path = _copy_fixture(tmp_path, "empty.mp3")
-        mf = mediafile.MediaFile(path)
-        mf.synced_lyrics = SYNCED_LYRICS
-        mf.save()
-
-        mf2 = mediafile.MediaFile(path)
-        mf2.synced_lyrics = []
+        mf2.synced_lyrics = clear_value
         mf2.save()
 
         mf3 = mediafile.MediaFile(path)

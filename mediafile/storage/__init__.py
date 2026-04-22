@@ -12,6 +12,7 @@ from .mp3 import (
     MP3SlashPackStorageStyle,
     MP3SoundCheckStorageStyle,
     MP3StorageStyle,
+    MP3SYLTStorageStyle,
     MP3UFIDStorageStyle,
 )
 from .mp4 import (
@@ -42,6 +43,7 @@ __all__ = [
     "MP4TupleStorageStyle",
     "MP3ListStorageStyle",
     "MP3UFIDStorageStyle",
+    "MP3SYLTStorageStyle",
     "MP3ListDescStorageStyle",
     "MP4StorageStyle",
     "MP4BoolStorageStyle",

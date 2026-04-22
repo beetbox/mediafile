@@ -304,3 +304,43 @@ class MP3SoundCheckStorageStyle(SoundCheckStorageStyleMixin, MP3DescStorageStyle
     def __init__(self, index=0, **kwargs):
         super().__init__(**kwargs)
         self.index = index
+
+
+class MP3SYLTStorageStyle(MP3StorageStyle):
+    """Storage for SYLT (synchronized lyrics) ID3 frames.
+
+    Reads and writes a list of ``(text, milliseconds)`` tuples, which is the
+    native structure of the ID3v2 SYLT frame (format=2, milliseconds).
+    Returns ``None`` when no SYLT frame is present.
+    """
+
+    def __init__(self):
+        super().__init__(key="SYLT")
+
+    def fetch(self, mutagen_file):
+        frames = mutagen_file.tags.getall("SYLT")
+        if frames:
+            return list(frames[0].text)
+        return None
+
+    def store(self, mutagen_file, value):
+        import mutagen.id3
+
+        if not value:
+            mutagen_file.tags.delall("SYLT")
+            return
+
+        frame = mutagen.id3.SYLT(
+            encoding=3,
+            lang="XXX",
+            format=2,
+            type=1,
+            text=value,
+        )
+        mutagen_file.tags.setall("SYLT", [frame])
+
+    def serialize(self, value):
+        return value
+
+    def deserialize(self, value):
+        return value

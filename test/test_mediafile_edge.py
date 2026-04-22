@@ -432,6 +432,121 @@ class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
             pass
 
 
+class SyncedLyricsTest(_common.TempDirMixin, unittest.TestCase):
+    """Tests for the ``synced_lyrics`` field backed by the SYLT ID3 frame."""
+
+    SYNCED = [("hello", 1000), ("world", 2500)]
+
+    def setUp(self):
+        self.create_temp_dir()
+
+    def tearDown(self):
+        self.remove_temp_dir()
+
+    def _copy_fixture(self, name):
+        src = os.path.join(_common.RSRC, name.encode("utf8"))
+        dst = os.path.join(self.temp_dir, name.encode("utf8"))
+        shutil.copy(src, dst)
+        return dst
+
+    def test_write_and_read_mp3(self):
+        path = self._copy_fixture("empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = self.SYNCED
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        self.assertEqual(mf2.synced_lyrics, self.SYNCED)
+
+    def test_write_and_read_aiff(self):
+        path = self._copy_fixture("empty.aiff")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = self.SYNCED
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        self.assertEqual(mf2.synced_lyrics, self.SYNCED)
+
+    def test_clear_with_none(self):
+        path = self._copy_fixture("empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = self.SYNCED
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        mf2.synced_lyrics = None
+        mf2.save()
+
+        mf3 = mediafile.MediaFile(path)
+        self.assertFalse(mf3.synced_lyrics)
+
+    def test_clear_with_empty_list(self):
+        path = self._copy_fixture("empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = self.SYNCED
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        mf2.synced_lyrics = []
+        mf2.save()
+
+        mf3 = mediafile.MediaFile(path)
+        self.assertFalse(mf3.synced_lyrics)
+
+    def test_no_sylt_returns_falsy(self):
+        path = self._copy_fixture("empty.mp3")
+        mf = mediafile.MediaFile(path)
+        self.assertFalse(mf.synced_lyrics)
+
+    def test_synced_and_plain_lyrics_are_independent(self):
+        path = self._copy_fixture("empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.lyrics = "plain text"
+        mf.synced_lyrics = self.SYNCED
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        self.assertEqual(mf2.lyrics, "plain text")
+        self.assertEqual(mf2.synced_lyrics, self.SYNCED)
+
+    def _assert_no_synced_lyrics(self, ext):
+        path = self._copy_fixture(f"empty.{ext}")
+        mf = mediafile.MediaFile(path)
+        self.assertFalse(mf.synced_lyrics)
+
+    def test_non_id3_flac_returns_falsy(self):
+        self._assert_no_synced_lyrics("flac")
+
+    def test_non_id3_ogg_returns_falsy(self):
+        self._assert_no_synced_lyrics("ogg")
+
+    def test_non_id3_m4a_returns_falsy(self):
+        self._assert_no_synced_lyrics("m4a")
+
+    def test_non_id3_wma_returns_falsy(self):
+        self._assert_no_synced_lyrics("wma")
+
+    def test_non_id3_wv_returns_falsy(self):
+        self._assert_no_synced_lyrics("wv")
+
+    def test_non_id3_ape_returns_falsy(self):
+        self._assert_no_synced_lyrics("ape")
+
+    def test_sylt_lang_is_xxx(self):
+        """The SYLT frame should use 'XXX' (undetermined) as language code."""
+        path = self._copy_fixture("empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = self.SYNCED
+        mf.save()
+
+        import mutagen.id3
+
+        tags = mutagen.id3.ID3(path)
+        frames = tags.getall("SYLT")
+        self.assertEqual(len(frames), 1)
+        self.assertEqual(frames[0].lang, "XXX")
+
+
 def suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
 

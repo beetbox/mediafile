@@ -8,8 +8,8 @@ v0.17.0
 -------
 
 - Added ``synced_lyrics`` field backed by the ID3v2 ``SYLT`` (synchronized
-  lyrics) frame. Reads and writes a list of ``(text, milliseconds)`` tuples
-  for MP3, AIFF, DSF, and WAVE files. Non-ID3 formats return ``None``.
+  lyrics) frame. Reads and writes a list of ``(text, milliseconds)`` tuples for
+  MP3, AIFF, DSF, and WAVE files. Non-ID3 formats return ``None``.
 
 v0.16.2
 -------

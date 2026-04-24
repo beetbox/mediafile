@@ -66,6 +66,7 @@ from .storage import (
     MP3SlashPackStorageStyle,
     MP3SoundCheckStorageStyle,
     MP3StorageStyle,
+    MP3SYLTStorageStyle,
     MP3UFIDStorageStyle,
     MP4BoolStorageStyle,
     MP4ImageStorageStyle,
@@ -502,6 +503,10 @@ class MediaFile:
         MP4StorageStyle("\xa9lyr"),
         StorageStyle("LYRICS"),
         ASFStorageStyle("WM/Lyrics"),
+    )
+    synced_lyrics = MediaField(
+        MP3SYLTStorageStyle(),
+        out_type=list,
     )
     comments = MediaField(
         MP3DescStorageStyle(key="COMM"),

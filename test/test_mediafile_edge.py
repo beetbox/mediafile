@@ -19,6 +19,7 @@ import shutil
 import unittest
 
 import mutagen.id3
+import pytest
 
 import mediafile
 from test import _common
@@ -172,6 +173,13 @@ class SafetyTest(unittest.TestCase, _common.TempDirMixin):
             self.assertRaises(mediafile.UnreadableFileError, mediafile.MediaFile, fn)
         finally:
             os.unlink(fn)
+
+    def test_mpeglayer3_wav_raises_filetypeerror(self):
+        # WAV files with WAVE_FORMAT_MPEGLAYER3 (0x0055) contain a MP3 stream
+        # and cannot be tagged correctly
+        fn = os.path.join(_common.RSRC, b"mpeglayer3.wav")
+        with pytest.raises(mediafile.FileTypeError):
+            mediafile.MediaFile(fn, raise_on_unsupported_wav=True)
 
 
 class SideEffectsTest(unittest.TestCase):
@@ -462,6 +470,78 @@ class ReadOnlyTagTest(unittest.TestCase, _common.TempDirMixin):
             del mediafile.MediaFile.read_only_test
         except AttributeError:
             pass
+
+
+SYNCED_LYRICS = [("hello", 1000), ("world", 2500)]
+
+
+def _copy_fixture(tmp_path, name):
+    src = os.path.join(_common.RSRC, name.encode("utf8"))
+    dst = os.path.join(os.fsencode(str(tmp_path)), name.encode("utf8"))
+    shutil.copy(src, dst)
+    return dst
+
+
+class TestSyncedLyrics:
+    """Tests for the ``synced_lyrics`` field backed by the SYLT ID3 frame."""
+
+    @pytest.mark.parametrize("ext", ["mp3", "aiff"])
+    def test_write_and_read(self, tmp_path, ext):
+        path = _copy_fixture(tmp_path, f"empty.{ext}")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        assert mf2.synced_lyrics == SYNCED_LYRICS
+
+    @pytest.mark.parametrize("clear_value", [None, []])
+    def test_clear(self, tmp_path, clear_value):
+        path = _copy_fixture(tmp_path, "empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        mf2.synced_lyrics = clear_value
+        mf2.save()
+
+        mf3 = mediafile.MediaFile(path)
+        assert not mf3.synced_lyrics
+
+    def test_no_sylt_returns_falsy(self, tmp_path):
+        path = _copy_fixture(tmp_path, "empty.mp3")
+        mf = mediafile.MediaFile(path)
+        assert not mf.synced_lyrics
+
+    def test_synced_and_plain_lyrics_are_independent(self, tmp_path):
+        path = _copy_fixture(tmp_path, "empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.lyrics = "plain text"
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        assert mf2.lyrics == "plain text"
+        assert mf2.synced_lyrics == SYNCED_LYRICS
+
+    @pytest.mark.parametrize("ext", ["flac", "ogg", "m4a", "wma", "wv", "ape"])
+    def test_non_id3_returns_falsy(self, tmp_path, ext):
+        path = _copy_fixture(tmp_path, f"empty.{ext}")
+        mf = mediafile.MediaFile(path)
+        assert not mf.synced_lyrics
+
+    def test_sylt_lang_is_xxx(self, tmp_path):
+        """The SYLT frame should use 'XXX' (undetermined) as language code."""
+        path = _copy_fixture(tmp_path, "empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        tags = mutagen.id3.ID3(path)
+        frames = tags.getall("SYLT")
+        assert len(frames) == 1
+        assert frames[0].lang == "XXX"
 
 
 def suite():

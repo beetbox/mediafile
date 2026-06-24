@@ -60,11 +60,13 @@ from .storage import (
     MP3DescStorageStyle,
     MP3ImageStorageStyle,
     MP3ListDescStorageStyle,
+    MP3ListPeopleStorageStyle,
     MP3ListStorageStyle,
     MP3PeopleStorageStyle,
     MP3SlashPackStorageStyle,
     MP3SoundCheckStorageStyle,
     MP3StorageStyle,
+    MP3SYLTStorageStyle,
     MP3UFIDStorageStyle,
     MP4BoolStorageStyle,
     MP4ImageStorageStyle,
@@ -141,7 +143,7 @@ class MediaFile:
     """
 
     @loadfile()
-    def __init__(self, filething, id3v23=False):
+    def __init__(self, filething, id3v23=False, raise_on_unsupported_wav=False):
         """Constructs a new `MediaFile` reflecting the provided file.
 
         `filething` can be a path to a file (i.e., a string) or a
@@ -151,6 +153,9 @@ class MediaFile:
 
         By default, MP3 files are saved with ID3v2.4 tags. You can use
         the older ID3v2.3 standard by specifying the `id3v23` option.
+
+        If `raise_on_unsupported_wav` is True, a `FileTypeError` is raised for WAV
+        files containing non-PCM audio streams that cannot be tagged correctly.
         """
         self.filething = filething
 
@@ -186,6 +191,17 @@ class MediaFile:
         elif type(self.mgfile).__name__ == "DSF":
             self.type = "dsf"
         elif type(self.mgfile).__name__ == "WAVE":
+            # WAV files can contain non-PCM audio streams that mutagen
+            # cannot tag correctly. Rejects them with a clear error.
+            _unsupported_wav_formats = {
+                0x0002: "WAVE_FORMAT_ADPCM",
+                0x0006: "WAVE_FORMAT_ALAW",
+                0x0007: "WAVE_FORMAT_MULAW",
+                0x0055: "WAVE_FORMAT_MPEGLAYER3",
+            }
+            audio_fmt = getattr(self.mgfile.info, "audio_format", 0x0001)
+            if raise_on_unsupported_wav and audio_fmt in _unsupported_wav_formats:
+                raise FileTypeError(self.filename, _unsupported_wav_formats[audio_fmt])
             self.type = "wav"
         else:
             raise FileTypeError(self.filename, type(self.mgfile).__name__)
@@ -402,30 +418,33 @@ class MediaFile:
     )
     genre = genres.single_field()
 
-    lyricist = MediaField(
-        MP3StorageStyle("TEXT"),
-        MP4StorageStyle("----:com.apple.iTunes:LYRICIST"),
-        StorageStyle("LYRICIST"),
+    lyricists = ListMediaField(
+        MP3ListStorageStyle("TEXT"),
+        MP4ListStorageStyle("----:com.apple.iTunes:LYRICIST"),
+        ListStorageStyle("LYRICIST"),
         ASFStorageStyle("WM/Writer"),
     )
-    composer = MediaField(
-        MP3StorageStyle("TCOM"),
-        MP4StorageStyle("\xa9wrt"),
-        StorageStyle("COMPOSER"),
+    lyricist = lyricists.single_field()
+    composers = ListMediaField(
+        MP3ListStorageStyle("TCOM"),
+        MP4ListStorageStyle("\xa9wrt"),
+        ListStorageStyle("COMPOSER"),
         ASFStorageStyle("WM/Composer"),
     )
+    composer = composers.single_field()
     composer_sort = MediaField(
         MP3StorageStyle("TSOC"),
         MP4StorageStyle("soco"),
         StorageStyle("COMPOSERSORT"),
         ASFStorageStyle("WM/Composersortorder"),
     )
-    arranger = MediaField(
-        MP3PeopleStorageStyle("TIPL", involvement="arranger"),
-        MP4StorageStyle("----:com.apple.iTunes:Arranger"),
-        StorageStyle("ARRANGER"),
+    arrangers = ListMediaField(
+        MP3ListPeopleStorageStyle("TIPL", involvement="arranger"),
+        MP4ListStorageStyle("----:com.apple.iTunes:Arranger"),
+        ListStorageStyle("ARRANGER"),
         ASFStorageStyle("beets/Arranger"),
     )
+    arranger = arrangers.single_field()
 
     grouping = MediaField(
         MP3StorageStyle("TIT1"),
@@ -484,6 +503,10 @@ class MediaFile:
         MP4StorageStyle("\xa9lyr"),
         StorageStyle("LYRICS"),
         ASFStorageStyle("WM/Lyrics"),
+    )
+    synced_lyrics = MediaField(
+        MP3SYLTStorageStyle(),
+        out_type=list,
     )
     comments = MediaField(
         MP3DescStorageStyle(key="COMM"),
@@ -720,6 +743,12 @@ class MediaFile:
         MP4ListStorageStyle("----:com.apple.iTunes:ALBUMARTISTS_SORT"),
         ListStorageStyle("ALBUMARTISTS_SORT"),
         ASFStorageStyle("beets/AlbumArtistsSort"),
+    )
+    remixers = ListMediaField(
+        MP3ListStorageStyle("TPE4"),
+        MP4ListStorageStyle("----:com.apple.iTunes:REMIXERS"),
+        ListStorageStyle("REMIXER"),
+        ASFStorageStyle("WM/REMIXERS"),
     )
 
     # Legacy album art field

@@ -14,6 +14,7 @@
 
 """Specific, edge-case tests for the MediaFile metadata layer."""
 
+import datetime
 import os
 import shutil
 import unittest
@@ -249,44 +250,25 @@ class MissingAudioDataTest(unittest.TestCase):
         self.assertEqual(self.mf.bitrate, 0)
 
 
-class DateParsingTest(unittest.TestCase):
-    """Tests for date string parsing edge cases in _get_date_tuple."""
+@pytest.fixture
+def mp3_mediafile():
+    path = os.path.join(_common.RSRC, b"full.mp3")
+    return mediafile.MediaFile(path)
 
-    def setUp(self):
-        super().setUp()
-        path = os.path.join(_common.RSRC, b"full.mp3")
-        self.mf = mediafile.MediaFile(path)
 
-    def _set_raw_date(self, datestring):
-        """Set the raw TDRC ID3 frame to a date string."""
-        self.mf.mgfile["TDRC"] = mutagen.id3.TDRC(encoding=3, text=[datestring])
-
-    def test_compact_date_year(self):
-        # A date like "20161101" (no hyphens) should parse year as 2016,
-        # not 20161101. This is a common format produced by some taggers.
-        self._set_raw_date("20161101")
-        self.assertEqual(self.mf.year, 2016)
-
-    def test_compact_date_month(self):
-        self._set_raw_date("20161101")
-        self.assertEqual(self.mf.month, 11)
-
-    def test_compact_date_day(self):
-        self._set_raw_date("20161101")
-        self.assertEqual(self.mf.day, 1)
-
-    def test_compact_date_date_field(self):
-        import datetime
-
-        self._set_raw_date("20161101")
-        self.assertEqual(self.mf.date, datetime.date(2016, 11, 1))
-
-    def test_compact_year_only(self):
-        # "2016" with no separators should still parse correctly.
-        self._set_raw_date("2016")
-        self.assertEqual(self.mf.year, 2016)
-        self.assertIsNone(self.mf.month)
-        self.assertIsNone(self.mf.day)
+@pytest.mark.parametrize(
+    "datestring,year,month,day,date",
+    [
+        ("20161101", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016", 2016, None, None, datetime.date(2016, 1, 1)),
+    ],
+)
+def test_date_parsing(mp3_mediafile, datestring, year, month, day, date):
+    mp3_mediafile.mgfile["TDRC"] = mutagen.id3.TDRC(encoding=3, text=[datestring])
+    assert mp3_mediafile.year == year
+    assert mp3_mediafile.month == month
+    assert mp3_mediafile.day == day
+    assert mp3_mediafile.date == date
 
 
 class TypeTest(unittest.TestCase):

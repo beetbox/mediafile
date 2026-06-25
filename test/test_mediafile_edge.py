@@ -260,6 +260,11 @@ def mp3_mediafile():
     "datestring,year,month,day,date",
     [
         ("20161101", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016-11-01", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016/11/01", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016-11", 2016, 11, None, datetime.date(2016, 11, 1)),
+        ("2016-11-01T12:00:00", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016-11-01 12:00:00", 2016, 11, 1, datetime.date(2016, 11, 1)),
         ("2016", 2016, None, None, datetime.date(2016, 1, 1)),
     ],
 )

@@ -14,6 +14,7 @@
 
 """Specific, edge-case tests for the MediaFile metadata layer."""
 
+import datetime
 import os
 import shutil
 import unittest
@@ -247,6 +248,32 @@ class MissingAudioDataTest(unittest.TestCase):
     def test_bitrate_with_zero_length(self):
         del self.mf.mgfile.info.bitrate  # Not available directly.
         self.assertEqual(self.mf.bitrate, 0)
+
+
+@pytest.fixture
+def mp3_mediafile():
+    path = os.path.join(_common.RSRC, b"full.mp3")
+    return mediafile.MediaFile(path)
+
+
+@pytest.mark.parametrize(
+    "datestring,year,month,day,date",
+    [
+        ("20161101", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016-11-01", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016/11/01", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016-11", 2016, 11, None, datetime.date(2016, 11, 1)),
+        ("2016-11-01T12:00:00", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016-11-01 12:00:00", 2016, 11, 1, datetime.date(2016, 11, 1)),
+        ("2016", 2016, None, None, datetime.date(2016, 1, 1)),
+    ],
+)
+def test_date_parsing(mp3_mediafile, datestring, year, month, day, date):
+    mp3_mediafile.mgfile["TDRC"] = mutagen.id3.TDRC(encoding=3, text=[datestring])
+    assert mp3_mediafile.year == year
+    assert mp3_mediafile.month == month
+    assert mp3_mediafile.day == day
+    assert mp3_mediafile.date == date
 
 
 class TypeTest(unittest.TestCase):

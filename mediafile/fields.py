@@ -157,7 +157,12 @@ class DateField(MediaField):
         datestring = super().__get__(mediafile, None)
         if isinstance(datestring, str):
             datestring = re.sub(r"[Tt ].*$", "", str(datestring))
-            items = re.split("[-/]", str(datestring))
+            # Handle compact YYYYMMDD format (no separators).
+            if len(datestring) == 8 and datestring.isdigit():
+                items = [datestring[:4], datestring[4:6], datestring[6:]]
+            else:
+                datestring = datestring.replace("/", "-")
+                items = datestring.split("-")
         else:
             items = []
 

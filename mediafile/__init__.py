@@ -37,12 +37,14 @@ import logging
 import os
 import re
 
-import mutagen
-import mutagen.mp3
+from mutagen._file import File as MutagenFileFactory
+from mutagen.mp3 import BitrateMode
 
+from ._types import MutagenFile
 from .constants import TYPES, ImageType
 from .exceptions import FileTypeError, MutagenError, UnreadableFileError
 from .fields import (
+    BaseMediaField,
     CoverArtField,
     DateField,
     DateItemField,
@@ -142,6 +144,8 @@ class MediaFile:
     metadata.
     """
 
+    mgfile: MutagenFile
+
     @loadfile()
     def __init__(self, filething, id3v23=False, raise_on_unsupported_wav=False):
         """Constructs a new `MediaFile` reflecting the provided file.
@@ -159,7 +163,7 @@ class MediaFile:
         """
         self.filething = filething
 
-        self.mgfile = mutagen_call("open", self.filename, mutagen.File, filething)
+        self.mgfile = mutagen_call("open", self.filename, MutagenFileFactory, filething)
 
         if self.mgfile is None:
             # Mutagen couldn't guess the type
@@ -294,7 +298,7 @@ class MediaFile:
         :class:`MediaField`).
         """
         for property, descriptor in cls.__dict__.items():
-            if isinstance(descriptor, MediaField):
+            if isinstance(descriptor, BaseMediaField):
                 if isinstance(property, bytes):
                     # On Python 2, class field names are bytes. This method
                     # produces text strings.
@@ -949,9 +953,9 @@ class MediaFile:
         """
         if hasattr(self.mgfile.info, "bitrate_mode"):
             return {
-                mutagen.mp3.BitrateMode.CBR: "CBR",
-                mutagen.mp3.BitrateMode.VBR: "VBR",
-                mutagen.mp3.BitrateMode.ABR: "ABR",
+                BitrateMode.CBR: "CBR",
+                BitrateMode.VBR: "VBR",
+                BitrateMode.ABR: "ABR",
             }.get(self.mgfile.info.bitrate_mode, "")
         else:
             return ""

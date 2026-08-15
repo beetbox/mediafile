@@ -48,7 +48,7 @@ class MP4TupleStorageStyle(MP4StorageStyle):
         self.store(mutagen_file, items)
 
     def delete(self, mutagen_file):
-        if self.index == 0:
+        if self.index == 0 or self.deserialize(self.fetch(mutagen_file))[0] == 0:
             super().delete(mutagen_file)
         else:
             self.set(mutagen_file, None)

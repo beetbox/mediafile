@@ -823,6 +823,39 @@ class MP4Test(
         "channels": 2,
     }
 
+    def test_delete_packed_fields_removes_atoms(self):
+        mediafile = self._mediafile_fixture("full")
+
+        delattr(mediafile, "track")
+        delattr(mediafile, "tracktotal")
+        delattr(mediafile, "disc")
+        delattr(mediafile, "disctotal")
+
+        mediafile.save()
+        mediafile = MediaFile(mediafile.filename)
+
+        self.assertNotIn("trkn", mediafile.mgfile.tags)
+        self.assertNotIn("disk", mediafile.mgfile.tags)
+
+    def test_delete_packed_total_without_number_removes_atoms(self):
+        mediafile = self._mediafile_fixture("empty")
+
+        mediafile.tracktotal = 3
+        mediafile.disctotal = 5
+        mediafile.save()
+
+        mediafile = MediaFile(mediafile.filename)
+        self.assertIn("trkn", mediafile.mgfile.tags)
+        self.assertIn("disk", mediafile.mgfile.tags)
+
+        delattr(mediafile, "tracktotal")
+        delattr(mediafile, "disctotal")
+        mediafile.save()
+
+        mediafile = MediaFile(mediafile.filename)
+        self.assertNotIn("trkn", mediafile.mgfile.tags)
+        self.assertNotIn("disk", mediafile.mgfile.tags)
+
     def test_add_tiff_image_fails(self):
         mediafile = self._mediafile_fixture("empty")
         with self.assertRaises(ValueError):

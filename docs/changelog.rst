@@ -6,6 +6,8 @@ Upcoming
 
 - Fixed parsing of compact ``YYYYMMDD`` date strings (no separators) being
   misread as a year value.
+- Fixed a bug where deleting MP4 track and disc metadata left ``trkn`` and
+  ``disk`` atoms containing ``(0, 0)``.
 
 v0.17.0
 -------

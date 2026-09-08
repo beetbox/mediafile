@@ -6,6 +6,10 @@ Upcoming
 
 - Fixed parsing of compact ``YYYYMMDD`` date strings (no separators) being
   misread as a year value.
+- Fixed deleting ``synced_lyrics`` leaving the ``SYLT`` frame in place. Mutagen
+  stores the frame under the HashKey ``SYLT::XXX``, which the inherited
+  ``delete`` never matched, so ``del mf.synced_lyrics`` and
+  ``MediaFile.update({"synced_lyrics": None})`` were both silently no-ops.
 
 v0.17.0
 -------

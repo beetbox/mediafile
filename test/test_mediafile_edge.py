@@ -496,6 +496,54 @@ class TestSyncedLyrics:
         mf3 = mediafile.MediaFile(path)
         assert not mf3.synced_lyrics
 
+    @pytest.mark.parametrize("ext", ["mp3", "aiff"])
+    def test_delete(self, tmp_path, ext):
+        """``del`` removes the SYLT frame.
+
+        Mutagen stores the frame under the HashKey ``SYLT::XXX``, so the
+        inherited :meth:`StorageStyle.delete` looked for a bare ``SYLT`` key
+        and never matched.
+        """
+        path = _copy_fixture(tmp_path, f"empty.{ext}")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        del mf2.synced_lyrics
+        mf2.save()
+
+        assert not mediafile.MediaFile(path).synced_lyrics
+
+    def test_update_with_none_clears(self, tmp_path):
+        """``MediaFile.update`` deletes a field whose value is ``None``."""
+        path = _copy_fixture(tmp_path, "empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        mf2.update({"synced_lyrics": None})
+        mf2.save()
+
+        assert not mediafile.MediaFile(path).synced_lyrics
+
+    def test_delete_leaves_plain_lyrics(self, tmp_path):
+        """Deleting SYLT must not disturb the USLT frame."""
+        path = _copy_fixture(tmp_path, "empty.mp3")
+        mf = mediafile.MediaFile(path)
+        mf.lyrics = "plain text"
+        mf.synced_lyrics = SYNCED_LYRICS
+        mf.save()
+
+        mf2 = mediafile.MediaFile(path)
+        del mf2.synced_lyrics
+        mf2.save()
+
+        mf3 = mediafile.MediaFile(path)
+        assert not mf3.synced_lyrics
+        assert mf3.lyrics == "plain text"
+
     def test_no_sylt_returns_falsy(self, tmp_path):
         path = _copy_fixture(tmp_path, "empty.mp3")
         mf = mediafile.MediaFile(path)

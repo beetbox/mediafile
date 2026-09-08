@@ -339,6 +339,9 @@ class MP3SYLTStorageStyle(MP3StorageStyle):
         )
         mutagen_file.tags.setall("SYLT", [frame])
 
+    def delete(self, mutagen_file):
+        mutagen_file.tags.delall("SYLT")
+
     def serialize(self, value):
         return value
 

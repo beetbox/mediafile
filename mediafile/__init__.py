@@ -681,6 +681,20 @@ class MediaFile:
         ASFStorageStyle("MusicBrainz/Album Comment"),
     )
 
+    # Sorting information
+    album_sort = MediaField(
+        MP3StorageStyle("TSOA"),
+        MP4StorageStyle("soal"),
+        StorageStyle("ALBUMSORT"),
+        ASFStorageStyle("WM/AlbumSortOrder"),
+    )
+    title_sort = MediaField(
+        MP3StorageStyle("TSOT"),
+        MP4StorageStyle("sonm"),
+        StorageStyle("TITLESORT"),
+        ASFStorageStyle("WM/TitleSortOrder"),
+    )
+
     # Release date.
     date = DateField(
         MP3StorageStyle("TDRC"),

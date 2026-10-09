@@ -358,8 +358,10 @@ class ReadWriteTestBase(ArtTestMixin, ListFieldTestMixin, _common.TempDirMixin):
 
     tag_fields = [
         "title",
+        "title_sort",
         "artist",
         "album",
+        "album_sort",
         "genre",
         "lyricist",
         "composer",

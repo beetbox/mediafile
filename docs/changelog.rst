@@ -6,6 +6,7 @@ Upcoming
 
 - Fixed parsing of compact ``YYYYMMDD`` date strings (no separators) being
   misread as a year value.
+- Added ``album_sort`` and ``title_sort`` fields.
 
 v0.17.0
 -------

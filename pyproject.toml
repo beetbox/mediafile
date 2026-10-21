@@ -46,6 +46,11 @@ Repository = "https://github.com/beetbox/mediafile"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poetry]
+include = [
+    { path = "test", format = "sdist" },
+]
+
 [tool.pipx-install]
 poethepoet = ">=0.32"
 poetry = ">=2.1"

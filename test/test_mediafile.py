@@ -987,7 +987,8 @@ class OpusTest(ReadWriteTestBase, unittest.TestCase):
     extension = "opus"
     audio_properties = {
         "length": 1.0,
-        "bitrate": 66792,
+        # Mutagen 1.48 provides the bitrate, excluding the header and tag pages.
+        "bitrate": 52392 if mutagen.version >= (1, 48, 0) else 66792,
         "bitrate_mode": "",
         "encoder_info": "",
         "encoder_settings": "",

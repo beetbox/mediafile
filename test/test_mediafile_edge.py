@@ -469,6 +469,62 @@ def _copy_fixture(tmp_path, name):
     return dst
 
 
+@pytest.mark.parametrize(
+    ("field", "frames", "unrelated"),
+    [
+        (
+            "comments",
+            [
+                mutagen.id3.COMM(lang="eng", desc="", text=["English comment"]),
+                mutagen.id3.COMM(lang="fra", desc="", text=["French comment"]),
+            ],
+            mutagen.id3.COMM(lang="eng", desc="review", text=["Keep me"]),
+        ),
+        (
+            "lyrics",
+            [
+                mutagen.id3.USLT(lang="eng", desc="", text="English lyrics"),
+                mutagen.id3.USLT(lang="fra", desc="", text="French lyrics"),
+            ],
+            mutagen.id3.USLT(lang="eng", desc="translation", text="Keep me"),
+        ),
+        (
+            "label",
+            [
+                mutagen.id3.TXXX(desc="LABEL", text=["First label"]),
+                mutagen.id3.TXXX(desc="label", text=["Second label"]),
+            ],
+            mutagen.id3.TXXX(desc="keep", text=["Keep me"]),
+        ),
+    ],
+    ids=["comments", "lyrics", "label"],
+)
+@pytest.mark.parametrize("count", [1, 2], ids=["single", "multiple"])
+def test_delete_all_matching_id3_frames(tmp_path, field, frames, unrelated, count):
+    """Deleting a field removes every matching description, in any language."""
+    path = _copy_fixture(tmp_path, "empty.mp3")
+    mf = mediafile.MediaFile(path)
+    for frame in frames[:count] + [unrelated]:
+        mf.mgfile.tags.add(frame)
+    mf.save()
+
+    mf = mediafile.MediaFile(path)
+    assert getattr(mf, field) is not None
+    delattr(mf, field)
+    assert getattr(mf, field) is None
+    mf.save()
+
+    restored = mediafile.MediaFile(path)
+    assert getattr(restored, field) is None
+    for frame in frames[:count]:
+        assert frame.HashKey not in restored.mgfile.tags
+    assert restored.mgfile.tags[unrelated.HashKey].text == unrelated.text
+
+    delattr(restored, field)
+    assert getattr(restored, field) is None
+    assert restored.mgfile.tags[unrelated.HashKey].text == unrelated.text
+
+
 class TestSyncedLyrics:
     """Tests for the ``synced_lyrics`` field backed by the SYLT ID3 frame."""
 

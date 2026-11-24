@@ -182,13 +182,9 @@ class MP3DescStorageStyle(MP3StorageStyle):
                     return None
 
     def delete(self, mutagen_file):
-        found_frame = None
         for frame in mutagen_file.tags.getall(self.key):
             if frame.desc.lower() == self.description.lower():
-                found_frame = frame
-                break
-        if found_frame is not None:
-            del mutagen_file[frame.HashKey]
+                del mutagen_file[frame.HashKey]
 
 
 class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):

@@ -93,6 +93,29 @@ MediaFile Class
 
     .. automethod:: update
 
+Updating repeated tags
+----------------------
+
+Some fields have both a singular and a plural name for the same tag. For
+example, ``genre`` reads the first entry of ``genres``. To change that entry
+while keeping the other genres, update the list and save the file:
+
+::
+
+    audio = MediaFile("song.flac")
+    genres = audio.genres or []
+    audio.update({"genres": ["Bop", *genres[1:]]})
+    audio.save()
+
+For a file tagged with ``Jazz`` and ``Fusion``, this writes ``Bop`` and
+``Fusion``. The same approach works with ``mb_albumartistids`` and its singular
+field ``mb_albumartistid``.
+
+Pass just the fields you want to update. A dictionary from
+:py:meth:`MediaFile.as_dict` contains both names. If you change only ``genre``
+in that dictionary, :py:meth:`MediaFile.update` writes the old ``genres`` list
+after the singular value and restores the old tag.
+
 Exceptions
 ----------
 

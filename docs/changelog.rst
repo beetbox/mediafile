@@ -4,6 +4,8 @@ Changelog
 Upcoming
 --------
 
+- Deleting ID3 comments, lyrics and custom text fields now removes all matching
+  frames, including multiple languages and differently capitalized descriptions.
 - Fixed parsing of compact ``YYYYMMDD`` date strings (no separators) being
   misread as a year value.
 

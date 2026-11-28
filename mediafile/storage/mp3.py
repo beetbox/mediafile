@@ -191,6 +191,23 @@ class MP3DescStorageStyle(MP3StorageStyle):
             del mutagen_file[frame.HashKey]
 
 
+class MP3ReplayGainStorageStyle(MP3DescStorageStyle):
+    """Write both TXXX description spellings used by ReplayGain readers."""
+
+    def store(self, mutagen_file, value):
+        self.delete(mutagen_file)
+        for desc in (self.description.upper(), self.description.lower()):
+            frame = mutagen.id3.TXXX(
+                encoding=mutagen.id3.Encoding.UTF8, desc=desc, text=[value]
+            )
+            mutagen_file.tags.add(frame)
+
+    def delete(self, mutagen_file):
+        for frame in mutagen_file.tags.getall(self.key):
+            if frame.desc.lower() == self.description.lower():
+                del mutagen_file[frame.HashKey]
+
+
 class MP3ListDescStorageStyle(MP3DescStorageStyle, ListStorageStyle):
     def __init__(self, desc="", key="TXXX", split_v23=False, **kwargs):
         self.split_v23 = split_v23

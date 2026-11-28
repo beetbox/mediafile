@@ -794,6 +794,44 @@ class MP3Test(
         mediafile = self._mediafile_fixture("image_unknown_type")
         self.assertEqual(mediafile.images[0].type, ImageType.other)
 
+    def test_replaygain_frame_descriptions(self):
+        mf = self._mediafile_fixture("empty")
+        mf.rg_track_gain = -6.25
+        mf.rg_album_gain = -4.5
+        mf.rg_track_peak = 0.75
+        mf.rg_album_peak = 0.875
+        mf.save()
+
+        tags = mutagen.id3.ID3(mf.filename)
+        for desc, text in {
+            "replaygain_track_gain": "-6.25 dB",
+            "replaygain_album_gain": "-4.50 dB",
+            "replaygain_track_peak": "0.750000",
+            "replaygain_album_peak": "0.875000",
+        }.items():
+            with self.subTest(desc=desc):
+                self.assertEqual(tags[f"TXXX:{desc.upper()}"].text, [text])
+                self.assertEqual(tags[f"TXXX:{desc}"].text, [text])
+
+    def test_update_and_delete_mixed_case_replaygain(self):
+        mf = self._mediafile_fixture("empty")
+        mf.mgfile.tags.add(
+            mutagen.id3.TXXX(desc="ReplayGain_Album_Gain", text=["-3.00 dB"])
+        )
+        mf.mgfile.tags.add(mutagen.id3.TXXX(desc="other", text=["keep"]))
+        self.assertEqual(mf.rg_album_gain, -3.0)
+        mf.rg_album_gain = -5.5
+        mf.save()
+
+        mf = MediaFile(mf.filename)
+        self.assertEqual(mf.rg_album_gain, -5.5)
+        for desc in ("REPLAYGAIN_ALBUM_GAIN", "replaygain_album_gain"):
+            self.assertEqual(mf.mgfile[f"TXXX:{desc}"].text, ["-5.50 dB"])
+        del mf.rg_album_gain
+        mf.save()
+        tags = mutagen.id3.ID3(mf.filename)
+        self.assertEqual([frame.desc for frame in tags.getall("TXXX")], ["other"])
+
     def test_bitrate_mode(self):
         mediafile = self._mediafile_fixture("cbr")
         self.assertEqual(mediafile.bitrate_mode, "CBR")

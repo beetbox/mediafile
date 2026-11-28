@@ -6,6 +6,8 @@ Upcoming
 
 - Fixed parsing of compact ``YYYYMMDD`` date strings (no separators) being
   misread as a year value.
+- ID3 ReplayGain tags are written with both uppercase and lowercase frame
+  descriptions so players that expect either spelling can read them.
 
 v0.17.0
 -------

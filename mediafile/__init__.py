@@ -63,6 +63,7 @@ from .storage import (
     MP3ListPeopleStorageStyle,
     MP3ListStorageStyle,
     MP3PeopleStorageStyle,
+    MP3ReplayGainStorageStyle,
     MP3SlashPackStorageStyle,
     MP3SoundCheckStorageStyle,
     MP3StorageStyle,
@@ -826,8 +827,9 @@ class MediaFile:
 
     # ReplayGain fields.
     rg_track_gain = MediaField(
-        MP3DescStorageStyle("REPLAYGAIN_TRACK_GAIN", float_places=2, suffix=" dB"),
-        MP3DescStorageStyle("replaygain_track_gain", float_places=2, suffix=" dB"),
+        MP3ReplayGainStorageStyle(
+            "REPLAYGAIN_TRACK_GAIN", float_places=2, suffix=" dB"
+        ),
         MP3SoundCheckStorageStyle(key="COMM", index=0, desc="iTunNORM", id3_lang="eng"),
         MP4StorageStyle(
             "----:com.apple.iTunes:replaygain_track_gain", float_places=2, suffix=" dB"
@@ -838,8 +840,9 @@ class MediaFile:
         out_type=float,
     )
     rg_album_gain = MediaField(
-        MP3DescStorageStyle("REPLAYGAIN_ALBUM_GAIN", float_places=2, suffix=" dB"),
-        MP3DescStorageStyle("replaygain_album_gain", float_places=2, suffix=" dB"),
+        MP3ReplayGainStorageStyle(
+            "REPLAYGAIN_ALBUM_GAIN", float_places=2, suffix=" dB"
+        ),
         MP4StorageStyle(
             "----:com.apple.iTunes:replaygain_album_gain", float_places=2, suffix=" dB"
         ),
@@ -848,8 +851,7 @@ class MediaFile:
         out_type=float,
     )
     rg_track_peak = MediaField(
-        MP3DescStorageStyle("REPLAYGAIN_TRACK_PEAK", float_places=6),
-        MP3DescStorageStyle("replaygain_track_peak", float_places=6),
+        MP3ReplayGainStorageStyle("REPLAYGAIN_TRACK_PEAK", float_places=6),
         MP3SoundCheckStorageStyle(key="COMM", index=1, desc="iTunNORM", id3_lang="eng"),
         MP4StorageStyle("----:com.apple.iTunes:replaygain_track_peak", float_places=6),
         MP4SoundCheckStorageStyle("----:com.apple.iTunes:iTunNORM", index=1),
@@ -858,8 +860,7 @@ class MediaFile:
         out_type=float,
     )
     rg_album_peak = MediaField(
-        MP3DescStorageStyle("REPLAYGAIN_ALBUM_PEAK", float_places=6),
-        MP3DescStorageStyle("replaygain_album_peak", float_places=6),
+        MP3ReplayGainStorageStyle("REPLAYGAIN_ALBUM_PEAK", float_places=6),
         MP4StorageStyle("----:com.apple.iTunes:replaygain_album_peak", float_places=6),
         StorageStyle("REPLAYGAIN_ALBUM_PEAK", float_places=6),
         ASFStorageStyle("replaygain_album_peak", float_places=6),
